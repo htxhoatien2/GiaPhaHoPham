@@ -398,59 +398,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* ───── 5. Quickstart ───── */}
-      <section id="quickstart" className="py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Bắt đầu nhanh</h2>
-            <p className="text-gray-500">
-              Chạy ngay trên máy tính — chỉ cần Docker Desktop và 10 phút.
-            </p>
-          </div>
 
-          {/* Local Dev quickstart */}
-          <div className="max-w-2xl mx-auto mb-10">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg text-center">Local Development</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="bg-gray-900 text-gray-100 rounded-lg p-4 font-mono text-sm leading-relaxed">
-                  <p className="text-gray-400"># Clone &amp; chạy (cần Docker Desktop + pnpm)</p>
-                  <p>git clone {GITHUB_REPO}.git</p>
-                  <p>cd AncestorTree/frontend</p>
-                  <p>pnpm install &amp;&amp; pnpm local:setup &amp;&amp; pnpm dev</p>
-                </div>
-                <div className="text-center space-y-1">
-                  <p className="text-sm text-gray-600">
-                    Mở <span className="font-mono text-emerald-700">http://localhost:4000</span> — Đăng nhập: <span className="font-mono">admin@giapha.local</span> / <span className="font-mono">admin123</span>
-                  </p>
-                  <p className="text-xs text-gray-400">Chi phí: $0 &middot; Thời gian: ~10 phút &middot; Đầy đủ 100% tính năng</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Desktop notice */}
-          <div className="max-w-2xl mx-auto">
-            <Card className="border-amber-200 bg-amber-50/50">
-              <CardContent className="pt-6 text-center space-y-3">
-                <div className="mx-auto w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-amber-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Desktop App — Code Signing Pending</h3>
-                <p className="text-sm text-gray-600">
-                  Bản Desktop (offline, không cần Docker) đang chờ Apple Developer Certificate.
-                  Khi code signing sẵn sàng, bản cài đặt sẽ được phát hành tại{' '}
-                  <a href={GITHUB_RELEASES} target="_blank" rel="noopener noreferrer" className="underline text-emerald-700 hover:text-emerald-800">
-                    GitHub Releases
-                  </a>.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* ───── 6. Câu hỏi thường gặp ───── */}
       <section className="py-20 bg-gray-50">
@@ -644,30 +592,7 @@ export default function WelcomePage() {
         </div>
       </section>
 
-      {/* ───── 9. Dành cho lập trình viên ───── */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Dành cho lập trình viên</h2>
-            <p className="text-gray-500 mb-8">
-              Mã nguồn mở MIT — fork, tùy chỉnh và deploy cho dòng họ của bạn trong 30 phút.
-            </p>
-            <div className="flex flex-wrap justify-center gap-2 mb-8">
-              {techStack.map((t) => (
-                <Badge key={t} variant="secondary" className="text-sm">
-                  {t}
-                </Badge>
-              ))}
-            </div>
-            <Button asChild>
-              <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer">
-                <Code2 className="mr-2 h-5 w-5" />
-                Xem mã nguồn trên GitHub
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
+
 
       {/* ───── 10. Footer ───── */}
       <footer className="border-t bg-white py-10">
