@@ -319,10 +319,10 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url));
       }
 
-      // Admin routes require admin or editor role
+      // Admin routes require admin role only (ISS-06)
       if (pathname.startsWith('/admin')) {
         mwLog('INFO', 'admin_check', { pathname, userId: user.id, role: profile?.role ?? null });
-        if (profile?.role !== 'admin' && profile?.role !== 'editor') {
+        if (profile?.role !== 'admin') {
           mwLog('WARN', 'redirect', { pathname, destination: '/', reason: 'insufficient_role', role: profile?.role });
           return NextResponse.redirect(new URL('/', request.url));
         }

@@ -293,8 +293,8 @@ export function AppSidebar() {
           </SidebarGroup>
         )}
 
-        {/* Admin & Editor Panel Group */}
-        {(isAdmin || isEditor) && (
+        {/* Admin Panel Group - Admin only */}
+        {isAdmin && (
           <AdminNavGroup pathname={pathname} elderlyMode={elderlyMode} />
         )}
       </SidebarContent>

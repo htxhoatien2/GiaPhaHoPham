@@ -20,12 +20,12 @@ import Link from 'next/link';
 /** Renders the dynamic clan full name; falls back to env var while loading. */
 export function ClanFullName() {
   const { data: cs } = useClanSettings();
-  const { isEditor } = useAuth();
+  const { isAdmin } = useAuth();
 
   return (
     <span className="inline-flex items-center gap-2 group justify-center">
       <span>{cs?.clan_full_name ?? CLAN_FULL_NAME}</span>
-      {isEditor && (
+      {isAdmin && (
         <Link 
           href="/admin/settings" 
           className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white inline-flex items-center justify-center cursor-pointer ml-1"
