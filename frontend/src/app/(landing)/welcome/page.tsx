@@ -530,8 +530,8 @@ export default function WelcomePage() {
           <div className="text-center mb-14">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">Liên hệ</h2>
             <p className="text-gray-500 max-w-2xl mx-auto">
-              Phần mềm được phát triển phục vụ chi tộc Đặng Đình, Thạch Lâm, Hà Tĩnh.
-              Con cháu họ Đặng vui lòng liên hệ để được hỗ trợ.
+              Phần mềm được phát triển phục vụ chi tộc Phạm Văn, An Trạch, Hòa Tiến, Đà Nẵng.
+              Con cháu họ Phạm vui lòng liên hệ để được hỗ trợ.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
@@ -541,15 +541,15 @@ export default function WelcomePage() {
                 <CardTitle className="text-lg">Tác giả</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-base font-semibold text-gray-900">Đặng Thế Tài</p>
+                <p className="text-base font-semibold text-gray-900">Phạm Công Tuân</p>
                 <div className="space-y-2">
-                  <a href="mailto:dangtt1971@gmail.com" className="flex items-center gap-3 text-sm text-gray-600 hover:text-emerald-700">
+                  <a href="mailto:pctuanit@gmail.com" className="flex items-center gap-3 text-sm text-gray-600 hover:text-emerald-700">
                     <Mail className="h-4 w-4 text-emerald-600" />
-                    dangtt1971@gmail.com
+                    pctuanit@gmail.com
                   </a>
-                  <a href="tel:0939116006" className="flex items-center gap-3 text-sm text-gray-600 hover:text-emerald-700">
+                  <a href="tel:0916199945" className="flex items-center gap-3 text-sm text-gray-600 hover:text-emerald-700">
                     <Phone className="h-4 w-4 text-emerald-600" />
-                    0939 116 006
+                    0916 199 945
                   </a>
                 </div>
               </CardContent>
