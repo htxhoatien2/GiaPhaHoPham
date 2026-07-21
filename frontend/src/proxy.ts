@@ -130,14 +130,12 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Desktop mode: bypass all auth — single-user admin, no Supabase Auth
+  const isVercel = process.env.VERCEL === '1' || !!process.env.NEXT_PUBLIC_VERCEL_ENV;
   const isDesktopMode =
-    process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
-    process.env.DESKTOP_MODE === 'true' ||
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL.includes('localhost') ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL.includes('127.0.0.1') ||
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('paste');
+    !isVercel && (
+      process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
+      process.env.DESKTOP_MODE === 'true'
+    );
 
   if (isDesktopMode) {
     mwLog('INFO', 'desktop_bypass', { pathname });

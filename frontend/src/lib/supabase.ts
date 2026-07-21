@@ -1,8 +1,20 @@
 import { createBrowserClient } from '@supabase/ssr';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+function cleanUrl(raw?: string): string {
+  let url = (raw || '').trim().replace(/^["']|["']$/g, '');
+  if (url && !/^https?:\/\//i.test(url)) {
+    url = `https://${url}`;
+  }
+  return url;
+}
+
+function cleanKey(raw?: string): string {
+  return (raw || '').trim().replace(/^["']|["']$/g, '');
+}
+
+const supabaseUrl = cleanUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+const supabaseAnonKey = cleanKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 const isVercel = process.env.VERCEL === '1' || !!process.env.NEXT_PUBLIC_VERCEL_ENV;
 
