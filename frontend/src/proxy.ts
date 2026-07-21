@@ -168,9 +168,13 @@ export async function proxy(request: NextRequest) {
     request: { headers: request.headers },
   });
 
-  // Always use NEXT_PUBLIC_SUPABASE_URL so the storage key (cookie name) matches the browser.
-  // Network requests are routed via dockerFetch to SUPABASE_INTERNAL_URL when in Docker.
-  const supabasePublicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabasePublicUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabasePublicUrl || !supabaseAnonKey || supabasePublicUrl.includes('placeholder')) {
+    mwLog('WARN', 'missing_supabase_keys', { pathname });
+    return response;
+  }
 
   const allCookies = request.cookies.getAll();
   const authCookies = allCookies.filter(c => c.name.includes('auth') || c.name.includes('supabase') || c.name.startsWith('sb-'));
@@ -184,7 +188,7 @@ export async function proxy(request: NextRequest) {
 
   const supabase = createServerClient(
     supabasePublicUrl,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseAnonKey,
     {
       global: {
         // dockerFetch rewrites localhost → host.docker.internal for server-side requests
@@ -335,6 +339,8 @@ export async function proxy(request: NextRequest) {
   mwLog('INFO', 'allow', { pathname, userId: user?.id ?? null });
   return response;
 }
+
+export { proxy as middleware };
 
 export const config = {
   matcher: [
