@@ -25,11 +25,9 @@ const nextConfig: NextConfig = {
   // Explicitly forward NEXT_PUBLIC_DESKTOP_MODE to the client bundle.
   env: {
     NEXT_PUBLIC_DESKTOP_MODE: (
-      process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
-      process.env.DESKTOP_MODE === 'true' ||
-      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-      (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('paste'))
+      (process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' || process.env.DESKTOP_MODE === 'true') &&
+      process.env.VERCEL !== '1' &&
+      !process.env.NEXT_PUBLIC_VERCEL_ENV
     ) ? 'true' : 'false',
   },
 };

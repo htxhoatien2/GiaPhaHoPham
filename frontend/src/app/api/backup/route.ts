@@ -31,8 +31,9 @@ export async function POST(request: NextRequest) {
     const includeMedia: IncludeMedia = body.include_media ?? 'reference';
 
     const isDesktop =
-      process.env.DESKTOP_MODE === 'true' ||
-      process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true';
+      process.env.VERCEL !== '1' &&
+      !process.env.NEXT_PUBLIC_VERCEL_ENV &&
+      (process.env.DESKTOP_MODE === 'true' || process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true');
 
     const zip = new AdmZip();
     const exportedData: Record<string, unknown[]> = {};

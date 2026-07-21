@@ -4,12 +4,13 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
+const isVercel = process.env.VERCEL === '1' || !!process.env.NEXT_PUBLIC_VERCEL_ENV;
+
 const isDesktopMode =
-  process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
-  process.env.DESKTOP_MODE === 'true' ||
-  !supabaseUrl ||
-  !supabaseAnonKey ||
-  supabaseAnonKey.includes('paste');
+  !isVercel && (
+    process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
+    process.env.DESKTOP_MODE === 'true'
+  );
 
 // Custom fetch with 25-second timeout to prevent infinite hangs on Supabase free tier cold starts.
 // Cold starts affect the Auth and PostgREST services independently from the DB (SQL Editor uses direct connection).
@@ -61,9 +62,9 @@ export { supabase };
 // Server-side client with service role (for admin operations)
 // Named createServiceRoleClient to avoid confusion with @supabase/ssr's createServerClient
 export function createServiceRoleClient() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || supabaseAnonKey;
   if (!serviceRoleKey) {
-    throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY');
+    throw new Error('Missing SUPABASE_SERVICE_ROLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY');
   }
   // In Docker, the container cannot resolve NEXT_PUBLIC_SUPABASE_URL if it points to
   // localhost (which inside Docker = the container itself). Use SUPABASE_INTERNAL_URL

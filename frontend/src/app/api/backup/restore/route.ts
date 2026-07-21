@@ -129,8 +129,9 @@ export async function POST(request: NextRequest) {
     }
 
     const isDesktop =
-      process.env.DESKTOP_MODE === 'true' ||
-      process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true';
+      process.env.VERCEL !== '1' &&
+      !process.env.NEXT_PUBLIC_VERCEL_ENV &&
+      (process.env.DESKTOP_MODE === 'true' || process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true');
 
     let totalInserted = 0;
     const errors: string[] = [];
