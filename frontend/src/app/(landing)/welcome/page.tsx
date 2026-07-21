@@ -18,6 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { CLAN_NAME } from '@/lib/clan-config';
 
 const GITHUB_REPO = 'https://github.com/Minh-Tam-Solution/AncestorTree';
 const GITHUB_RELEASES = `${GITHUB_REPO}/releases`;
@@ -674,23 +675,12 @@ export default function WelcomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
             <div className="flex items-center gap-2">
               <span className="text-lg">🌳</span>
-              <span className="font-semibold text-gray-700">AncestorTree</span>
-              <span className="text-gray-400">v2.5.0</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer" className="hover:text-gray-700">
-                GitHub
-              </a>
-              <a href="https://github.com/Minh-Tam-Solution" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700">
-                Minh Tam Solution
-              </a>
-              <a href="https://github.com/Minh-Tam-Solution/tinysdlc" target="_blank" rel="noopener noreferrer" className="hover:text-gray-700">
-                TinySDLC
-              </a>
+              <span className="font-semibold text-gray-700">{CLAN_NAME}</span>
+              <span className="text-gray-400">Gia Phả Điện Tử</span>
             </div>
           </div>
           <p className="text-center text-xs text-gray-400 mt-6">
-            &copy; 2026 AncestorTree &middot; Tác giả: Đặng Thế Tài &middot; Built with TinySDLC &middot; MIT License
+            &copy; 2026 {CLAN_NAME} &middot; Hệ thống Quản lý Gia Phả Điện Tử
           </p>
         </div>
       </footer>
