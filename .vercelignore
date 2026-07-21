@@ -1,4 +1,7 @@
 desktop/
 docs/
+docker-data/
 *.md
-!frontend/**
+**/node_modules/
+**/.next/
+**/.env*.local
