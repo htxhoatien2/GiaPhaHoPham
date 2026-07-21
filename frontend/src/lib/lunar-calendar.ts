@@ -243,16 +243,25 @@ export function getLunarDatesInSolarMonth(
   lunarDates: { day: number; month: number; label: string }[]
 ): { solarDay: number; lunarDay: number; lunarMonth: number; label: string }[] {
   const results: { solarDay: number; lunarDay: number; lunarMonth: number; label: string }[] = [];
+  const seen = new Set<string>();
 
   for (const ld of lunarDates) {
-    const solar = lunarToSolar(ld.day, ld.month, solarYear);
-    if (solar.month === solarMonth && solar.year === solarYear) {
-      results.push({
-        solarDay: solar.day,
-        lunarDay: ld.day,
-        lunarMonth: ld.month,
-        label: ld.label,
-      });
+    // Check adjacent lunar years (solarYear - 1, solarYear, solarYear + 1)
+    // because lunar years lag/lead Gregorian years.
+    for (const testYear of [solarYear - 1, solarYear, solarYear + 1]) {
+      const solar = lunarToSolar(ld.day, ld.month, testYear);
+      if (solar.month === solarMonth && solar.year === solarYear) {
+        const key = `${solar.day}-${ld.day}-${ld.month}-${ld.label}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          results.push({
+            solarDay: solar.day,
+            lunarDay: ld.day,
+            lunarMonth: ld.month,
+            label: ld.label,
+          });
+        }
+      }
     }
   }
 

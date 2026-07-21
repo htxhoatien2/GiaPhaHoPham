@@ -9,8 +9,6 @@ const isDesktopMode =
   process.env.DESKTOP_MODE === 'true' ||
   !supabaseUrl ||
   !supabaseAnonKey ||
-  supabaseUrl.includes('localhost') ||
-  supabaseUrl.includes('127.0.0.1') ||
   supabaseAnonKey.includes('paste');
 
 // Custom fetch with 25-second timeout to prevent infinite hangs on Supabase free tier cold starts.

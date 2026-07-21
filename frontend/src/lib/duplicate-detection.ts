@@ -13,7 +13,12 @@ import type { TreeData } from './supabase-data';
 
 /** Remove Vietnamese diacritics: NFD decompose → strip combining marks → lowercase */
 function removeDiacritics(str: string): string {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return str
+    .replace(/Đ/g, 'D')
+    .replace(/đ/g, 'd')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
 /** Split Vietnamese name: first word = Họ, last word = Tên, middle = Đệm */

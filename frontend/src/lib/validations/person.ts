@@ -93,7 +93,13 @@ export const personSchema = z
     occupation: z.string().max(200).optional(),
     biography: z.string().max(5000).optional(),
     notes: z.string().max(2000).optional(),
-    avatar_url: z.string().url('URL không hợp lệ').optional().or(z.literal('')),
+    avatar_url: z
+      .string()
+      .refine((val) => !val || val.startsWith('/') || /^https?:\/\//.test(val), {
+        message: 'URL ảnh không hợp lệ',
+      })
+      .optional()
+      .or(z.literal('')),
 
     // Privacy
     privacy_level: requiredNumericString,

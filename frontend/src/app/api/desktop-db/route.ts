@@ -18,8 +18,7 @@ function isDesktopMode(): boolean {
   return process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
     process.env.DESKTOP_MODE === 'true' ||
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL.includes('localhost') ||
-    process.env.NEXT_PUBLIC_SUPABASE_URL.includes('127.0.0.1') ||
+    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
     (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== undefined && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('paste'));
 }
 

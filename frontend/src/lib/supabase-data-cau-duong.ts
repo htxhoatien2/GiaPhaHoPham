@@ -343,8 +343,8 @@ export async function autoAssignNextCeremony(
   createdBy: string,
   notes?: string,
 ): Promise<CauDuongAssignment> {
-  const currentYear = new Date().getFullYear();
-  const next = await getNextHostInRotation(poolId, currentYear);
+  const targetYear = year || new Date().getFullYear();
+  const next = await getNextHostInRotation(poolId, targetYear);
 
   if (!next) throw new Error('Không có thành viên đủ điều kiện trong nhóm');
 
