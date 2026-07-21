@@ -368,7 +368,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                   <FormItem>
                     <FormLabel>Nơi sinh</FormLabel>
                     <FormControl>
-                      <Input placeholder="Hà Tĩnh" {...field} />
+                      <Input placeholder="Đà Nẵng" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -447,7 +447,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 <FormItem>
                   <FormLabel>Quê quán</FormLabel>
                   <FormControl>
-                    <Input placeholder="Thạch Lâm, Thạch Hà, Hà Tĩnh" {...field} />
+                    <Input placeholder="An Trạch, Hòa Tiến, Đà Nẵng" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -523,7 +523,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 <FormItem>
                   <FormLabel>Địa chỉ hiện tại</FormLabel>
                   <FormControl>
-                    <Input placeholder="123 Đường ABC, Quận XYZ, TP.HCM" {...field} />
+                    <Input placeholder="Số 01 Đường Đinh Thị Thôi, xã Hòa Tiến, TP. Đà Nẵng" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -24,18 +24,18 @@ import {
 
 const clanSettings: ClanSettings = {
   id: 'cs-1',
-  clan_name: 'Đặng Đình',
-  clan_full_name: 'Chi Tộc Đặng Đình - Thạch Lâm, Hà Tĩnh',
+  clan_name: 'Phạm Văn',
+  clan_full_name: 'Chi Tộc Phạm Văn - An Trạch, Hòa Tiến, Đà Nẵng',
   clan_founding_year: 1650,
-  clan_origin: 'Thạch Lâm, Hà Tĩnh',
-  clan_patriarch: 'Đặng Đình Thủy',
-  clan_description: 'Chi tộc Đặng Đình có lịch sử hơn 400 năm.',
-  clan_history: 'Dòng họ khởi nguồn từ thời Lê Trung Hưng...',
+  clan_origin: 'An Trạch, Hòa Tiến, Đà Nẵng',
+  clan_patriarch: 'Phạm Văn Thủy',
+  clan_description: 'Chi tộc Phạm Văn có lịch sử lâu đời.',
+  clan_history: 'Dòng họ khởi nguồn tại An Trạch, Hòa Tiến, Đà Nẵng...',
   clan_mission: 'Giữ gìn văn hoá dòng họ, kết nối con cháu bốn phương.',
-  ancestral_hall_address: 'Xã Thạch Lâm, huyện Thạch Hà, Hà Tĩnh',
-  ancestral_hall_history: 'Nhà thờ họ được xây dựng năm 1780.',
-  contact_email: 'lienhe@dangdinh.example',
-  contact_phone: '0123-456-789',
+  ancestral_hall_address: 'Số 01 Đường Đinh Thị Thôi, xã Hòa Tiến, TP. Đà Nẵng',
+  ancestral_hall_history: 'Nhà thờ họ được xây dựng từ lâu đời.',
+  contact_email: 'pctuanit@gmail.com',
+  contact_phone: '0916-199-945',
   updated_at: '2026-01-01T00:00:00Z',
 };
 

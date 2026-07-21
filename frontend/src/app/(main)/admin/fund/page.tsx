@@ -326,7 +326,7 @@ export default function AdminFundPage() {
                 </div>
                 <div>
                   <Label>Trường</Label>
-                  <Input value={schSchool} onChange={e => setSchSchool(e.target.value)} placeholder="THPT Hà Tĩnh" />
+                  <Input value={schSchool} onChange={e => setSchSchool(e.target.value)} placeholder="THPT Đà Nẵng" />
                 </div>
                 <div>
                   <Label>Lý do</Label>

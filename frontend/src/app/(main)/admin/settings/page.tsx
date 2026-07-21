@@ -237,7 +237,7 @@ export default function AdminSettingsPage() {
                   <Input
                     value={origin}
                     onChange={e => setOrigin(e.target.value)}
-                    placeholder="Thạch Lâm, Thạch Hà, Hà Tĩnh"
+                    placeholder="An Trạch, Hòa Tiến, Đà Nẵng"
                     className="mt-1"
                   />
                 </div>
@@ -422,7 +422,7 @@ export default function AdminSettingsPage() {
             <Input
               value={hallAddress}
               onChange={e => setHallAddress(e.target.value)}
-              placeholder="Xã Thạch Lâm, Thạch Hà, Hà Tĩnh"
+              placeholder="An Trạch, Hòa Tiến, Đà Nẵng"
               className="mt-1"
             />
           </div>
