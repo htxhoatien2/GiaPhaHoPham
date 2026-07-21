@@ -20,24 +20,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CLAN_NAME } from '@/lib/clan-config';
 
-const GITHUB_REPO = 'https://github.com/Minh-Tam-Solution/AncestorTree';
+const GITHUB_REPO = 'https://github.com/htxhoatien2/GiaPhaHoPham';
 const GITHUB_RELEASES = `${GITHUB_REPO}/releases`;
 const GITHUB_ISSUES = `${GITHUB_REPO}/issues`;
 const GITHUB_DISCUSSIONS = `${GITHUB_REPO}/discussions`;
 
 export const metadata: Metadata = {
-  title: 'AncestorTree — Gia Phả Điện Tử',
+  title: 'Phạm Văn Tộc — Gia Phả Điện Tử',
   description:
     'Phần mềm mã nguồn mở quản lý gia phả điện tử. Cây gia phả tương tác, lịch âm dương, quản lý dòng họ. Miễn phí, tự host, có bản Desktop offline.',
   alternates: {
-    canonical: 'https://ancestortree.info/welcome',
+    canonical: 'https://gia-pha-ho-pham-frontend.vercel.app/welcome',
   },
   openGraph: {
-    title: 'AncestorTree — Gia Phả Điện Tử',
+    title: 'Phạm Văn Tộc — Gia Phả Điện Tử',
     description: 'Gìn giữ tinh hoa — Tiếp bước cha ông',
     type: 'website',
     locale: 'vi_VN',
-    url: 'https://ancestortree.info/welcome',
+    url: 'https://gia-pha-ho-pham-frontend.vercel.app/welcome',
     images: [{ url: '/og-landing.png', width: 1200, height: 630, alt: 'AncestorTree' }],
   },
 };
