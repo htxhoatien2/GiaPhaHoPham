@@ -23,6 +23,9 @@ const fetchWithTimeout: typeof fetch = async (input, init) => {
     if (err instanceof DOMException && err.name === 'AbortError') {
       throw new Error('Yêu cầu hết thời gian chờ. Supabase đang khởi động — vui lòng thử lại sau vài giây.');
     }
+    if (err instanceof TypeError && (err.message.includes('fetch') || err.message.includes('NetworkError'))) {
+      throw new Error('Không thể kết nối đến Supabase Cloud. Vui lòng kiểm tra lại biến môi trường NEXT_PUBLIC_SUPABASE_URL trên Vercel.');
+    }
     throw err;
   } finally {
     clearTimeout(timer);
