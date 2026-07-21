@@ -197,74 +197,95 @@ export default function EventsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50">
-            <Calendar className="h-5 w-5 text-amber-600" />
-          </div>
+      {/* Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-emerald-850 to-amber-900 p-8 text-white shadow-xl shadow-emerald-950/20">
+        <div className="absolute right-0 top-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl" />
+        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
           <div>
-            <h1 className="text-2xl font-bold">Lịch cúng lễ</h1>
-            <p className="text-muted-foreground">Quản lý ngày giỗ, lễ tết và sự kiện dòng họ</p>
+            <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/20 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-amber-200 border border-amber-300/30 mb-3">
+              <Calendar className="h-3.5 w-3.5 text-amber-300" />
+              Lịch Cúng Lễ & Sự Kiện
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3">
+              Lịch Cúng Lễ Dòng Họ
+            </h1>
+            <p className="text-emerald-100/90 text-sm mt-2 max-w-xl font-normal leading-relaxed">
+              Quản lý ngày giỗ chạp, lễ tết, dâng hương và các sự kiện truyền thống gia tộc.
+            </p>
           </div>
+          {isEditor && (
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-amber-950 font-bold rounded-xl shadow-lg shadow-amber-950/20 border border-amber-300/50">
+                  <Plus className="h-4 w-4" /> Thêm sự kiện
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md rounded-2xl">
+                <DialogHeader>
+                  <DialogTitle className="font-bold text-lg">Thêm sự kiện mới</DialogTitle>
+                  <DialogDescription>Thêm ngày giỗ, lễ tết hoặc sự kiện truyền thống dòng họ</DialogDescription>
+                </DialogHeader>
+                <AddEventDialog
+                  onClose={() => setDialogOpen(false)}
+                />
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
-        {isEditor && (
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" /> Thêm sự kiện
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Thêm sự kiện mới</DialogTitle>
-                <DialogDescription>Thêm ngày giỗ, lễ tết hoặc sự kiện dòng họ</DialogDescription>
-              </DialogHeader>
-              <AddEventDialog
-                onClose={() => setDialogOpen(false)}
-              />
-            </DialogContent>
-          </Dialog>
-        )}
       </div>
 
       {/* Upcoming events banner */}
       {allUpcoming.length > 0 && (
-        <Card className="mb-6 border-amber-200 bg-amber-50/50">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-amber-600" />
-              Sắp tới ({allUpcoming.length} sự kiện trong 60 ngày)
+        <Card className="rounded-2xl border-amber-300/70 bg-gradient-to-br from-amber-50/60 via-white to-amber-50/30 shadow-md">
+          <CardHeader className="pb-3 border-b border-amber-100/80">
+            <CardTitle className="text-base font-bold text-amber-950 flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <AlertCircle className="h-4.5 w-4.5 text-amber-600" />
+                Sự Kiện Sắp Tới ({allUpcoming.length} sự kiện trong 60 ngày)
+              </span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
+          <CardContent className="pt-4">
+            <div className="space-y-2.5">
               {allUpcoming.slice(0, 5).map(({ event, person, nextDate, daysUntil, lunarDisplay, isAuto }) => {
                 const typeInfo = EVENT_TYPE_LABELS[event.event_type];
                 const TypeIcon = typeInfo.icon;
                 return (
-                  <div key={event.id} className="flex items-center gap-3 bg-background rounded-lg p-3">
-                    <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${typeInfo.color}`}>
-                      <TypeIcon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm">
-                        {event.title}
-                        {isAuto && <span className="text-xs text-muted-foreground ml-1">(tự động)</span>}
+                  <div key={event.id} className="flex items-center justify-between gap-3 bg-white border border-slate-200/80 hover:border-amber-300 rounded-xl p-3 shadow-2xs transition-all">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold shadow-2xs ${typeInfo.color}`}>
+                        <TypeIcon className="h-5 w-5" />
                       </div>
-                      <div className="text-xs text-muted-foreground">
-                        {nextDate.toLocaleDateString('vi-VN')} · {lunarDisplay}
-                        {person && (
-                          <>
-                            {' · '}
-                            <Link href={`/people/${person.id}`} className="hover:underline">
-                              {person.display_name}
-                            </Link>
-                          </>
-                        )}
+                      <div className="min-w-0">
+                        <div className="font-bold text-sm text-slate-900 truncate flex items-center gap-1.5">
+                          <span>{event.title}</span>
+                          {isAuto && <span className="text-[11px] text-slate-400 font-normal">(tự động)</span>}
+                        </div>
+                        <div className="text-xs text-slate-500 font-medium mt-0.5 flex flex-wrap items-center gap-1.5">
+                          <span className="text-emerald-900 font-semibold">{nextDate.toLocaleDateString('vi-VN')}</span>
+                          <span className="text-slate-300">•</span>
+                          <span className="text-amber-900 font-medium">{lunarDisplay}</span>
+                          {person && (
+                            <>
+                              <span className="text-slate-300">•</span>
+                              <Link href={`/people/${person.id}`} className="text-emerald-800 hover:underline font-semibold">
+                                {person.display_name}
+                              </Link>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <Badge
-                      variant={daysUntil <= 7 ? 'destructive' : daysUntil <= 30 ? 'default' : 'secondary'}
+                      className={`shrink-0 rounded-lg px-3 py-1 font-bold text-xs ${
+                        daysUntil === 0
+                          ? 'bg-rose-600 text-white animate-pulse'
+                          : daysUntil <= 7
+                          ? 'bg-amber-500 text-amber-950 font-extrabold'
+                          : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                      }`}
                     >
-                      {daysUntil === 0 ? 'Hôm nay' : `${daysUntil} ngày`}
+                      {daysUntil === 0 ? 'Hôm nay' : `Còn ${daysUntil} ngày`}
                     </Badge>
                   </div>
                 );
@@ -275,9 +296,9 @@ export default function EventsPage() {
       )}
 
       <Tabs defaultValue="calendar">
-        <TabsList className="mb-4">
-          <TabsTrigger value="calendar">Lịch</TabsTrigger>
-          <TabsTrigger value="list">Danh sách</TabsTrigger>
+        <TabsList className="bg-slate-100/80 p-1 rounded-xl">
+          <TabsTrigger value="calendar" className="rounded-lg font-bold text-xs px-4">Lịch xem dạng tháng</TabsTrigger>
+          <TabsTrigger value="list" className="rounded-lg font-bold text-xs px-4">Danh sách sự kiện</TabsTrigger>
         </TabsList>
 
         <TabsContent value="calendar">

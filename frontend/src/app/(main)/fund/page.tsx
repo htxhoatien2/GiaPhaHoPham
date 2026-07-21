@@ -120,69 +120,93 @@ export default function FundPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div className="flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <BookOpen className="h-6 w-6" />
-            Quỹ Khuyến học
-          </h1>
-          <p className="text-muted-foreground">Quản lý quỹ khuyến học, học bổng và khen thưởng</p>
-        </div>
-        <div className="flex gap-2 print:hidden">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => exportFundReport(balance, transactions || [], scholarships || [], peopleMap)}
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Xuất CSV
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => window.print()}>
-            <Printer className="h-4 w-4 mr-2" />
-            In báo cáo
-          </Button>
+  return (
+    <div className="container mx-auto px-4 py-8 space-y-8 max-w-6xl">
+      {/* Header Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-emerald-850 to-amber-900 p-8 text-white shadow-xl shadow-emerald-950/20">
+        <div className="absolute right-0 top-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl" />
+        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/20 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-amber-200 border border-amber-300/30 mb-3">
+              <BookOpen className="h-3.5 w-3.5 text-amber-300" />
+              Quỹ Dòng Họ & Khuyến Học
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-3">
+              Quỹ Khuyến Học & Công Đức
+            </h1>
+            <p className="text-emerald-100/90 text-sm mt-2 max-w-xl font-normal leading-relaxed">
+              Minh bạch tài chính dòng họ, khuyến khích con cháu phát triển học tập và cống hiến cho gia tộc.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2.5 print:hidden">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportFundReport(balance, transactions || [], scholarships || [], peopleMap)}
+              className="rounded-xl border-amber-300/40 bg-amber-500/20 text-white hover:bg-amber-500/30 font-semibold text-xs"
+            >
+              <Download className="h-4 w-4 mr-1.5" />
+              Xuất CSV
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.print()}
+              className="rounded-xl border-amber-300/40 bg-amber-500/20 text-white hover:bg-amber-500/30 font-semibold text-xs"
+            >
+              <Printer className="h-4 w-4 mr-1.5" />
+              In Báo Cáo
+            </Button>
+          </div>
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4 text-center">
-            <Wallet className="h-6 w-6 mx-auto mb-1 text-emerald-600" />
-            <p className="text-lg font-bold text-emerald-600">{formatVND(balance?.balance || 0)}</p>
-            <p className="text-xs text-muted-foreground">Số dư</p>
+        <Card className="rounded-2xl border-emerald-200 bg-gradient-to-b from-white to-emerald-50/40 shadow-sm hover:shadow-md transition-all">
+          <CardContent className="p-5 text-center">
+            <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+              <Wallet className="h-5 w-5" />
+            </div>
+            <p className="text-xl font-black text-emerald-800 tracking-tight">{formatVND(balance?.balance || 0)}</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Số dư hiện tại</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <ArrowDownCircle className="h-6 w-6 mx-auto mb-1 text-blue-600" />
-            <p className="text-lg font-bold text-blue-600">{formatVND(balance?.income || 0)}</p>
-            <p className="text-xs text-muted-foreground">Tổng thu</p>
+        <Card className="rounded-2xl border-blue-200 bg-gradient-to-b from-white to-blue-50/40 shadow-sm hover:shadow-md transition-all">
+          <CardContent className="p-5 text-center">
+            <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+              <ArrowDownCircle className="h-5 w-5" />
+            </div>
+            <p className="text-xl font-black text-blue-700 tracking-tight">{formatVND(balance?.income || 0)}</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Tổng quỹ công đức</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <ArrowUpCircle className="h-6 w-6 mx-auto mb-1 text-red-600" />
-            <p className="text-lg font-bold text-red-600">{formatVND(balance?.expense || 0)}</p>
-            <p className="text-xs text-muted-foreground">Tổng chi</p>
+        <Card className="rounded-2xl border-rose-200 bg-gradient-to-b from-white to-rose-50/40 shadow-sm hover:shadow-md transition-all">
+          <CardContent className="p-5 text-center">
+            <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 text-rose-700">
+              <ArrowUpCircle className="h-5 w-5" />
+            </div>
+            <p className="text-xl font-black text-rose-700 tracking-tight">{formatVND(balance?.expense || 0)}</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Tổng đã chi trả</p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <GraduationCap className="h-6 w-6 mx-auto mb-1 text-purple-600" />
-            <p className="text-lg font-bold text-purple-600">{(scholarships || []).length}</p>
-            <p className="text-xs text-muted-foreground">Suất học bổng</p>
+        <Card className="rounded-2xl border-purple-200 bg-gradient-to-b from-white to-purple-50/40 shadow-sm hover:shadow-md transition-all">
+          <CardContent className="p-5 text-center">
+            <div className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-purple-700">
+              <GraduationCap className="h-5 w-5" />
+            </div>
+            <p className="text-xl font-black text-purple-700 tracking-tight">{(scholarships || []).length}</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Suất học bổng</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="scholarships">Học bổng & Khen thưởng</TabsTrigger>
-          <TabsTrigger value="donations">Đóng góp</TabsTrigger>
-          <TabsTrigger value="history">Lịch sử</TabsTrigger>
+      {/* Tabs Navigation */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="bg-slate-100/80 p-1 rounded-xl">
+          <TabsTrigger value="scholarships" className="rounded-lg font-bold text-xs px-4">Học Bổng & Khen Thưởng</TabsTrigger>
+          <TabsTrigger value="donations" className="rounded-lg font-bold text-xs px-4">Danh Sách Đóng Góp</TabsTrigger>
+          <TabsTrigger value="history" className="rounded-lg font-bold text-xs px-4">Lịch Sử Giao Dịch</TabsTrigger>
         </TabsList>
 
         {/* Scholarships & Rewards */}
