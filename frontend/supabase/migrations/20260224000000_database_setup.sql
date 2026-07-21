@@ -178,14 +178,17 @@ ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE media ENABLE ROW LEVEL SECURITY;
 
 -- People policies
+DROP POLICY IF EXISTS "Public read for public people" ON people;
 CREATE POLICY "Public read for public people" ON people
     FOR SELECT USING (privacy_level = 0);
 
+DROP POLICY IF EXISTS "Members can read all people" ON people;
 CREATE POLICY "Members can read all people" ON people
     FOR SELECT USING (
         EXISTS (SELECT 1 FROM profiles WHERE profiles.user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Admins and editors can insert people" ON people;
 CREATE POLICY "Admins and editors can insert people" ON people
     FOR INSERT WITH CHECK (
         EXISTS (
@@ -195,6 +198,7 @@ CREATE POLICY "Admins and editors can insert people" ON people
         )
     );
 
+DROP POLICY IF EXISTS "Admins and editors can update people" ON people;
 CREATE POLICY "Admins and editors can update people" ON people
     FOR UPDATE USING (
         EXISTS (
@@ -204,6 +208,7 @@ CREATE POLICY "Admins and editors can update people" ON people
         )
     );
 
+DROP POLICY IF EXISTS "Admins can delete people" ON people;
 CREATE POLICY "Admins can delete people" ON people
     FOR DELETE USING (
         EXISTS (
@@ -214,8 +219,10 @@ CREATE POLICY "Admins can delete people" ON people
     );
 
 -- Families policies (similar pattern)
+DROP POLICY IF EXISTS "Anyone can read families" ON families;
 CREATE POLICY "Anyone can read families" ON families FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Admins and editors can manage families" ON families;
 CREATE POLICY "Admins and editors can manage families" ON families
     FOR ALL USING (
         EXISTS (
@@ -226,8 +233,10 @@ CREATE POLICY "Admins and editors can manage families" ON families
     );
 
 -- Children policies
+DROP POLICY IF EXISTS "Anyone can read children" ON children;
 CREATE POLICY "Anyone can read children" ON children FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Admins and editors can manage children" ON children;
 CREATE POLICY "Admins and editors can manage children" ON children
     FOR ALL USING (
         EXISTS (
@@ -238,14 +247,18 @@ CREATE POLICY "Admins and editors can manage children" ON children
     );
 
 -- Profiles policies
+DROP POLICY IF EXISTS "Users can read all profiles" ON profiles;
 CREATE POLICY "Users can read all profiles" ON profiles FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Service role can insert profiles" ON profiles;
 CREATE POLICY "Service role can insert profiles" ON profiles
     FOR INSERT WITH CHECK (true);
 
+DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile" ON profiles
     FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Admins can update any profile" ON profiles;
 CREATE POLICY "Admins can update any profile" ON profiles
     FOR UPDATE USING (
         EXISTS (
@@ -256,8 +269,10 @@ CREATE POLICY "Admins can update any profile" ON profiles
     );
 
 -- Events policies
+DROP POLICY IF EXISTS "Anyone can read events" ON events;
 CREATE POLICY "Anyone can read events" ON events FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Admins and editors can manage events" ON events;
 CREATE POLICY "Admins and editors can manage events" ON events
     FOR ALL USING (
         EXISTS (
@@ -268,8 +283,10 @@ CREATE POLICY "Admins and editors can manage events" ON events
     );
 
 -- Media policies
+DROP POLICY IF EXISTS "Anyone can read media" ON media;
 CREATE POLICY "Anyone can read media" ON media FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Admins and editors can manage media" ON media;
 CREATE POLICY "Admins and editors can manage media" ON media
     FOR ALL USING (
         EXISTS (
@@ -280,6 +297,7 @@ CREATE POLICY "Admins and editors can manage media" ON media
     );
 
 -- Contributions policies
+DROP POLICY IF EXISTS "Users can read own contributions" ON contributions;
 CREATE POLICY "Users can read own contributions" ON contributions
     FOR SELECT USING (
         author_id IN (SELECT id FROM profiles WHERE user_id = auth.uid())
@@ -290,11 +308,13 @@ CREATE POLICY "Users can read own contributions" ON contributions
         )
     );
 
+DROP POLICY IF EXISTS "Members can create contributions" ON contributions;
 CREATE POLICY "Members can create contributions" ON contributions
     FOR INSERT WITH CHECK (
         EXISTS (SELECT 1 FROM profiles WHERE profiles.user_id = auth.uid())
     );
 
+DROP POLICY IF EXISTS "Admins can update contributions" ON contributions;
 CREATE POLICY "Admins can update contributions" ON contributions
     FOR UPDATE USING (
         EXISTS (

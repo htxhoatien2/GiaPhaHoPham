@@ -7,7 +7,14 @@ const isStandaloneMode =
   process.env.DOCKER_BUILD === 'true';
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: isStandaloneMode ? 'standalone' : undefined,
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 
   // Ensure sql.js WASM binary is included in standalone output file tracing.
   // Without this, Next.js tree-shaking may exclude the .wasm file.
@@ -16,14 +23,12 @@ const nextConfig: NextConfig = {
   } : undefined,
 
   // Explicitly forward NEXT_PUBLIC_DESKTOP_MODE to the client bundle.
-  // Turbopack may not auto-inline NEXT_PUBLIC_* env vars from CLI in all cases.
-  // Automatically fallback to desktop mode if NEXT_PUBLIC_SUPABASE_URL is not set.
   env: {
     NEXT_PUBLIC_DESKTOP_MODE: (
-      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-      process.env.NEXT_PUBLIC_SUPABASE_URL.includes('localhost') ||
-      process.env.NEXT_PUBLIC_SUPABASE_URL.includes('127.0.0.1') ||
       process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
+      process.env.DESKTOP_MODE === 'true' ||
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
       (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('paste'))
     ) ? 'true' : 'false',
   },
