@@ -1,9 +1,9 @@
 /**
  * @project AncestorTree
  * @file src/components/layout/app-sidebar.tsx
- * @description Main navigation sidebar component
- * @version 2.9.0
- * @updated 2026-03-09
+ * @description Modern state-of-the-art navigation sidebar for Frontend & Backend (Admin)
+ * @version 3.0.0
+ * @updated 2026-07-21
  */
 
 'use client';
@@ -24,6 +24,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,6 +63,7 @@ import {
   MessageSquare,
   Bell,
   Landmark,
+  ShieldAlert,
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
 import { useElderly } from '@/contexts/elderly-context';
@@ -77,36 +79,45 @@ function deriveSubtitle(fullName: string, shortName: string): string {
   return fullName.startsWith(shortName) ? fullName.slice(shortName.length).trim() : '';
 }
 
-const mainNavItems = [
-  { title: 'Trang chủ', url: '/', icon: Home },
-  { title: 'Cây gia phả', url: '/tree', icon: GitBranchPlus },
-  { title: 'Thành viên', url: '/people', icon: Users },
-  { title: 'Danh bạ', url: '/directory', icon: BookUser, viewerHidden: true },
-  { title: 'Lịch cúng lễ', url: '/events', icon: Calendar },
-  { title: 'Đề xuất', url: '/contributions', icon: ClipboardList },
-  { title: 'Vinh danh', url: '/achievements', icon: Trophy },
-  { title: 'Quỹ khuyến học', url: '/fund', icon: BookOpen },
-  { title: 'Hương ước', url: '/charter', icon: ScrollText },
-  { title: 'Tìm quan hệ', url: '/relationship', icon: Route },
-  { title: 'Thống kê', url: '/stats', icon: BarChart3 },
-  { title: 'Cầu đương', url: '/cau-duong', icon: RotateCcw },
-  { title: 'Góc giao lưu', url: '/feed', icon: MessageSquare },
-  { title: 'Thông báo', url: '/notifications', icon: Bell },
-  { title: 'Tài liệu', url: '/documents', icon: FileText },
-  { title: 'Hướng dẫn', url: '/help', icon: HelpCircle },
-];
+const mainNavGroup = {
+  label: 'Tổng quan & Gia phả',
+  items: [
+    { title: 'Trang chủ', url: '/', icon: Home },
+    { title: 'Cây gia phả', url: '/tree', icon: GitBranchPlus },
+    { title: 'Thành viên', url: '/people', icon: Users },
+    { title: 'Tìm quan hệ', url: '/relationship', icon: Route },
+    { title: 'Lịch cúng lễ', url: '/events', icon: Calendar },
+    { title: 'Danh bạ', url: '/directory', icon: BookUser, viewerHidden: true },
+  ],
+};
 
-// Visible to any logged-in user
-const accountNavItems = [
-  { title: 'Hồ sơ cá nhân', url: '/settings/profile', icon: UserCircle },
-  { title: 'Bảo mật (MFA)',  url: '/settings/security', icon: ShieldCheck },
-];
+const cultureNavGroup = {
+  label: 'Văn hóa & Truyền thống',
+  items: [
+    { title: 'Hương ước dòng họ', url: '/charter', icon: ScrollText },
+    { title: 'Cầu đương', url: '/cau-duong', icon: RotateCcw },
+    { title: 'Góc giao lưu', url: '/feed', icon: MessageSquare },
+    { title: 'Vinh danh', url: '/achievements', icon: Trophy },
+    { title: 'Quỹ khuyến học', url: '/fund', icon: BookOpen },
+  ],
+};
+
+const utilityNavGroup = {
+  label: 'Tiện ích & Khác',
+  items: [
+    { title: 'Thống kê dòng họ', url: '/stats', icon: BarChart3 },
+    { title: 'Thông báo', url: '/notifications', icon: Bell },
+    { title: 'Đề xuất ý kiến', url: '/contributions', icon: ClipboardList },
+    { title: 'Tài liệu dòng họ', url: '/documents', icon: FileText },
+    { title: 'Hướng dẫn sử dụng', url: '/help', icon: HelpCircle },
+  ],
+};
 
 const adminNavItems = [
   { title: 'Bảng điều khiển', url: '/admin', icon: Settings },
-  { title: 'Người dùng', url: '/admin/users', icon: UserCog },
-  { title: 'Đề xuất chỉnh sửa', url: '/admin/contributions', icon: ClipboardList },
-  { title: 'QL Lịch sự kiện', url: '/admin/events', icon: Calendar },
+  { title: 'Quản lý Người dùng', url: '/admin/users', icon: UserCog },
+  { title: 'Duyệt Đề xuất', url: '/admin/contributions', icon: ClipboardList },
+  { title: 'QL Lịch cúng lễ', url: '/admin/events', icon: Calendar },
   { title: 'QL Vinh danh', url: '/admin/achievements', icon: Trophy },
   { title: 'QL Quỹ & Học bổng', url: '/admin/fund', icon: BookOpen },
   { title: 'QL Hương ước', url: '/admin/charter', icon: ScrollText },
@@ -115,17 +126,40 @@ const adminNavItems = [
   { title: 'QL Bài viết', url: '/admin/feed', icon: MessageSquare },
   { title: 'Xuất dữ liệu', url: '/admin/export', icon: Download },
   { title: 'Nhập GEDCOM', url: '/admin/import', icon: Upload },
-  { title: 'Trùng lặp', url: '/admin/duplicates', icon: Copy },
+  { title: 'Kiểm tra trùng lặp', url: '/admin/duplicates', icon: Copy },
   { title: 'Đơn ghi danh', url: '/admin/registrations', icon: Landmark },
-  { title: 'Cài đặt', url: '/admin/settings', icon: Settings },
+  { title: 'Cài đặt Dòng họ', url: '/admin/settings', icon: Settings },
   { title: 'Sao lưu dữ liệu', url: '/admin/backup', icon: DatabaseBackup },
 ];
 
-// Core nav items shown in elderly mode (simplified sidebar)
-const ELDERLY_NAV_URLS = new Set(['/', '/tree', '/people', '/events', '/help']);
+const accountNavItems = [
+  { title: 'Hồ sơ cá nhân', url: '/settings/profile', icon: UserCircle },
+  { title: 'Bảo mật (MFA)', url: '/settings/security', icon: ShieldCheck },
+];
 
-// Admin items shown in elderly mode (essential only)
+const ELDERLY_NAV_URLS = new Set(['/', '/tree', '/people', '/events', '/help']);
 const ELDERLY_ADMIN_URLS = new Set(['/admin', '/admin/users', '/admin/contributions']);
+
+function ModernNavItem({ item, isActive }: { item: { title: string; url: string; icon: typeof Home }; isActive: boolean }) {
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        asChild
+        isActive={isActive}
+        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+          isActive
+            ? 'bg-gradient-to-r from-emerald-800 to-amber-800 text-white font-bold shadow-md shadow-emerald-950/20'
+            : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100 font-medium'
+        }`}
+      >
+        <Link href={item.url}>
+          <item.icon className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-amber-300' : 'text-slate-500'}`} />
+          <span className="text-sm tracking-tight">{item.title}</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+}
 
 function AdminNavGroup({ pathname, elderlyMode }: { pathname: string; elderlyMode: boolean }) {
   const isAdminPath = pathname.startsWith('/admin');
@@ -134,27 +168,24 @@ function AdminNavGroup({ pathname, elderlyMode }: { pathname: string; elderlyMod
   const items = adminNavItems.filter((item) => !elderlyMode || ELDERLY_ADMIN_URLS.has(item.url));
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="pt-3">
       <SidebarGroupLabel
-        className="cursor-pointer select-none flex items-center justify-between hover:text-foreground transition-colors"
+        className="cursor-pointer select-none flex items-center justify-between px-3 py-2 text-xs font-bold uppercase tracking-wider text-amber-900 bg-amber-500/10 border border-amber-300/40 rounded-xl mb-2 hover:bg-amber-500/20 transition-colors"
         onClick={() => setOpen(!open)}
       >
-        <span>Quản trị</span>
-        <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <span className="flex items-center gap-1.5">
+          <ShieldAlert className="h-3.5 w-3.5 text-amber-700" />
+          Bảng Quản Trị Backend
+        </span>
+        <ChevronDown className={`h-4 w-4 text-amber-700 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </SidebarGroupLabel>
       {open && (
         <SidebarGroupContent>
-          <SidebarMenu>
-            {items.map((item) => (
-              <SidebarMenuItem key={item.url}>
-                <SidebarMenuButton asChild isActive={item.url === '/admin' ? pathname === '/admin' : pathname.startsWith(item.url)}>
-                  <Link href={item.url}>
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+          <SidebarMenu className="space-y-1">
+            {items.map((item) => {
+              const isActive = item.url === '/admin' ? pathname === '/admin' : pathname.startsWith(item.url);
+              return <ModernNavItem key={item.url} item={item} isActive={isActive} />;
+            })}
           </SidebarMenu>
         </SidebarGroupContent>
       )}
@@ -178,100 +209,142 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b px-4 py-4">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg">
+    <Sidebar className="border-r border-slate-200/80 bg-white">
+      {/* Brand Header */}
+      <SidebarHeader className="border-b border-slate-100 px-4 py-4 bg-slate-50/60">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-800 to-amber-800 text-white font-extrabold text-lg shadow-md shadow-emerald-950/20 group-hover:scale-105 transition-transform duration-200">
             {clanInitial}
           </div>
-          <div className="flex flex-col">
-            <span className="font-semibold text-sm">{clanName}</span>
-            {clanSubtitle && <span className="text-xs text-muted-foreground">{clanSubtitle}</span>}
+          <div className="flex flex-col min-w-0">
+            <span className="font-bold text-sm text-slate-900 truncate group-hover:text-emerald-900 transition-colors">{clanName}</span>
+            {clanSubtitle && <span className="text-xs text-slate-500 truncate font-normal">{clanSubtitle}</span>}
           </div>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-2 py-3 space-y-4">
+        {/* Group 1: Main Nav */}
         <SidebarGroup>
-          <SidebarGroupLabel>Menu chính</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 mb-1">
+            {mainNavGroup.label}
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {mainNavItems
+            <SidebarMenu className="space-y-1">
+              {mainNavGroup.items
                 .filter((item) => !item.viewerHidden || isEditor)
                 .filter((item) => !elderlyMode || ELDERLY_NAV_URLS.has(item.url))
-                .map((item) => (
-                <SidebarMenuItem key={item.url}>
-                  <SidebarMenuButton asChild isActive={item.url === '/' ? pathname === '/' : pathname.startsWith(item.url)}>
-                    <Link href={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+                .map((item) => {
+                  const isActive = item.url === '/' ? pathname === '/' : pathname.startsWith(item.url);
+                  return <ModernNavItem key={item.url} item={item} isActive={isActive} />;
+                })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* Group 2: Culture & Traditions */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 mb-1">
+            {cultureNavGroup.label}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {cultureNavGroup.items
+                .filter((item) => !elderlyMode || ELDERLY_NAV_URLS.has(item.url))
+                .map((item) => {
+                  const isActive = pathname.startsWith(item.url);
+                  return <ModernNavItem key={item.url} item={item} isActive={isActive} />;
+                })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Group 3: Utility & Docs */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 mb-1">
+            {utilityNavGroup.label}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {utilityNavGroup.items
+                .filter((item) => !elderlyMode || ELDERLY_NAV_URLS.has(item.url))
+                .map((item) => {
+                  const isActive = pathname.startsWith(item.url);
+                  return <ModernNavItem key={item.url} item={item} isActive={isActive} />;
+                })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Account Nav for Logged In Users */}
         {user && (
           <SidebarGroup>
-            <SidebarGroupLabel>Tài khoản</SidebarGroupLabel>
+            <SidebarGroupLabel className="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 mb-1">
+              Cá nhân
+            </SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
-                {accountNavItems.map((item) => (
-                  <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild isActive={pathname.startsWith(item.url)}>
-                      <Link href={item.url}>
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+              <SidebarMenu className="space-y-1">
+                {accountNavItems.map((item) => {
+                  const isActive = pathname.startsWith(item.url);
+                  return <ModernNavItem key={item.url} item={item} isActive={isActive} />;
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         )}
 
+        {/* Admin & Editor Panel Group */}
         {(isAdmin || isEditor) && (
           <AdminNavGroup pathname={pathname} elderlyMode={elderlyMode} />
         )}
       </SidebarContent>
 
-      <SidebarFooter className="border-t">
+      {/* User Footer */}
+      <SidebarFooter className="border-t border-slate-100 p-3 bg-slate-50/50">
         <SidebarMenu>
           {user ? (
             <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton className="w-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={profile?.avatar_url} />
-                      <AvatarFallback>{getInitials(profile?.full_name)}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col items-start text-sm">
-                      <span className="font-medium">{profile?.full_name || user?.email}</span>
-                      <span className="text-xs text-muted-foreground capitalize">{profile?.role || 'viewer'}</span>
+                  <SidebarMenuButton className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-slate-200/60 transition-colors">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Avatar className="h-8 w-8 shrink-0 ring-2 ring-emerald-500/30">
+                        <AvatarImage src={profile?.avatar_url} />
+                        <AvatarFallback className="bg-emerald-800 text-white text-xs font-bold">
+                          {getInitials(profile?.full_name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col items-start min-w-0">
+                        <span className="font-semibold text-xs text-slate-900 truncate max-w-[130px]">
+                          {profile?.full_name || user?.email}
+                        </span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-1.5 py-0.2 rounded">
+                          {profile?.role || 'viewer'}
+                        </span>
+                      </div>
                     </div>
-                    <ChevronUp className="ml-auto h-4 w-4" />
+                    <ChevronUp className="h-4 w-4 text-slate-400 shrink-0" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
+                <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width] rounded-xl shadow-lg border-slate-200">
                   <DropdownMenuItem asChild>
-                    <Link href="/settings/profile">
-                      <UserCircle className="mr-2 h-4 w-4" />
+                    <Link href="/settings/profile" className="flex items-center gap-2 text-sm font-medium">
+                      <UserCircle className="h-4 w-4 text-emerald-700" />
                       Hồ sơ cá nhân
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/settings/security">
-                      <ShieldCheck className="mr-2 h-4 w-4" />
+                    <Link href="/settings/security" className="flex items-center gap-2 text-sm font-medium">
+                      <ShieldCheck className="h-4 w-4 text-emerald-700" />
                       Bảo mật (MFA)
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => signOut()}>
-                    <LogOut className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem
+                    onClick={() => signOut()}
+                    className="flex items-center gap-2 text-sm font-medium text-rose-600 focus:text-rose-700 focus:bg-rose-50"
+                  >
+                    <LogOut className="h-4 w-4" />
                     Đăng xuất
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -280,17 +353,17 @@ export function AppSidebar() {
           ) : (
             <>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname === '/login'}>
-                  <Link href="/login">
-                    <LogIn className="h-4 w-4" />
+                <SidebarMenuButton asChild isActive={pathname === '/login'} className="rounded-xl">
+                  <Link href="/login" className="flex items-center gap-2">
+                    <LogIn className="h-4 w-4 text-emerald-700" />
                     <span>Đăng nhập</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname === '/register'}>
-                  <Link href="/register">
-                    <UserPlus className="h-4 w-4" />
+                <SidebarMenuButton asChild isActive={pathname === '/register'} className="rounded-xl">
+                  <Link href="/register" className="flex items-center gap-2">
+                    <UserPlus className="h-4 w-4 text-amber-700" />
                     <span>Đăng ký</span>
                   </Link>
                 </SidebarMenuButton>

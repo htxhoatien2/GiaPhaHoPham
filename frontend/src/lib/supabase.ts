@@ -21,7 +21,8 @@ const isVercel = process.env.VERCEL === '1' || !!process.env.NEXT_PUBLIC_VERCEL_
 const isDesktopMode =
   !isVercel && (
     process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true' ||
-    process.env.DESKTOP_MODE === 'true'
+    process.env.DESKTOP_MODE === 'true' ||
+    !supabaseAnonKey
   );
 
 // Custom fetch with 25-second timeout to prevent infinite hangs on Supabase free tier cold starts.

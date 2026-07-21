@@ -54,3 +54,4 @@ desktop/node_modules/
 Prompt.md
 .vercel
 .env*
+.env*.local
