@@ -8,6 +8,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ import { toast } from 'sonner';
 
 export default function NotificationsPage() {
   const router = useRouter();
+  const [filterCategory, setFilterCategory] = useState<'all' | 'members' | 'posts' | 'system'>('all');
   const { data: notifications, isLoading } = useNotifications();
   const { data: unreadCount = 0 } = useUnreadCount();
   const markAsRead = useMarkAsRead();
@@ -41,6 +43,16 @@ export default function NotificationsPage() {
       onError: () => toast.error('Lỗi khi xóa thông báo'),
     });
   };
+
+  const memberTypes = ['new_member', 'member_updated', 'member_deleted', 'registration_submitted', 'registration_approved', 'account_verified'];
+  const postTypes = ['post_comment', 'post_like', 'new_post'];
+
+  const filteredNotifications = (notifications || []).filter(n => {
+    if (filterCategory === 'members') return memberTypes.includes(n.type);
+    if (filterCategory === 'posts') return postTypes.includes(n.type);
+    if (filterCategory === 'system') return !memberTypes.includes(n.type) && !postTypes.includes(n.type);
+    return true;
+  });
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl space-y-6">
@@ -67,19 +79,55 @@ export default function NotificationsPage() {
         )}
       </div>
 
+      {/* Filter Tabs */}
+      <div className="flex gap-2 border-b pb-2 overflow-x-auto">
+        <Button
+          variant={filterCategory === 'all' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setFilterCategory('all')}
+          className="rounded-full text-xs"
+        >
+          Tất cả ({(notifications || []).length})
+        </Button>
+        <Button
+          variant={filterCategory === 'members' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setFilterCategory('members')}
+          className="rounded-full text-xs gap-1"
+        >
+          👤 Thành viên ({(notifications || []).filter(n => memberTypes.includes(n.type)).length})
+        </Button>
+        <Button
+          variant={filterCategory === 'posts' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setFilterCategory('posts')}
+          className="rounded-full text-xs gap-1"
+        >
+          💬 Bài viết & Bình luận ({(notifications || []).filter(n => postTypes.includes(n.type)).length})
+        </Button>
+        <Button
+          variant={filterCategory === 'system' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setFilterCategory('system')}
+          className="rounded-full text-xs gap-1"
+        >
+          🔔 Khác
+        </Button>
+      </div>
+
       {isLoading ? (
         <div className="flex justify-center py-12">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
-      ) : !notifications || notifications.length === 0 ? (
+      ) : filteredNotifications.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center text-muted-foreground">
-            Chưa có thông báo nào
+            {filterCategory === 'members' ? 'Chưa có thông báo cập nhật thành viên nào' : 'Chưa có thông báo nào'}
           </CardContent>
         </Card>
       ) : (
         <div className="space-y-2">
-          {notifications.map(n => (
+          {filteredNotifications.map(n => (
             <Card
               key={n.id}
               className={`cursor-pointer transition-colors hover:bg-accent/50 ${

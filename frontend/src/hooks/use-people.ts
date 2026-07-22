@@ -19,6 +19,7 @@ import {
   getPeopleByGeneration,
   getStats,
 } from '@/lib/supabase-data';
+import { notificationKeys } from '@/hooks/use-notifications';
 import type { CreatePersonInput, UpdatePersonInput } from '@/types';
 
 // Query keys
@@ -83,6 +84,7 @@ export function useCreatePerson() {
     mutationFn: (input: CreatePersonInput) => createPerson(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: peopleKeys.all });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 }
@@ -96,6 +98,7 @@ export function useUpdatePerson() {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: peopleKeys.detail(id) });
       queryClient.invalidateQueries({ queryKey: peopleKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 }
@@ -107,6 +110,7 @@ export function useDeletePerson() {
     mutationFn: (id: string) => deletePerson(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: peopleKeys.all });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 }

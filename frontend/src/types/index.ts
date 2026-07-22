@@ -559,6 +559,10 @@ export type NotificationType =
   | 'account_verified'
   | 'event_reminder'
   | 'new_member'
+  | 'member_updated'
+  | 'member_deleted'
+  | 'registration_submitted'
+  | 'registration_approved'
   | 'system';
 
 export interface Notification {
@@ -581,6 +585,10 @@ export const NOTIFICATION_TYPE_ICONS: Record<string, string> = {
   account_verified: '✅',
   event_reminder: '📅',
   new_member: '👤',
+  member_updated: '✏️',
+  member_deleted: '🗑️',
+  registration_submitted: '📋',
+  registration_approved: '🎉',
   system: '🔔',
 };
 
@@ -590,7 +598,11 @@ export const NOTIFICATION_TYPE_LABELS: Record<string, string> = {
   new_post: 'Bài mới',
   account_verified: 'Xác nhận',
   event_reminder: 'Sự kiện',
-  new_member: 'Thành viên',
+  new_member: 'Thành viên mới',
+  member_updated: 'Cập nhật thành viên',
+  member_deleted: 'Xóa thành viên',
+  registration_submitted: 'Đơn đăng ký',
+  registration_approved: 'Duyệt đơn',
   system: 'Hệ thống',
 };
 
