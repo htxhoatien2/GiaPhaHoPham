@@ -1,15 +1,21 @@
 /**
  * @project AncestorTree
  * @file src/lib/pathfinding.ts
- * @description Relationship pathfinding: BFS shortest path + LCA + Vietnamese description
- * @version 1.0.0
- * @updated 2026-03-09
+ * @description Relationship pathfinding with Central Vietnam (Miền Trung / Quảng Nam - Đà Nẵng - Huế)
+ *              kinship addressing terminology & branch seniority logic (Cành Bác - Cành Chú).
+ * @version 2.0.0
+ * @updated 2026-03-25
  */
 
 import type { Person } from '@/types';
 import type { TreeData } from './supabase-data';
 
-// ─── Types ──────────────────────────────────────────────────────────────────
+export interface RegionalKinshipTerms {
+  personACallsPersonB: string;
+  personBCallsPersonA: string;
+  branchSeniority: string;
+  explanation: string;
+}
 
 export interface RelationshipResult {
   found: boolean;
@@ -18,6 +24,7 @@ export interface RelationshipResult {
   distance: number;
   description: string;
   descriptionDetail: string;
+  regionalTerms?: RegionalKinshipTerms;
 }
 
 interface GraphEdge {
@@ -37,7 +44,6 @@ function buildGraph(data: TreeData): Map<string, GraphEdge[]> {
 
   const { families, children } = data;
 
-  // Build family → children lookup
   const familyChildren = new Map<string, string[]>();
   for (const c of children) {
     const list = familyChildren.get(c.family_id) || [];
@@ -46,7 +52,6 @@ function buildGraph(data: TreeData): Map<string, GraphEdge[]> {
   }
 
   for (const family of families) {
-    // Spouse edges (bidirectional)
     if (family.father_id && family.mother_id) {
       addEdge(family.father_id, family.mother_id, 'spouse');
       addEdge(family.mother_id, family.father_id, 'spouse');
@@ -54,7 +59,6 @@ function buildGraph(data: TreeData): Map<string, GraphEdge[]> {
 
     const kids = familyChildren.get(family.id) || [];
     for (const childId of kids) {
-      // Parent → Child edges
       if (family.father_id) {
         addEdge(family.father_id, childId, 'child');
         addEdge(childId, family.father_id, 'parent');
@@ -94,7 +98,6 @@ function bfs(
       parent.set(edge.to, current);
 
       if (edge.to === endId) {
-        // Reconstruct path
         const path: Person[] = [];
         let node: string | undefined = endId;
         while (node !== undefined) {
@@ -111,7 +114,7 @@ function bfs(
   return null;
 }
 
-// ─── LCA (Lowest Common Ancestor) ──────────────────────────────────────────
+// ─── LCA & Parent Lookup ───────────────────────────────────────────────────
 
 function buildParentMap(data: TreeData): Map<string, string[]> {
   const parentMap = new Map<string, string[]>();
@@ -140,7 +143,6 @@ function findLCA(
   personAId: string,
   personBId: string,
 ): Person | null {
-  // Trace all ancestors of A (BFS upward)
   const ancestorsA = new Set<string>();
   const queueA: string[] = [personAId];
   while (queueA.length > 0) {
@@ -151,8 +153,6 @@ function findLCA(
     for (const p of parents) queueA.push(p);
   }
 
-  // Phase 1: BFS upward from B, find first common ancestor that is NOT A or B themselves.
-  // This handles sibling/cousin cases where LCA is a shared parent/grandparent.
   const visitedB = new Set<string>();
   const queueB: string[] = [personBId];
   while (queueB.length > 0) {
@@ -168,156 +168,281 @@ function findLCA(
     for (const p of parents) queueB.push(p);
   }
 
-  // Phase 2: Handle direct ancestor/descendant — if A is grandparent of B (or vice versa),
-  // Phase 1 skips them. Check explicitly here so describeRelationship() gets the correct LCA.
   if (ancestorsA.has(personBId)) return personMap.get(personBId) || null;
   if (visitedB.has(personAId)) return personMap.get(personAId) || null;
 
   return null;
 }
 
-// ─── Vietnamese Relationship Description ────────────────────────────────────
-
-function getGenerationDiff(parentMap: Map<string, string[]>, ancestorId: string, descendantId: string): number {
-  // BFS from descendant upward, counting levels to ancestor
-  const visited = new Map<string, number>();
-  const queue: Array<{ id: string; depth: number }> = [{ id: descendantId, depth: 0 }];
+function getAncestorChain(parentMap: Map<string, string[]>, startId: string, targetId: string): string[] {
+  const queue: string[][] = [[startId]];
+  const visited = new Set<string>();
+  visited.add(startId);
 
   while (queue.length > 0) {
-    const { id, depth } = queue.shift()!;
-    if (visited.has(id)) continue;
-    visited.set(id, depth);
+    const path = queue.shift()!;
+    const last = path[path.length - 1];
 
-    if (id === ancestorId) return depth;
+    if (last === targetId) return path;
 
-    const parents = parentMap.get(id) || [];
+    const parents = parentMap.get(last) || [];
     for (const p of parents) {
-      queue.push({ id: p, depth: depth + 1 });
+      if (!visited.has(p)) {
+        visited.add(p);
+        queue.push([...path, p]);
+      }
     }
   }
 
-  return -1;
+  return [];
 }
 
-function describeRelationship(
+// ─── Central Vietnam Kinship Naming Logic ────────────────────────────────────
+
+function describeCentralRelationship(
   personA: Person,
   personB: Person,
   lca: Person | null,
   path: Person[],
   parentMap: Map<string, string[]>,
-): { description: string; detail: string } {
-  // Same person (shouldn't happen but handle)
+  personMap: Map<string, Person>
+): { description: string; detail: string; regionalTerms?: RegionalKinshipTerms } {
   if (personA.id === personB.id) {
     return { description: 'Cùng một người', detail: '' };
   }
 
-  // Check direct parent-child
   const parentsOfB = parentMap.get(personB.id) || [];
   const parentsOfA = parentMap.get(personA.id) || [];
 
+  // Direct Parent - Child
   if (parentsOfB.includes(personA.id)) {
-    const role = personA.gender === 1 ? 'cha' : 'mẹ';
+    const roleA = personA.gender === 1 ? 'Cha (Ba)' : 'Mẹ (Mạ)';
     return {
-      description: `${personA.display_name} là ${role} của ${personB.display_name}`,
-      detail: `Quan hệ trực tiếp ${role} — con`,
+      description: `${personA.display_name} là ${roleA} của ${personB.display_name}`,
+      detail: `Quan hệ trực hệ Cha/Mẹ — Con`,
+      regionalTerms: {
+        personACallsPersonB: 'Con',
+        personBCallsPersonA: roleA,
+        branchSeniority: 'Trực hệ',
+        explanation: 'Theo cách gọi Miền Trung: Cha/Ba - Mẹ/Mạ xưng hô với Con',
+      },
     };
   }
   if (parentsOfA.includes(personB.id)) {
-    const role = personB.gender === 1 ? 'cha' : 'mẹ';
+    const roleB = personB.gender === 1 ? 'Cha (Ba)' : 'Mẹ (Mạ)';
     return {
-      description: `${personB.display_name} là ${role} của ${personA.display_name}`,
-      detail: `Quan hệ trực tiếp ${role} — con`,
+      description: `${personB.display_name} là ${roleB} của ${personA.display_name}`,
+      detail: `Quan hệ trực hệ Cha/Mẹ — Con`,
+      regionalTerms: {
+        personACallsPersonB: roleB,
+        personBCallsPersonA: 'Con',
+        branchSeniority: 'Trực hệ',
+        explanation: 'Theo cách gọi Miền Trung: Cha/Ba - Mẹ/Mạ xưng hô với Con',
+      },
     };
   }
 
-  // Check spouse (through path edges)
+  // Spouse
   if (path.length === 2) {
     return {
-      description: 'Vợ chồng',
-      detail: `${personA.display_name} và ${personB.display_name} là vợ chồng`,
+      description: `${personA.display_name} và ${personB.display_name} là Vợ Chồng`,
+      detail: 'Quan hệ hôn nhân trực tiếp',
+      regionalTerms: {
+        personACallsPersonB: personB.gender === 1 ? 'Chồng' : 'Vợ',
+        personBCallsPersonA: personA.gender === 1 ? 'Chồng' : 'Vợ',
+        branchSeniority: 'Phu Thê',
+        explanation: 'Vợ chồng trong gia đình',
+      },
     };
   }
 
   if (!lca) {
-    // Check if connected through marriage
-    const hasSpouseInPath = path.length > 0;
-    if (hasSpouseInPath) {
-      return {
-        description: 'Có quan hệ thông gia',
-        detail: `Kết nối qua ${path.length - 1} bậc (có quan hệ hôn nhân)`,
-      };
-    }
     return {
-      description: 'Không tìm thấy quan hệ trực tiếp',
-      detail: '',
+      description: 'Có quan hệ thông gia / liên kết dòng họ',
+      detail: `Kết nối qua ${path.length - 1} bậc trong cây gia phả`,
     };
   }
 
-  // LCA exists — determine relationship type
-  const genA = getGenerationDiff(parentMap, lca.id, personA.id);
-  const genB = getGenerationDiff(parentMap, lca.id, personB.id);
+  // Chain from A up to LCA, and B up to LCA
+  const chainA = getAncestorChain(parentMap, personA.id, lca.id);
+  const chainB = getAncestorChain(parentMap, personB.id, lca.id);
+
+  const genA = chainA.length > 0 ? chainA.length - 1 : -1;
+  const genB = chainB.length > 0 ? chainB.length - 1 : -1;
 
   if (genA === -1 || genB === -1) {
     return {
       description: 'Có quan hệ họ hàng',
-      detail: `Tổ tiên chung: ${lca.display_name}`,
+      detail: `Tổ tiên chung: ${lca.display_name} (Đời thứ ${lca.generation})`,
     };
   }
 
-  // Same generation from LCA
+  // 1. Direct Ancestor - Descendant (A is ancestor of B or vice versa)
+  if (genA === 0) {
+    // A is LCA (A is ancestor of B)
+    let roleA = '';
+    let roleB = 'Cháu';
+    if (genB === 1) roleA = personA.gender === 1 ? 'Cha (Ba)' : 'Mẹ (Mạ)';
+    else if (genB === 2) roleA = personA.gender === 1 ? 'Ông Nội' : 'Bà Nội';
+    else if (genB === 3) roleA = personA.gender === 1 ? 'Ông Cố (Cụ)' : 'Bà Cố (Cụ)', roleB = 'Chắt';
+    else if (genB >= 4) roleA = personA.gender === 1 ? `Ông Sơ (Đời ${genB})` : `Bà Sơ (Đời ${genB})`, roleB = 'Chút/Chít';
+
+    return {
+      description: `${personA.display_name} là ${roleA} của ${personB.display_name}`,
+      detail: `Quan hệ trực hệ cách ${genB} đời (Tổ tiên — Con cháu)`,
+      regionalTerms: {
+        personACallsPersonB: roleB,
+        personBCallsPersonA: roleA,
+        branchSeniority: 'Cành Trực Hệ',
+        explanation: `Người Miền Trung xưng hô theo đời: ${roleA} — ${roleB}`,
+      },
+    };
+  }
+
+  if (genB === 0) {
+    // B is LCA (B is ancestor of A)
+    let roleB = '';
+    let roleA = 'Cháu';
+    if (genA === 1) roleB = personB.gender === 1 ? 'Cha (Ba)' : 'Mẹ (Mạ)';
+    else if (genA === 2) roleB = personB.gender === 1 ? 'Ông Nội' : 'Bà Nội';
+    else if (genA === 3) roleB = personB.gender === 1 ? 'Ông Cố (Cụ)' : 'Bà Cố (Cụ)', roleA = 'Chắt';
+    else if (genA >= 4) roleB = personB.gender === 1 ? `Ông Sơ (Đời ${genA})` : `Bà Sơ (Đời ${genA})`, roleA = 'Chút/Chít';
+
+    return {
+      description: `${personB.display_name} là ${roleB} của ${personA.display_name}`,
+      detail: `Quan hệ trực hệ cách ${genA} đời (Tổ tiên — Con cháu)`,
+      regionalTerms: {
+        personACallsPersonB: roleB,
+        personBCallsPersonA: roleA,
+        branchSeniority: 'Cành Trực Hệ',
+        explanation: `Người Miền Trung xưng hô theo đời: ${roleB} — ${roleA}`,
+      },
+    };
+  }
+
+  // 2. Same Generation (genA === genB): Siblings or Cousins
   if (genA === genB) {
     if (genA === 1) {
+      // Siblings (Cùng cha/mẹ)
+      const isAOlder = (personA.birth_year || 0) <= (personB.birth_year || 0);
+      const titleA = isAOlder ? (personA.gender === 1 ? 'Anh ruột' : 'Chị ruột') : 'Em';
+      const titleB = isAOlder ? 'Em' : (personB.gender === 1 ? 'Anh ruột' : 'Chị ruột');
       return {
-        description: 'Anh/chị em ruột',
-        detail: `Cùng ${lca.gender === 1 ? 'cha' : 'mẹ'}: ${lca.display_name} (Đời ${lca.generation})`,
+        description: `${personA.display_name} và ${personB.display_name} là Anh/Chị em ruột`,
+        detail: `Cùng ${lca.gender === 1 ? 'cha' : 'mẹ'}: ${lca.display_name} (Đời thứ ${lca.generation})`,
+        regionalTerms: {
+          personACallsPersonB: isAOlder ? 'Em' : (personB.gender === 1 ? 'Anh' : 'Chị'),
+          personBCallsPersonA: isAOlder ? (personA.gender === 1 ? 'Anh' : 'Chị') : 'Em',
+          branchSeniority: 'Anh em ruột một nhà',
+          explanation: 'Xưng hô anh/chị em ruột theo tuổi tác',
+        },
       };
     }
-    if (genA === 2) {
-      return {
-        description: 'Anh/chị em họ',
-        detail: `Cùng ông/bà: ${lca.display_name} (Đời ${lca.generation})`,
-      };
+
+    // Cousins (genA >= 2): Central Vietnam Branch Seniority (Cành Bác vs Cành Chú/O)
+    // Child of LCA on A's side:
+    const childLcaA = chainA[chainA.length - 2] ? personMap.get(chainA[chainA.length - 2]) : null;
+    const childLcaB = chainB[chainB.length - 2] ? personMap.get(chainB[chainB.length - 2]) : null;
+
+    let isABranchSenior = false;
+    let branchText = '';
+
+    if (childLcaA && childLcaB && childLcaA.id !== childLcaB.id) {
+      const yearA = childLcaA.birth_year || 9999;
+      const yearB = childLcaB.birth_year || 9999;
+      isABranchSenior = yearA <= yearB;
+
+      const parentRoleA = childLcaA.gender === 1 ? 'Bác' : 'Cô/O';
+      const parentRoleB = childLcaB.gender === 1 ? 'Chú' : 'Cô/O';
+      branchText = isABranchSenior
+        ? `Do cha/mẹ của ${personA.display_name} (${childLcaA.display_name}) thuộc cành Anh/Chị (${parentRoleA}) so với cành của ${personB.display_name}`
+        : `Do cha/mẹ của ${personB.display_name} (${childLcaB.display_name}) thuộc cành Anh/Chị (${parentRoleB}) so with cành của ${personA.display_name}`;
     }
+
+    const titleA = isABranchSenior
+      ? (personA.gender === 1 ? 'Anh Bác' : 'Chị Bác')
+      : (childLcaA?.gender === 1 ? 'Em Chú' : 'Em Cô (Em O)');
+
+    const titleB = isABranchSenior
+      ? (childLcaB?.gender === 1 ? 'Em Chú' : 'Em Cô (Em O)')
+      : (personB.gender === 1 ? 'Anh Bác' : 'Chị Bác');
+
     return {
-      description: `Anh/chị em họ (cách ${genA - 1} đời)`,
-      detail: `Tổ tiên chung: ${lca.display_name} (Đời ${lca.generation}), cách ${genA} đời`,
+      description: isABranchSenior
+        ? `${personA.display_name} là ${titleA} của ${personB.display_name}`
+        : `${personB.display_name} là ${titleB} của ${personA.display_name}`,
+      detail: `Tổ tiên chung: ${lca.display_name} (Đời thứ ${lca.generation}). ${branchText}`,
+      regionalTerms: {
+        personACallsPersonB: isABranchSenior ? 'Em' : titleB,
+        personBCallsPersonA: isABranchSenior ? titleA : 'Em',
+        branchSeniority: isABranchSenior ? 'Cành Trên (Nhánh Bác)' : 'Cành Dưới (Nhánh Chú/O)',
+        explanation: 'Phong tục Miền Trung: Xưng hô anh/chị em họ theo tôn ti thứ bậc Cành Bác / Cành Chú (lớn nhỏ theo vai vế cành họ, không tính theo tuổi tác cá nhân).',
+      },
     };
   }
 
-  // Different generations
+  // 3. Different Generations (Uncles / Aunts / Nephews)
   if (genA < genB) {
-    // A is closer to LCA (higher generation)
+    // A is higher generation than B
     const diff = genB - genA;
-    if (genA === 0) {
-      // A is the LCA — A is ancestor of B
-      const label = diff === 1 ? (personA.gender === 1 ? 'cha' : 'mẹ')
-        : diff === 2 ? (personA.gender === 1 ? 'ông nội/ngoại' : 'bà nội/ngoại')
-        : `tổ tiên đời ${diff}`;
-      return {
-        description: `${personA.display_name} là ${label} của ${personB.display_name}`,
-        detail: `Khoảng cách: ${diff} đời`,
-      };
+    const parentOfBInChain = chainB[chainB.length - 2] ? personMap.get(chainB[chainB.length - 2]) : null;
+    const isFatherSide = parentOfBInChain ? parentOfBInChain.gender === 1 : true;
+
+    let roleA = '';
+    if (diff === 1) {
+      if (isFatherSide) {
+        if (personA.gender === 1) roleA = 'Chú / Bác';
+        else roleA = 'Cô / O (Dì)';
+      } else {
+        if (personA.gender === 1) roleA = 'Cậu';
+        else roleA = 'Dì';
+      }
+    } else if (diff === 2) {
+      roleA = personA.gender === 1 ? 'Ông Bác / Ông Chú' : 'Bà Bác / Bà Cô (O)';
+    } else {
+      roleA = `Bậc Bác/Chú họ (Cách ${diff} đời)`;
     }
+
     return {
-      description: `${personA.display_name} là bậc ${personA.gender === 1 ? 'chú/bác' : 'cô/dì'} của ${personB.display_name}`,
-      detail: `Tổ tiên chung: ${lca.display_name} (Đời ${lca.generation}). ${personA.display_name} cách ${genA} đời, ${personB.display_name} cách ${genB} đời`,
+      description: `${personA.display_name} là bậc ${roleA} của ${personB.display_name}`,
+      detail: `Tổ tiên chung: ${lca.display_name} (Đời thứ ${lca.generation}). ${personA.display_name} cách ${genA} đời, ${personB.display_name} cách ${genB} đời`,
+      regionalTerms: {
+        personACallsPersonB: 'Cháu',
+        personBCallsPersonA: roleA,
+        branchSeniority: `Bậc trên (Cách ${diff} thế hệ)`,
+        explanation: `Cách xưng hô Miền Trung: ${personB.display_name} gọi ${personA.display_name} là ${roleA}, ${personA.display_name} gọi lại là Cháu.`,
+      },
     };
   } else {
-    // B is closer to LCA
+    // B is higher generation than A
     const diff = genA - genB;
-    if (genB === 0) {
-      // B is the LCA — B is ancestor of A
-      const label = diff === 1 ? (personB.gender === 1 ? 'cha' : 'mẹ')
-        : diff === 2 ? (personB.gender === 1 ? 'ông nội/ngoại' : 'bà nội/ngoại')
-        : `tổ tiên đời ${diff}`;
-      return {
-        description: `${personB.display_name} là ${label} của ${personA.display_name}`,
-        detail: `Khoảng cách: ${diff} đời`,
-      };
+    const parentOfAInChain = chainA[chainA.length - 2] ? personMap.get(chainA[chainA.length - 2]) : null;
+    const isFatherSide = parentOfAInChain ? parentOfAInChain.gender === 1 : true;
+
+    let roleB = '';
+    if (diff === 1) {
+      if (isFatherSide) {
+        if (personB.gender === 1) roleB = 'Chú / Bác';
+        else roleB = 'Cô / O (Dì)';
+      } else {
+        if (personB.gender === 1) roleB = 'Cậu';
+        else roleB = 'Dì';
+      }
+    } else if (diff === 2) {
+      roleB = personB.gender === 1 ? 'Ông Bác / Ông Chú' : 'Bà Bác / Bà Cô (O)';
+    } else {
+      roleB = `Bậc Bác/Chú họ (Cách ${diff} đời)`;
     }
+
     return {
-      description: `${personB.display_name} là bậc ${personB.gender === 1 ? 'chú/bác' : 'cô/dì'} của ${personA.display_name}`,
-      detail: `Tổ tiên chung: ${lca.display_name} (Đời ${lca.generation}). ${personA.display_name} cách ${genA} đời, ${personB.display_name} cách ${genB} đời`,
+      description: `${personB.display_name} là bậc ${roleB} của ${personA.display_name}`,
+      detail: `Tổ tiên chung: ${lca.display_name} (Đời thứ ${lca.generation}). ${personA.display_name} cách ${genA} đời, ${personB.display_name} cách ${genB} đời`,
+      regionalTerms: {
+        personACallsPersonB: roleB,
+        personBCallsPersonA: 'Cháu',
+        branchSeniority: `Bậc dưới (Cách ${diff} thế hệ)`,
+        explanation: `Cách xưng hô Miền Trung: ${personA.display_name} gọi ${personB.display_name} là ${roleB}, ${personB.display_name} gọi lại là Cháu.`,
+      },
     };
   }
 }
@@ -372,7 +497,14 @@ export function findRelationship(
   }
 
   const lca = findLCA(parentMap, personMap, personAId, personBId);
-  const { description, detail } = describeRelationship(personA, personB, lca, path, parentMap);
+  const { description, detail, regionalTerms } = describeCentralRelationship(
+    personA,
+    personB,
+    lca,
+    path,
+    parentMap,
+    personMap
+  );
 
   return {
     found: true,
@@ -381,5 +513,6 @@ export function findRelationship(
     distance: path.length - 1,
     description,
     descriptionDetail: detail,
+    regionalTerms,
   };
 }

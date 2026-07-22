@@ -1,8 +1,8 @@
 /**
  * @project AncestorTree
  * @file src/app/(main)/relationship/page.tsx
- * @description Modern UI/UX Relationship finder page — select 2 people and find their connection
- * @version 2.0.0
+ * @description Modern UI/UX Relationship finder page with Central Vietnam (Miền Trung) kinship addressing rules
+ * @version 2.5.0
  * @updated 2026-03-25
  */
 
@@ -16,7 +16,21 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { useSearchPeople } from '@/hooks/use-people';
 import { useRelationship } from '@/hooks/use-pathfinding';
-import { Search, X, Route, ArrowRight, GitBranch, Loader2, ArrowLeftRight, UserCheck, Sparkles, HelpCircle } from 'lucide-react';
+import {
+  Search,
+  X,
+  Route,
+  ArrowRight,
+  GitBranch,
+  Loader2,
+  ArrowLeftRight,
+  UserCheck,
+  Sparkles,
+  Compass,
+  MessageCircle,
+  ShieldCheck,
+  Info,
+} from 'lucide-react';
 import type { Person } from '@/types';
 
 interface PersonComboboxProps {
@@ -140,19 +154,19 @@ export default function RelationshipPage() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl space-y-6 pb-24">
       {/* Hero Banner Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-700 to-purple-800 p-6 sm:p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 p-6 sm:p-8 text-white shadow-xl">
         <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
-          <Route className="h-56 w-56" />
+          <Compass className="h-56 w-56" />
         </div>
         <div className="relative z-10 space-y-3">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
-              <Route className="h-6 w-6 text-blue-200" />
+              <Compass className="h-6 w-6 text-amber-200" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Tra Cứu Quan Hệ Huyết Thống</h1>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Tra Cứu Quan Hệ &amp; Xưng Hô Dòng Họ</h1>
               <p className="text-xs sm:text-sm text-blue-100/90 mt-0.5">
-                Chọn 2 thành viên bất kỳ để tự động tính toán mối quan hệ họ hàng và tổ tiên chung
+                Tính toán chính xác mối quan hệ họ hàng &amp; cách xưng hô chuẩn phong tục Miền Trung (Quảng Nam - Đà Nẵng - Huế)
               </p>
             </div>
           </div>
@@ -167,7 +181,7 @@ export default function RelationshipPage() {
             Chọn 2 thành viên để tìm mối quan hệ
           </CardTitle>
           <CardDescription className="text-xs">
-            Hệ thống áp dụng thuật toán tìm đường đi ngắn nhất (Shortest Path &amp; LCA) trên cây gia phả
+            Hệ thống áp dụng thuật toán tôn ti thứ bậc cành/nhánh dòng họ Miền Trung (Cành Bác - Cành Chú/O)
           </CardDescription>
         </CardHeader>
         <CardContent className="p-6">
@@ -208,7 +222,7 @@ export default function RelationshipPage() {
         <Card className="border-blue-200 bg-blue-50/20">
           <CardContent className="py-12 flex flex-col items-center justify-center space-y-3">
             <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-            <p className="text-sm font-medium text-muted-foreground">Đang phân tích cây phả hệ và tính toán quan hệ...</p>
+            <p className="text-sm font-medium text-muted-foreground">Đang phân tích cây phả hệ và tôn ti thứ bậc Miền Trung...</p>
           </CardContent>
         </Card>
       )}
@@ -220,7 +234,7 @@ export default function RelationshipPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-amber-500" />
-                <CardTitle className="text-base">Kết quả Phân tích Quan hệ</CardTitle>
+                <CardTitle className="text-base">Kết quả Phân tích &amp; Xưng hô</CardTitle>
               </div>
               {result.found && (
                 <Badge className="bg-emerald-600 text-white font-bold">
@@ -241,6 +255,49 @@ export default function RelationshipPage() {
                 </p>
               )}
             </div>
+
+            {/* Central Vietnam Kinship Addressing Box */}
+            {result.regionalTerms && personA && personB && (
+              <Card className="border-amber-200 dark:border-amber-900 bg-amber-50/40 dark:bg-amber-950/20">
+                <CardHeader className="pb-2 border-b border-amber-200/60 dark:border-amber-900/40">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                      <MessageCircle className="h-4 w-4 text-amber-600" />
+                      Cách xưng hô chuẩn phong tục Miền Trung
+                    </CardTitle>
+                    <Badge variant="outline" className="text-[10px] border-amber-300 bg-background font-semibold">
+                      {result.regionalTerms.branchSeniority}
+                    </Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4 space-y-3 text-xs sm:text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl border bg-background space-y-1">
+                      <span className="text-[11px] text-muted-foreground font-semibold uppercase block">
+                        {personA.display_name} gọi {personB.display_name}:
+                      </span>
+                      <p className="text-base font-black text-amber-900 dark:text-amber-200">
+                        &quot;{result.regionalTerms.personACallsPersonB}&quot;
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl border bg-background space-y-1">
+                      <span className="text-[11px] text-muted-foreground font-semibold uppercase block">
+                        {personB.display_name} gọi {personA.display_name}:
+                      </span>
+                      <p className="text-base font-black text-amber-900 dark:text-amber-200">
+                        &quot;{result.regionalTerms.personBCallsPersonA}&quot;
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2 pt-1 text-xs text-amber-950/80 dark:text-amber-300/90 leading-relaxed">
+                    <Info className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                    <p>{result.regionalTerms.explanation}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Ancestor LCA info */}
             {result.lca && (
