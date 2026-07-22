@@ -1273,10 +1273,9 @@ export function FamilyTree() {
           )}
           Xuất Gia Phả Word
         </Button>
-      </div>
 
         {/* Pan indicator */}
-        <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
+        <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground shrink-0 pl-2">
           <Move className="h-3 w-3" />
           <span className="hidden sm:inline">Kéo để di chuyển</span>
         </div>
