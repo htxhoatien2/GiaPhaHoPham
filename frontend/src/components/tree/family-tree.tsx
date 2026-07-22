@@ -66,7 +66,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { FileDown, BookText, Loader2, FileText } from 'lucide-react';
+import { FileDown, BookText, Loader2, FileText, FileImage } from 'lucide-react';
 import { toast } from 'sonner';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -681,31 +681,11 @@ export function FamilyTree() {
   const [filterSearch, setFilterSearch] = useState('');
   const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
 
-  // Auto-collapse: for large trees (>50 people), collapse gen 3+ on first load
+  // Auto-collapse: Disabled to keep the tree fully expanded by default
   const autoCollapseApplied = useRef(false);
   useEffect(() => {
-    if (!data || autoCollapseApplied.current) return;
-    if (data.people.length <= 50) return;
-    autoCollapseApplied.current = true;
-
-    const minGen = Math.min(...data.people.map(p => p.generation || 1));
-    const collapseFromGen = minGen + 4; // show first 4 generations, collapse gen 5+ (relative)
-
-    const fathersWithChildren = new Set<string>();
-    for (const family of data.families) {
-      if (family.father_id && data.children.some(c => c.family_id === family.id)) {
-        fathersWithChildren.add(family.father_id);
-      }
-    }
-
-    const toCollapse = new Set<string>();
-    for (const person of data.people) {
-      if (person.generation >= collapseFromGen && fathersWithChildren.has(person.id)) {
-        toCollapse.add(person.id);
-      }
-    }
-
-    if (toCollapse.size > 0) setCollapsedNodes(toCollapse);
+    // Return early to prevent auto-collapsing nodes on first load
+    return;
   }, [data]);
 
   const handleSetFilterRoot = useCallback((person: Person | null) => {
@@ -726,8 +706,10 @@ export function FamilyTree() {
 
   const { data: clanSettings } = useClanSettings();
   const containerRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 800, height: 600 });
   const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [isExportingImage, setIsExportingImage] = useState(false);
   const [isExportingFull, setIsExportingFull] = useState(false);
   const [isExportingWord, setIsExportingWord] = useState(false);
   const [showExportDialog, setShowExportDialog] = useState(false);
@@ -779,6 +761,93 @@ export function FamilyTree() {
       toast.error('Lỗi khi xuất PDF. Vui lòng thử lại.');
     } finally {
       setIsExportingPdf(false);
+    }
+  }, [layout]);
+
+  // Image (PNG) export handler
+  const handleExportImage = useCallback(async () => {
+    if (!svgRef.current || !layout) return;
+    setIsExportingImage(true);
+    try {
+      // Clone the SVG element
+      const clonedSvg = svgRef.current.cloneNode(true) as SVGSVGElement;
+      
+      // Calculate dimensions with padding
+      const padding = 80;
+      const totalWidth = layout.width + padding * 2;
+      const totalHeight = layout.height + padding * 2;
+
+      // Update cloned SVG attributes to show the entire tree
+      clonedSvg.setAttribute('width', totalWidth.toString());
+      clonedSvg.setAttribute('height', totalHeight.toString());
+      clonedSvg.setAttribute('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
+      
+      // Add a solid white background so the exported image is not transparent
+      clonedSvg.style.backgroundColor = '#ffffff';
+      
+      // Find the zoom/pan <g> inside cloned SVG
+      const zoomG = clonedSvg.querySelector('g');
+      if (zoomG) {
+        // Reset scale/zoom translate, just translate by padding
+        zoomG.setAttribute('transform', `translate(${padding}, ${padding})`);
+      }
+
+      // Convert SVG to XML string
+      const serializer = new XMLSerializer();
+      const svgString = serializer.serializeToString(clonedSvg);
+      
+      // Convert to base64 blob
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const URL = window.URL || window.webkitURL || window;
+      const blobURL = URL.createObjectURL(svgBlob);
+      
+      // Load into an Image object
+      const image = new Image();
+      image.onload = () => {
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = totalWidth;
+        canvas.height = totalHeight;
+        const context = canvas.getContext('2d');
+        if (!context) {
+          toast.error('Không khởi tạo được bộ vẽ canvas');
+          setIsExportingImage(false);
+          return;
+        }
+
+        // Draw image onto canvas
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, totalWidth, totalHeight);
+        context.drawImage(image, 0, 0);
+
+        // Export as PNG
+        const pngURL = canvas.toDataURL('image/png');
+        
+        // Trigger download
+        const downloadLink = document.createElement('a');
+        downloadLink.href = pngURL;
+        const dateStr = new Date().toLocaleDateString('vi-VN').replace(/\//g, '-');
+        downloadLink.download = `cay-gia-pha-pham-thieu-${dateStr}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        
+        // Clean up
+        URL.revokeObjectURL(blobURL);
+        toast.success('Đã xuất file ảnh gia phả thành công!');
+        setIsExportingImage(false);
+      };
+      
+      image.onerror = () => {
+        toast.error('Lỗi khi chuyển đổi định dạng ảnh');
+        setIsExportingImage(false);
+      };
+      
+      image.src = blobURL;
+    } catch (err) {
+      console.error('[Image export]', err);
+      toast.error('Lỗi khi xuất ảnh gia phả');
+      setIsExportingImage(false);
     }
   }, [layout]);
 
@@ -1154,6 +1223,23 @@ export function FamilyTree() {
           PDF
         </Button>
 
+        {/* Tree-only Image export */}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleExportImage}
+          disabled={isExportingImage || isExportingPdf || isExportingFull || isExportingWord || !layout}
+          className="hidden md:flex"
+          title="Xuất sơ đồ cây ra ảnh PNG phục vụ in ấn"
+        >
+          {isExportingImage ? (
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          ) : (
+            <FileImage className="h-4 w-4 mr-2 text-emerald-700" />
+          )}
+          Xuất File Ảnh
+        </Button>
+
         {/* Full genealogy PDF export */}
         <Button
           variant="ghost"
@@ -1226,6 +1312,7 @@ export function FamilyTree() {
         onWheel={handleWheel}
       >
         <svg
+          ref={svgRef}
           width="100%"
           height="100%"
           style={{ minWidth: '100%', minHeight: '100%' }}
