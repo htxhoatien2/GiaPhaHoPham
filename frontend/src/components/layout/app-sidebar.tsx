@@ -106,6 +106,7 @@ const cultureNavGroup = {
 const utilityNavGroup = {
   label: 'Tiện ích & Khác',
   items: [
+    { title: 'Ebook Hướng dẫn', url: '/guide', icon: BookOpen },
     { title: 'Thống kê dòng họ', url: '/stats', icon: BarChart3 },
     { title: 'Thông báo', url: '/notifications', icon: Bell },
     { title: 'Đề xuất ý kiến', url: '/contributions', icon: ClipboardList },
@@ -138,7 +139,7 @@ const accountNavItems = [
   { title: 'Bảo mật (MFA)', url: '/settings/security', icon: ShieldCheck },
 ];
 
-const ELDERLY_NAV_URLS = new Set(['/', '/tree', '/people', '/events', '/help']);
+const ELDERLY_NAV_URLS = new Set(['/', '/tree', '/people', '/events', '/help', '/guide']);
 const ELDERLY_ADMIN_URLS = new Set(['/admin', '/admin/users', '/admin/contributions']);
 
 function ModernNavItem({ item, isActive }: { item: { title: string; url: string; icon: typeof Home }; isActive: boolean }) {
