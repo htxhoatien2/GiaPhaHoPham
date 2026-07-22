@@ -1,9 +1,9 @@
 /**
  * @project AncestorTree
  * @file src/app/(main)/cau-duong/page.tsx
- * @description Trang Lịch Cầu đương — xem danh sách xoay vòng và lịch phân công
- * @version 1.0.0
- * @updated 2026-02-25
+ * @description Modern UI/UX Trang Lịch Cầu đương — xem danh sách xoay vòng và lịch phân công
+ * @version 2.0.0
+ * @updated 2026-03-25
  */
 
 'use client';
@@ -12,9 +12,11 @@ import { useState } from 'react';
 import { useCauDuongPools, useCauDuongAssignments, useEligibleMembers } from '@/hooks/use-cau-duong';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Users, RotateCcw, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Calendar, Users, RotateCcw, CheckCircle2, Clock, AlertCircle, Sparkles, Flame, ShieldCheck } from 'lucide-react';
 import { CAU_DUONG_CEREMONY_LABELS, CAU_DUONG_CEREMONY_ORDER, type CauDuongStatus } from '@/types';
 
 const currentYear = new Date().getFullYear();
@@ -48,140 +50,167 @@ export default function CauDuongPage() {
 
   if (poolsLoading) {
     return (
-      <div className="container mx-auto p-6 max-w-5xl">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-muted rounded w-64" />
-          <div className="h-48 bg-muted rounded" />
-        </div>
+      <div className="container mx-auto px-4 py-8 max-w-5xl space-y-6">
+        <Skeleton className="h-32 w-full rounded-2xl" />
+        <Skeleton className="h-64 w-full rounded-2xl" />
       </div>
     );
   }
 
   if (!pools || pools.length === 0) {
     return (
-      <div className="container mx-auto p-6 max-w-5xl">
-        <Card>
-          <CardContent className="py-16 text-center text-muted-foreground">
-            <RotateCcw className="h-12 w-12 mx-auto mb-4 opacity-30" />
-            <p className="text-lg font-medium mb-2">Chưa thiết lập lịch Cầu đương</p>
-            <p className="text-sm">Quản trị viên cần tạo nhóm Cầu đương trong trang Admin.</p>
-          </CardContent>
+      <div className="container mx-auto px-4 py-12 max-w-xl">
+        <Card className="border-amber-200 bg-amber-50/40 text-center p-8 space-y-4">
+          <RotateCcw className="h-12 w-12 text-amber-600 mx-auto" />
+          <h2 className="text-xl font-bold text-amber-900">Chưa thiết lập Lịch Cầu Đương</h2>
+          <p className="text-sm text-muted-foreground">
+            Quản trị viên cần khởi tạo danh sách nhóm Cầu đương trong mục Quản trị hệ thống.
+          </p>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-5xl space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <RotateCcw className="h-6 w-6 text-primary" />
-            Lịch Cầu đương
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Phân công xoay vòng chủ lễ các ngày cúng chính trong năm
-          </p>
+    <div className="container mx-auto px-4 py-6 max-w-5xl space-y-6 pb-24">
+      {/* Banner Header */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <RotateCcw className="h-56 w-56" />
         </div>
-        <Select value={selectedYear.toString()} onValueChange={v => setSelectedYear(Number(v))}>
-          <SelectTrigger className="w-36">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {YEAR_OPTIONS.map(y => (
-              <SelectItem key={y} value={y.toString()}>Năm {y}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="relative z-10 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <RotateCcw className="h-6 w-6 text-amber-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Lịch Cầu Đương Dòng Họ</h1>
+                <p className="text-xs sm:text-sm text-amber-100/90">
+                  Phân công xoay vòng chủ lễ các ngày cúng giỗ chính theo truyền thống phong tục
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-amber-100">Chọn năm:</span>
+              <Select value={selectedYear.toString()} onValueChange={v => setSelectedYear(Number(v))}>
+                <SelectTrigger className="w-32 bg-white/20 hover:bg-white/30 text-white border-white/20 font-bold backdrop-blur text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {YEAR_OPTIONS.map(y => (
+                    <SelectItem key={y} value={y.toString()} className="text-xs font-medium">Năm {y}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Pool info */}
+      {/* Pool rules info card */}
       {firstPool && (
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="py-3 px-4 flex flex-col sm:flex-row sm:items-center gap-2 text-sm">
-            <span className="font-medium">{firstPool.name}</span>
-            <span className="text-muted-foreground hidden sm:inline">•</span>
-            <span className="text-muted-foreground">
-              Đời {firstPool.min_generation} trở xuống • Dưới {firstPool.max_age_lunar} tuổi âm • Nam giới đã lập gia đình
-            </span>
+        <Card className="border-amber-200/80 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/20 shadow-xs">
+          <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-amber-600 shrink-0" />
+              <span className="font-bold text-amber-950 dark:text-amber-200">{firstPool.name}</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-muted-foreground">
+              <Badge variant="outline" className="text-[10px] bg-background">Đời {firstPool.min_generation} trở xuống</Badge>
+              <Badge variant="outline" className="text-[10px] bg-background">Dưới {firstPool.max_age_lunar} tuổi âm</Badge>
+              <Badge variant="outline" className="text-[10px] bg-background">Nam giới đã lập gia đình</Badge>
+            </div>
           </CardContent>
         </Card>
       )}
 
-      <Tabs defaultValue="schedule">
-        <TabsList>
-          <TabsTrigger value="schedule" className="flex items-center gap-1.5">
-            <Calendar className="h-4 w-4" />
-            Lịch phân công
+      {/* Main Tabs */}
+      <Tabs defaultValue="schedule" className="space-y-4">
+        <TabsList className="bg-muted/60 p-1 rounded-xl">
+          <TabsTrigger value="schedule" className="flex items-center gap-1.5 text-xs font-semibold rounded-lg">
+            <Calendar className="h-4 w-4 text-amber-600" />
+            Lịch phân công Năm {selectedYear}
           </TabsTrigger>
-          <TabsTrigger value="members" className="flex items-center gap-1.5">
-            <Users className="h-4 w-4" />
-            Danh sách thành viên ({eligibleMembers?.length ?? '...'})
+          <TabsTrigger value="members" className="flex items-center gap-1.5 text-xs font-semibold rounded-lg">
+            <Users className="h-4 w-4 text-blue-600" />
+            Danh sách xoay vòng ({eligibleMembers?.length ?? '...'})
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab: Lịch phân công năm đã chọn */}
-        <TabsContent value="schedule" className="mt-4 space-y-4">
+        {/* Tab 1: Schedule */}
+        <TabsContent value="schedule" className="space-y-4">
           {assignmentsLoading ? (
             <div className="space-y-3">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="animate-pulse h-20 bg-muted rounded-lg" />
+                <Skeleton key={i} className="h-24 w-full rounded-2xl" />
               ))}
             </div>
           ) : (
-            <>
+            <div className="space-y-3">
               {CAU_DUONG_CEREMONY_ORDER.map(ceremonyType => {
                 const assignment = assignments?.find(a => a.ceremony_type === ceremonyType);
                 return (
-                  <Card key={ceremonyType} className={assignment ? '' : 'border-dashed opacity-60'}>
-                    <CardContent className="py-4 px-5">
+                  <Card
+                    key={ceremonyType}
+                    className={`overflow-hidden transition-all duration-200 hover:shadow-md ${
+                      assignment ? 'border-amber-200/60 dark:border-amber-900/40 bg-card' : 'border-dashed opacity-60 bg-muted/20'
+                    }`}
+                  >
+                    <CardContent className="p-4 sm:p-5">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div className="flex items-start gap-3">
-                          <div className="mt-0.5">
+                        <div className="flex items-start gap-3.5">
+                          <div className={`p-2.5 rounded-xl shrink-0 mt-0.5 ${
+                            assignment?.status === 'completed' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300' :
+                            assignment ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300' :
+                            'bg-muted text-muted-foreground'
+                          }`}>
                             {assignment?.status === 'completed' ? (
-                              <CheckCircle2 className="h-5 w-5 text-green-500" />
+                              <CheckCircle2 className="h-5 w-5" />
                             ) : assignment ? (
-                              <Clock className="h-5 w-5 text-orange-400" />
+                              <Clock className="h-5 w-5" />
                             ) : (
-                              <AlertCircle className="h-5 w-5 text-muted-foreground" />
+                              <AlertCircle className="h-5 w-5" />
                             )}
                           </div>
-                          <div>
-                            <p className="font-semibold">{CAU_DUONG_CEREMONY_LABELS[ceremonyType]}</p>
+
+                          <div className="space-y-1">
+                            <h2 className="font-bold text-sm text-foreground">{CAU_DUONG_CEREMONY_LABELS[ceremonyType]}</h2>
                             {assignment ? (
-                              <div className="mt-1 text-sm text-muted-foreground space-y-0.5">
-                                <p>
-                                  <span className="font-medium text-foreground">
+                              <div className="text-xs space-y-1">
+                                <p className="text-foreground">
+                                  <span className="font-bold text-amber-800 dark:text-amber-300 text-sm">
                                     {assignment.host_person?.display_name ?? '—'}
                                   </span>
                                   {assignment.actual_host_person && assignment.actual_host_person.id !== assignment.host_person?.id && (
-                                    <span className="ml-2 text-xs">
-                                      (Ủy quyền: <span className="font-medium">{assignment.actual_host_person.display_name}</span>)
+                                    <span className="ml-2 text-muted-foreground">
+                                      (Ủy quyền cho: <span className="font-semibold text-foreground">{assignment.actual_host_person.display_name}</span>)
                                     </span>
                                   )}
                                 </p>
                                 {assignment.reason && (
-                                  <p className="text-xs italic">{assignment.reason}</p>
+                                  <p className="text-muted-foreground italic">Lý do: {assignment.reason}</p>
                                 )}
                                 {assignment.scheduled_date && (
-                                  <p className="text-xs">Dự kiến: {new Date(assignment.scheduled_date).toLocaleDateString('vi-VN')}</p>
+                                  <p className="text-muted-foreground">
+                                    Ngày cúng dự kiến: <span className="font-mono">{new Date(assignment.scheduled_date).toLocaleDateString('vi-VN')}</span>
+                                  </p>
                                 )}
                                 {assignment.actual_date && assignment.actual_date !== assignment.scheduled_date && (
-                                  <p className="text-xs text-orange-600">Thực hiện: {new Date(assignment.actual_date).toLocaleDateString('vi-VN')}</p>
-                                )}
-                                {assignment.notes && (
-                                  <p className="text-xs text-muted-foreground">{assignment.notes}</p>
+                                  <p className="text-amber-600 dark:text-amber-400 font-medium">
+                                    Thực hiện thực tế: <span className="font-mono">{new Date(assignment.actual_date).toLocaleDateString('vi-VN')}</span>
+                                  </p>
                                 )}
                               </div>
                             ) : (
-                              <p className="text-sm text-muted-foreground mt-1">Chưa phân công</p>
+                              <p className="text-xs text-muted-foreground italic">Chưa phân công chủ lễ</p>
                             )}
                           </div>
                         </div>
 
                         {assignment && (
-                          <Badge variant={STATUS_VARIANT[assignment.status]} className="self-start sm:self-center">
+                          <Badge variant={STATUS_VARIANT[assignment.status]} className="self-start sm:self-center font-bold text-xs">
                             {STATUS_LABELS[assignment.status]}
                           </Badge>
                         )}
@@ -190,54 +219,57 @@ export default function CauDuongPage() {
                   </Card>
                 );
               })}
-            </>
+            </div>
           )}
         </TabsContent>
 
-        {/* Tab: Danh sách thành viên đủ điều kiện */}
-        <TabsContent value="members" className="mt-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Danh sách xoay vòng</CardTitle>
-              <CardDescription>
-                Thứ tự theo cây gia phả (DFS preorder) — đời trên trước, trong mỗi đời theo thứ tự gia đình
+        {/* Tab 2: Eligible Members */}
+        <TabsContent value="members">
+          <Card className="shadow-sm">
+            <CardHeader className="pb-3 border-b bg-muted/20">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Users className="h-4 w-4 text-blue-600" />
+                Thứ tự xoay vòng Cầu đương dòng họ
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Sắp xếp theo chiều sâu phả hệ (DFS Preorder) — Đời cao trước, thứ tự gia đình trong từng thế hệ
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6">
               {eligibleLoading ? (
                 <div className="space-y-2">
                   {[1, 2, 3, 4, 5].map(i => (
-                    <div key={i} className="animate-pulse h-10 bg-muted rounded" />
+                    <Skeleton key={i} className="h-12 w-full rounded-xl" />
                   ))}
                 </div>
               ) : !eligibleMembers || eligibleMembers.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
-                  Chưa có thành viên đủ điều kiện
+                <p className="text-center text-muted-foreground py-12">
+                  Chưa có thành viên nào đáp ứng đủ tiêu chuẩn Cầu đương
                 </p>
               ) : (
                 <div className="space-y-2">
                   {eligibleMembers.map((member, idx) => (
                     <div
                       key={member.person.id}
-                      className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-muted/50 transition-colors"
+                      className="flex items-center justify-between p-3 rounded-xl border bg-card hover:bg-amber-50/40 dark:hover:bg-amber-950/20 transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-sm font-mono text-muted-foreground w-7 text-right">
-                          {idx + 1}.
-                        </span>
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200 font-bold text-xs shrink-0">
+                          {idx + 1}
+                        </div>
                         <div>
-                          <p className="font-medium">{member.person.display_name}</p>
+                          <p className="font-bold text-sm text-foreground">{member.person.display_name}</p>
                           <p className="text-xs text-muted-foreground">
-                            Đời {member.person.generation}
+                            Đời thứ {member.person.generation}
                             {member.person.chi ? ` • Chi ${member.person.chi}` : ''}
                             {member.person.hometown ? ` • ${member.person.hometown}` : ''}
                           </p>
                         </div>
                       </div>
-                      <div className="text-right text-xs text-muted-foreground">
-                        {member.ageLunar > 0 && <span>{member.ageLunar} tuổi âm</span>}
+                      <div className="text-right text-xs">
+                        {member.ageLunar > 0 && <span className="font-semibold text-amber-700 dark:text-amber-300">{member.ageLunar} tuổi âm</span>}
                         {member.person.birth_year && (
-                          <p className="text-muted-foreground/60">sinh {member.person.birth_year}</p>
+                          <p className="text-muted-foreground text-[11px]">Sinh năm {member.person.birth_year}</p>
                         )}
                       </div>
                     </div>
