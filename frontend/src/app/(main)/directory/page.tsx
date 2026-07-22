@@ -1,9 +1,9 @@
 /**
  * @project AncestorTree
  * @file src/app/(main)/directory/page.tsx
- * @description Family directory with contacts, filters, search, privacy controls
- * @version 2.0.0
- * @updated 2026-02-25
+ * @description Modern UI/UX Family directory with contacts, filters, search, and privacy controls
+ * @version 2.5.0
+ * @updated 2026-03-25
  */
 
 'use client';
@@ -29,8 +29,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import {
   BookUser,
   Search,
@@ -40,6 +41,11 @@ import {
   Lock,
   EyeOff,
   ExternalLink,
+  ShieldCheck,
+  UserCheck,
+  X,
+  Filter,
+  Sparkles,
 } from 'lucide-react';
 import type { Person } from '@/types';
 
@@ -48,15 +54,12 @@ type FilterStatus = 'all' | 'living' | 'deceased';
 
 function getContactDisplay(person: Person, isAuthenticated: boolean, isViewer: boolean, linkedPersonId?: string) {
   const maskedResult = { phone: null, email: null, address: null, zalo: null, facebook: null, masked: true };
-  // Viewer role: only see names, all contacts masked (except self)
   if (isViewer && person.id !== linkedPersonId) {
     return maskedResult;
   }
-  // Privacy level 2 = private: hide contacts from everyone except the person themselves
   if (person.privacy_level === 2 && person.id !== linkedPersonId) {
     return maskedResult;
   }
-  // Privacy level 1 = members only: hide contacts from non-authenticated users
   if (person.privacy_level === 1 && !isAuthenticated) {
     return maskedResult;
   }
@@ -79,25 +82,20 @@ export default function DirectoryPage() {
   const [search, setSearch] = useState('');
   const [generationFilter, setGenerationFilter] = useState<string>('all');
   const [genderFilter, setGenderFilter] = useState<FilterGender>('all');
-  const [statusFilter, setStatusFilter] = useState<FilterStatus>('all');
+  const [statusFilter, setStatusFilter] = useState<FilterStatus>('living');
 
-  // Get unique generations for filter
   const generations = useMemo(() => {
     if (!people) return [];
-    const gens = [...new Set(people.map(p => p.generation))].sort((a, b) => a - b);
-    return gens;
+    return [...new Set(people.map(p => p.generation))].sort((a, b) => a - b);
   }, [people]);
 
-  // Filter and search
   const filteredPeople = useMemo(() => {
     if (!people) return [];
 
     return people.filter(p => {
-      // Only show living people in directory (they have contact info)
       if (statusFilter === 'living' && !p.is_living) return false;
       if (statusFilter === 'deceased' && p.is_living) return false;
 
-      // Search — only match contact fields if user has access (ISS-04)
       if (search) {
         const q = search.toLowerCase();
         const matchName = p.display_name.toLowerCase().includes(q);
@@ -110,225 +108,200 @@ export default function DirectoryPage() {
         if (!matchName && !matchPhone && !matchEmail && !matchAddress) return false;
       }
 
-      // Generation
       if (generationFilter !== 'all' && p.generation !== Number(generationFilter)) return false;
-
-      // Gender
       if (genderFilter !== 'all' && p.gender !== Number(genderFilter)) return false;
 
       return true;
     });
   }, [people, search, generationFilter, genderFilter, statusFilter, isViewer, isAuthenticated, profile?.linked_person]);
 
+  const hasFilters = search || generationFilter !== 'all' || genderFilter !== 'all' || statusFilter !== 'living';
+
+  const clearFilters = () => {
+    setSearch('');
+    setGenerationFilter('all');
+    setGenderFilter('all');
+    setStatusFilter('living');
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50">
-            <BookUser className="h-5 w-5 text-blue-600" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Danh bạ liên lạc</h1>
-            <p className="text-muted-foreground">
-              Thông tin liên lạc của các thành viên trong dòng họ
-            </p>
+    <div className="container mx-auto px-4 py-6 max-w-6xl space-y-6 pb-24">
+      {/* Banner Header */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-800 to-purple-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <BookUser className="h-56 w-56" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <BookUser className="h-6 w-6 text-blue-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Danh Bạ Liên Lạc Gia Tộc</h1>
+                <p className="text-xs sm:text-sm text-blue-100/90 mt-0.5">
+                  Tra cứu số điện thoại, Email, địa chỉ và thông tin liên lạc thành viên
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge className="bg-blue-400 text-blue-950 font-bold">
+                {filteredPeople.length} danh bạ
+              </Badge>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <Card className="mb-6">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">Bộ lọc</CardTitle>
+      {/* Filter Card */}
+      <Card className="border-blue-100 dark:border-blue-950 shadow-sm">
+        <CardHeader className="pb-3 bg-muted/20 border-b">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Filter className="h-4 w-4 text-blue-600" />
+              Bộ lọc Danh Bạ
+            </CardTitle>
+            {hasFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs text-muted-foreground hover:text-destructive h-7">
+                <X className="h-3.5 w-3.5 mr-1" /> Xóa bộ lọc
+              </Button>
+            )}
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="lg:col-span-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Tìm theo tên, SĐT, email..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
+        <CardContent className="p-4 space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Tìm theo tên, SĐT, Email, Địa chỉ..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="pl-10 text-sm focus:border-blue-500 rounded-xl"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase mb-1 block">Thế hệ (Đời)</label>
+              <Select value={generationFilter} onValueChange={setGenerationFilter}>
+                <SelectTrigger className="text-xs">
+                  <SelectValue placeholder="Tất cả đời" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-xs">Tất cả thế hệ</SelectItem>
+                  {generations.map(gen => (
+                    <SelectItem key={gen} value={gen.toString()} className="text-xs">
+                      Đời thứ {gen}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={generationFilter} onValueChange={setGenerationFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Đời" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả đời</SelectItem>
-                {generations.map(g => (
-                  <SelectItem key={g} value={String(g)}>Đời {g}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={genderFilter} onValueChange={v => setGenderFilter(v as FilterGender)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Giới tính" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="1">Nam</SelectItem>
-                <SelectItem value="2">Nữ</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={statusFilter} onValueChange={v => setStatusFilter(v as FilterStatus)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Trạng thái" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="living">Còn sống</SelectItem>
-                <SelectItem value="deceased">Đã mất</SelectItem>
-              </SelectContent>
-            </Select>
+
+            <div>
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase mb-1 block">Giới tính</label>
+              <Select value={genderFilter} onValueChange={v => setGenderFilter(v as FilterGender)}>
+                <SelectTrigger className="text-xs">
+                  <SelectValue placeholder="Giới tính" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-xs">Tất cả giới tính</SelectItem>
+                  <SelectItem value="1" className="text-xs">Nam giới ♂</SelectItem>
+                  <SelectItem value="2" className="text-xs">Nữ giới ♀</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase mb-1 block">Trạng thái thành viên</label>
+              <Select value={statusFilter} onValueChange={v => setStatusFilter(v as FilterStatus)}>
+                <SelectTrigger className="text-xs">
+                  <SelectValue placeholder="Trạng thái" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="living" className="text-xs">💚 Đang sống (Có danh bạ)</SelectItem>
+                  <SelectItem value="all" className="text-xs">Tất cả thành viên</SelectItem>
+                  <SelectItem value="deceased" className="text-xs">🕯️ Đã mất</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Results */}
-      <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <CardDescription>
-              {isLoading ? 'Đang tải...' : `${filteredPeople.length} thành viên`}
-            </CardDescription>
-            {!isAuthenticated && (
-              <Badge variant="outline" className="gap-1">
-                <Lock className="h-3 w-3" />
-                Đăng nhập để xem đầy đủ
-              </Badge>
-            )}
-          </div>
-        </CardHeader>
+      {/* Directory Table Card */}
+      <Card className="shadow-sm overflow-hidden border-border/80">
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="p-6 space-y-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="space-y-2 flex-1">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-3 w-32" />
-                  </div>
-                </div>
+            <div className="p-6 space-y-3">
+              {[1, 2, 3, 4, 5].map(i => (
+                <Skeleton key={i} className="h-12 w-full rounded-xl" />
               ))}
             </div>
           ) : filteredPeople.length === 0 ? (
-            <div className="p-12 text-center text-muted-foreground">
-              Không tìm thấy thành viên phù hợp
+            <div className="py-16 text-center text-muted-foreground space-y-3">
+              <BookUser className="h-12 w-12 text-muted-foreground/40 mx-auto" />
+              <p className="text-sm font-medium">Không tìm thấy liên lạc phù hợp</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <Table>
-                <TableHeader>
+                <TableHeader className="bg-muted/40">
                   <TableRow>
-                    <TableHead className="min-w-[200px]">Họ tên</TableHead>
-                    <TableHead className="min-w-[60px]">Đời</TableHead>
-                    <TableHead className="min-w-[140px]">Điện thoại</TableHead>
-                    <TableHead className="min-w-[180px]">Email</TableHead>
-                    <TableHead className="min-w-[200px]">Địa chỉ</TableHead>
-                    <TableHead className="min-w-[80px]">Liên kết</TableHead>
+                    <TableHead className="font-bold text-xs">Họ &amp; Tên thành viên</TableHead>
+                    <TableHead className="font-bold text-xs">Đời / Chi</TableHead>
+                    <TableHead className="font-bold text-xs">Số điện thoại</TableHead>
+                    <TableHead className="font-bold text-xs">Email</TableHead>
+                    <TableHead className="font-bold text-xs">Địa chỉ sinh sống</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredPeople.map(person => {
-                    const contact = getContactDisplay(person, isAuthenticated, !!isViewer, profile?.linked_person);
+                    const contacts = getContactDisplay(person, isAuthenticated, isViewer, profile?.linked_person);
                     return (
-                      <TableRow key={person.id}>
-                        <TableCell>
-                          <Link
-                            href={`/people/${person.id}`}
-                            className="flex items-center gap-3 hover:underline"
-                          >
-                            <div
-                              className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium text-white ${
-                                person.gender === 1 ? 'bg-blue-500' : 'bg-pink-500'
-                              }`}
-                            >
-                              {person.display_name.charAt(person.display_name.length - 1)}
-                            </div>
-                            <div>
-                              <div className="font-medium">{person.display_name}</div>
-                              <div className="text-xs text-muted-foreground">
-                                {person.gender === 1 ? 'Nam' : 'Nữ'}
-                                {!person.is_living && ' · Đã mất'}
-                              </div>
-                            </div>
+                      <TableRow key={person.id} className="hover:bg-muted/30 transition-colors">
+                        <TableCell className="font-semibold text-sm">
+                          <Link href={`/people/${person.id}`} className="text-blue-700 dark:text-blue-400 hover:underline flex items-center gap-1.5">
+                            {person.display_name}
+                            <ExternalLink className="h-3 w-3 opacity-60" />
                           </Link>
                         </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{person.generation}</Badge>
+                        <TableCell className="text-xs">
+                          <Badge variant="outline" className="text-[10px]">
+                            Đời {person.generation} {person.chi ? `· Chi ${person.chi}` : ''}
+                          </Badge>
                         </TableCell>
-                        <TableCell>
-                          {contact.masked ? (
-                            <span className="flex items-center gap-1 text-muted-foreground text-sm">
-                              <EyeOff className="h-3 w-3" /> Ẩn
+                        <TableCell className="text-xs">
+                          {contacts.masked ? (
+                            <span className="text-muted-foreground italic flex items-center gap-1 text-[11px]">
+                              <Lock className="h-3 w-3 text-amber-500" /> Đã bảo mật
                             </span>
-                          ) : contact.phone ? (
-                            <a
-                              href={`tel:${contact.phone}`}
-                              className="flex items-center gap-1 text-sm hover:underline"
-                            >
-                              <Phone className="h-3 w-3 text-muted-foreground" />
-                              {contact.phone}
+                          ) : contacts.phone ? (
+                            <a href={`tel:${contacts.phone}`} className="text-emerald-700 dark:text-emerald-400 hover:underline font-mono font-medium flex items-center gap-1">
+                              <Phone className="h-3 w-3 text-emerald-600" /> {contacts.phone}
                             </a>
                           ) : (
-                            <span className="text-sm text-muted-foreground">—</span>
+                            <span className="text-muted-foreground/60">—</span>
                           )}
                         </TableCell>
-                        <TableCell>
-                          {contact.masked ? (
-                            <span className="flex items-center gap-1 text-muted-foreground text-sm">
-                              <EyeOff className="h-3 w-3" /> Ẩn
-                            </span>
-                          ) : contact.email ? (
-                            <a
-                              href={`mailto:${contact.email}`}
-                              className="flex items-center gap-1 text-sm hover:underline"
-                            >
-                              <Mail className="h-3 w-3 text-muted-foreground" />
-                              {contact.email}
+                        <TableCell className="text-xs">
+                          {contacts.masked ? (
+                            <span className="text-muted-foreground italic text-[11px]">Ẩn</span>
+                          ) : contacts.email ? (
+                            <a href={`mailto:${contacts.email}`} className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1">
+                              <Mail className="h-3 w-3" /> {contacts.email}
                             </a>
                           ) : (
-                            <span className="text-sm text-muted-foreground">—</span>
+                            <span className="text-muted-foreground/60">—</span>
                           )}
                         </TableCell>
-                        <TableCell>
-                          {contact.masked ? (
-                            <span className="flex items-center gap-1 text-muted-foreground text-sm">
-                              <EyeOff className="h-3 w-3" /> Ẩn
-                            </span>
-                          ) : contact.address ? (
-                            <span className="flex items-center gap-1 text-sm">
-                              <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
-                              <span className="truncate max-w-[180px]">{contact.address}</span>
+                        <TableCell className="text-xs text-muted-foreground max-w-xs truncate">
+                          {contacts.address ? (
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3 text-rose-500 shrink-0" /> {contacts.address}
                             </span>
                           ) : (
-                            <span className="text-sm text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {contact.masked ? (
-                            <span className="flex items-center gap-1 text-muted-foreground text-sm">
-                              <EyeOff className="h-3 w-3" /> Ẩn
-                            </span>
-                          ) : (
-                            <div className="flex gap-2">
-                              {contact.zalo && (
-                                <Badge variant="secondary" className="text-xs">Zalo</Badge>
-                              )}
-                              {contact.facebook && (
-                                <a href={contact.facebook} target="_blank" rel="noopener noreferrer">
-                                  <Badge variant="secondary" className="text-xs gap-1">
-                                    FB <ExternalLink className="h-2.5 w-2.5" />
-                                  </Badge>
-                                </a>
-                              )}
-                            </div>
+                            '—'
                           )}
                         </TableCell>
                       </TableRow>
