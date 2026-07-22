@@ -31,8 +31,8 @@ Chạy **toàn bộ AncestorTree stack** offline — không cần tài khoản S
 
 ```bash
 # 1. Clone repo
-git clone https://github.com/Minh-Tam-Solution/AncestorTree.git
-cd AncestorTree/frontend
+git clone https://github.com/htxhoatien2/GiaPhaHoPham.git
+cd GiaPhaHoPham/frontend
 
 # 2. Cài dependencies + khởi động local stack
 pnpm install

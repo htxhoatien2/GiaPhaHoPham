@@ -14,7 +14,7 @@ This file provides guidance to AI assistants (Claude, GPT, etc.) when working wi
 
 **AncestorTree** (Gia Phả Điện Tử) is a digital family tree management system for Chi tộc Phạm Văn, An Trạch, Hòa Tiến, Đà Nẵng.
 
-- **Repository:** https://github.com/Minh-Tam-Solution/AncestorTree
+- **Repository:** https://github.com/htxhoatien2/GiaPhaHoPham
 - **Current Version:** v2.5.0 (Cộng đồng & Nâng cao — Feed, Search, GEDCOM 7.0, Notifications, Nhà thờ họ, SEO)
 - **SDLC Tier:** LITE (5 stages)
 - **Tech Stack:** Next.js 16, React 19, Tailwind CSS 4, Supabase, Electron 34 (desktop)

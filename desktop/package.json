@@ -2,7 +2,7 @@
   "name": "ancestortree-desktop",
   "version": "2.5.0",
   "description": "Gia Phả Điện Tử — Standalone Desktop App",
-  "author": "Minh-Tam-Solution",
+  "author": "htxhoatien2",
   "license": "MIT",
   "main": "dist/electron/main.js",
   "scripts": {

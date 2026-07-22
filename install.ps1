@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # AncestorTree — One-line installer (Windows PowerShell)
-# Usage: irm https://raw.githubusercontent.com/Minh-Tam-Solution/AncestorTree/main/install.ps1 | iex
+# Usage: irm https://raw.githubusercontent.com/htxhoatien2/GiaPhaHoPham/main/install.ps1 | iex
 # ═══════════════════════════════════════════════════════════════════════════
 $ErrorActionPreference = "Stop"
 
@@ -10,8 +10,8 @@ function Err($msg)  { Write-Host "  $msg" -ForegroundColor Red }
 function Info($msg) { Write-Host "  $msg" -ForegroundColor Cyan }
 function Step($msg) { Write-Host "`n>> $msg" -ForegroundColor White }
 
-$REPO = "https://github.com/Minh-Tam-Solution/AncestorTree.git"
-$DIR  = "AncestorTree"
+$REPO = "https://github.com/htxhoatien2/GiaPhaHoPham.git"
+$DIR  = "GiaPhaHoPham"
 
 # ─── 1. Check prerequisites ─────────────────────────────────────────────
 

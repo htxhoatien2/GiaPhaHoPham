@@ -84,7 +84,7 @@ const authRequiredPaths = [
   '/',
   '/people', '/tree', '/directory', '/events',
   '/achievements', '/charter', '/cau-duong', '/contributions',
-  '/documents', '/fund', '/admin', '/help', '/guide', '/settings',
+  '/documents', '/fund', '/admin', '/help', '/settings',
   '/relationship', '/stats', '/feed', '/notifications',
 ];
 

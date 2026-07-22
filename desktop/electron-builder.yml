@@ -1,12 +1,12 @@
 appId: com.ancestortree.desktop
 productName: AncestorTree
-copyright: Copyright © 2026 Minh-Tam-Solution
+copyright: Copyright © 2026 htxhoatien2
 
 # GitHub Releases for auto-update (electron-updater)
 publish:
   provider: github
-  owner: Minh-Tam-Solution
-  repo: AncestorTree
+  owner: htxhoatien2
+  repo: GiaPhaHoPham
 
 directories:
   output: release
@@ -51,7 +51,7 @@ win:
   signtoolOptions:
     signingHashAlgorithms:
       - sha256
-    publisherName: Minh-Tam-Solution
+    publisherName: htxhoatien2
 
 nsis:
   oneClick: false

@@ -1,7 +1,7 @@
 #!/bin/sh
 # ═══════════════════════════════════════════════════════════════════════════
 # AncestorTree — One-line installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/Minh-Tam-Solution/AncestorTree/main/install.sh | sh
+# Usage: curl -fsSL https://raw.githubusercontent.com/htxhoatien2/GiaPhaHoPham/main/install.sh | sh
 # ═══════════════════════════════════════════════════════════════════════════
 set -e
 
@@ -18,8 +18,8 @@ err()  { printf "${RED}❌ %s${RESET}\n" "$1"; }
 info() { printf "${CYAN}ℹ  %s${RESET}\n" "$1"; }
 step() { printf "\n${BOLD}${CYAN}▶ %s${RESET}\n" "$1"; }
 
-REPO="https://github.com/Minh-Tam-Solution/AncestorTree.git"
-DIR="AncestorTree"
+REPO="https://github.com/htxhoatien2/GiaPhaHoPham.git"
+DIR="GiaPhaHoPham"
 
 # ─── 1. Check prerequisites ─────────────────────────────────────────────
 

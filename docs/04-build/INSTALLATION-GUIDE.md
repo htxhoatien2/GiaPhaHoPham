@@ -32,7 +32,7 @@ Hướng dẫn cài đặt ứng dụng desktop cho **macOS** và **Windows**.
 
 ### Bước 1: Tải file cài đặt
 
-Tải file **AncestorTree-x.x.x.dmg** từ trang [GitHub Releases](https://github.com/Minh-Tam-Solution/AncestorTree/releases).
+Tải file **AncestorTree-x.x.x.dmg** từ trang [GitHub Releases](https://github.com/htxhoatien2/GiaPhaHoPham/releases).
 
 - Máy Intel: chọn file `AncestorTree-x.x.x.dmg`
 - Máy Apple Silicon (M1/M2/M3/M4): chọn file `AncestorTree-x.x.x-arm64.dmg`
@@ -84,7 +84,7 @@ Lần đầu mở ứng dụng:
 
 ### Bước 1: Tải file cài đặt
 
-Tải file **AncestorTree-Setup-x.x.x.exe** từ trang [GitHub Releases](https://github.com/Minh-Tam-Solution/AncestorTree/releases).
+Tải file **AncestorTree-Setup-x.x.x.exe** từ trang [GitHub Releases](https://github.com/htxhoatien2/GiaPhaHoPham/releases).
 
 ### Bước 2: Cài đặt
 
@@ -184,5 +184,5 @@ Nếu ứng dụng hiện "Đang khởi động..." quá 30 giây:
 
 ## Hỗ trợ
 
-- **GitHub Issues:** [github.com/Minh-Tam-Solution/AncestorTree/issues](https://github.com/Minh-Tam-Solution/AncestorTree/issues)
+- **GitHub Issues:** [github.com/htxhoatien2/GiaPhaHoPham/issues](https://github.com/htxhoatien2/GiaPhaHoPham/issues)
 - **Cộng đồng:** Theo dõi kênh hỗ trợ tại trang chủ dự án
