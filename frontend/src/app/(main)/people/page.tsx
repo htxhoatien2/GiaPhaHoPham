@@ -60,6 +60,21 @@ export default function PeoplePage() {
     });
   }, [fuzzyResults, generationFilter, chiFilter, statusFilter]);
 
+  const groupedByGeneration = useMemo(() => {
+    const groups: Record<number, typeof filteredPeople> = {};
+    for (const person of filteredPeople) {
+      const gen = person.generation || 1;
+      if (!groups[gen]) {
+        groups[gen] = [];
+      }
+      groups[gen].push(person);
+    }
+    const sortedGens = Object.keys(groups)
+      .map(Number)
+      .sort((a, b) => a - b);
+    return { groups, sortedGens };
+  }, [filteredPeople]);
+
   const hasFilters = search || generationFilter !== 'all' || chiFilter !== 'all' || statusFilter !== 'all';
 
   const clearFilters = () => {
@@ -222,9 +237,24 @@ export default function PeoplePage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredPeople.map(person => (
-              <PersonCard key={person.id} person={person} />
+          <div className="space-y-10">
+            {groupedByGeneration.sortedGens.map(gen => (
+              <div key={gen} className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-emerald-800 text-white font-bold px-4 py-1.5 rounded-full text-xs sm:text-sm shadow-xs tracking-wide">
+                    ĐỜI THỨ {gen}
+                  </div>
+                  <div className="flex-1 h-[1.5px] bg-slate-200/80 rounded-full" />
+                  <span className="text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-100 px-2 py-0.5 rounded">
+                    {groupedByGeneration.groups[gen].length} thành viên
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {groupedByGeneration.groups[gen].map(person => (
+                    <PersonCard key={person.id} person={person} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         )}
