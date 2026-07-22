@@ -1,128 +1,122 @@
 /**
  * @project AncestorTree
  * @file src/app/(main)/help/page.tsx
- * @description In-app help guide — detailed usage instructions for authenticated users
- * @version 1.0.0
- * @updated 2026-02-27
+ * @description Modern UI/UX In-app help guide — detailed usage instructions for users
+ * @version 2.0.0
+ * @updated 2026-03-25
  */
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import {
+  HelpCircle,
+  BookOpen,
+  GitBranch,
+  Users,
+  Contact,
+  Calendar,
+  ClipboardList,
+  Award,
+  CircleDollarSign,
+  ScrollText,
+  RotateCw,
+  FileSpreadsheet,
+  Shield,
+  Lightbulb,
+  CheckCircle2,
+  Sparkles,
+  ChevronRight,
+  Database,
+} from 'lucide-react';
 
 const isDesktop = process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true';
 
-// -- Section A: Navigation overview --
-
 const navItems = [
-  { name: 'Trang chủ', desc: 'Tổng quan thống kê: tổng thành viên, số đời, số gia đình, sự kiện sắp tới, hương ước nổi bật.' },
-  { name: 'Cây phả hệ', desc: 'Sơ đồ cây gia phả tương tác: zoom, kéo, lọc theo gốc. Hỗ trợ 10+ đời, SVG rendering.' },
-  { name: 'Thành viên', desc: 'Danh sách và quản lý thành viên: thêm, sửa, xóa, tìm kiếm. Ghi đầy đủ thông tin cá nhân.' },
-  { name: 'Danh bạ', desc: 'Thư mục liên lạc: số điện thoại, email, Zalo. Chỉ hiển thị cho thành viên đã đăng nhập.' },
-  { name: 'Lịch cúng lễ', desc: 'Ngày giỗ, lễ tết theo lịch âm. Tự động tính từ ngày mất âm lịch, lặp lại hàng năm.' },
-  { name: 'Đề xuất', desc: 'Gửi đề xuất chỉnh sửa thông tin: thêm/sửa thành viên, sự kiện. Admin duyệt trước khi áp dụng.' },
-  { name: 'Vinh danh', desc: 'Bảng vinh danh thành tích: Học tập, Sự nghiệp, Cống hiến, Khác. Ghi nhận con cháu xuất sắc.' },
-  { name: 'Quỹ khuyến học', desc: 'Thu chi quỹ khuyến học minh bạch, cấp học bổng cho con cháu ưu tú. Admin quản lý.' },
-  { name: 'Hương ước', desc: 'Gia huấn, quy ước, lời dặn dò của dòng họ. Lưu trữ dạng bài viết có phiên bản.' },
-  { name: 'Cầu đương', desc: 'Phân công trách nhiệm cúng lễ xoay vòng giữa các gia đình. Thuật toán DFS tự động, công bằng.' },
-  { name: 'Tài liệu', desc: 'Xuất gia phả dạng sách truyền thống. Sắp xếp theo đời, từ thủy tổ đến con cháu.' },
+  { name: 'Trang chủ', desc: 'Thống kê tổng quan: tổng thành viên, số đời, sự kiện sắp tới, hương ước.', icon: Sparkles, color: 'text-amber-500 bg-amber-50 dark:bg-amber-950/40' },
+  { name: 'Cây phả hệ', desc: 'Sơ đồ cây gia phả tương tác 2D/3D, thu phóng, kéo thả, lọc nhánh linh hoạt.', icon: GitBranch, color: 'text-blue-500 bg-blue-50 dark:bg-blue-950/40' },
+  { name: 'Thành viên', desc: 'Danh sách và quản lý thành viên: thêm, sửa, xóa, tìm kiếm thông tin cá nhân.', icon: Users, color: 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40' },
+  { name: 'Danh bạ', desc: 'Thư mục liên lạc: SĐT, Email, Zalo (dành cho thành viên đã đăng nhập).', icon: Contact, color: 'text-purple-500 bg-purple-50 dark:bg-purple-950/40' },
+  { name: 'Lịch cúng lễ', desc: 'Ngày giỗ, lễ tết theo Âm lịch. Tự động lặp lại hàng năm.', icon: Calendar, color: 'text-rose-500 bg-rose-50 dark:bg-rose-950/40' },
+  { name: 'Đề xuất', desc: 'Gửi đóng góp, đề xuất chỉnh sửa thông tin để Ban quản trị phê duyệt.', icon: ClipboardList, color: 'text-teal-500 bg-teal-50 dark:bg-teal-950/40' },
+  { name: 'Vinh danh', desc: 'Bảng vinh danh thành tích: Học tập, Sự nghiệp, Cống hiến của con cháu.', icon: Award, color: 'text-yellow-500 bg-yellow-50 dark:bg-yellow-950/40' },
+  { name: 'Quỹ khuyến học', desc: 'Thu chi quỹ minh bạch, cấp học bổng khen thưởng con cháu ưu tú.', icon: CircleDollarSign, color: 'text-indigo-500 bg-indigo-50 dark:bg-indigo-950/40' },
+  { name: 'Hương ước', desc: 'Gia huấn, quy ước, lời dặn dò truyền thống của dòng họ.', icon: ScrollText, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/40' },
+  { name: 'Cầu đương', desc: 'Phân công trách nhiệm cúng lễ xoay vòng giữa các gia đình công bằng.', icon: RotateCw, color: 'text-cyan-500 bg-cyan-50 dark:bg-cyan-950/40' },
+  { name: 'Tài liệu', desc: 'Xuất gia phả dạng sách truyền thống xếp theo thế hệ.', icon: FileSpreadsheet, color: 'text-slate-500 bg-slate-50 dark:bg-slate-950/40' },
 ];
-
-// -- Section B: Workflows --
 
 const workflows = [
   {
-    title: 'Thêm thành viên',
+    title: '1. Thêm & Quản lý Thành viên mới',
     steps: [
-      'Vào Thành viên → nhấn "Thêm thành viên" (góc trên phải)',
-      'Bắt buộc: Họ và tên, Giới tính',
-      'Nên điền: Đời (1 = thủy tổ), Năm sinh, Ngày mất âm lịch (để tính ngày giỗ)',
-      'Chọn Cha / Mẹ từ danh sách — tự động tạo quan hệ và hiển thị trên cây',
-      'Tùy chọn: Tiểu sử, Nghề nghiệp, Liên lạc (SĐT, Email, Zalo)',
+      'Vào Thành viên → nhấn nút "Thêm thành viên" ở góc trên bên phải',
+      'Bắt buộc nhập: Họ và tên, Giới tính',
+      'Nên điền: Đời (Đời 1 = Thủy tổ), Năm sinh, Ngày mất âm lịch (để tự tính ngày giỗ)',
+      'Chọn Cha / Mẹ từ danh sách — hệ thống tự động nối dây quan hệ trên Cây phả hệ',
+      'Điền thêm: Tiểu sử, Nghề nghiệp, Thông tin liên lạc (SĐT, Zalo)',
     ],
-    tip: 'Mẹo: Nhập từ đời cao nhất (thủy tổ) trở xuống để cây gia phả hiển thị đúng.',
+    tip: 'Mẹo: Nhập theo thứ tự từ đời cao nhất (Thủy tổ) trở xuống để cây hiển thị chuẩn xác nhất.',
   },
   {
-    title: 'Xem cây gia phả',
+    title: '2. Thao tác xem Cây phả hệ',
     steps: [
-      'Vào Cây phả hệ từ thanh điều hướng',
-      'Thu phóng: cuộn chuột hoặc pinch trên touchpad',
-      'Di chuyển: click và kéo trên vùng trống',
-      'Xem chi tiết: click vào thành viên → hiện popup thông tin',
-      'Lọc nhánh: click thành viên → chọn "Xem cây từ đây" → chỉ hiện nhánh đó',
+      'Vào mục Cây phả hệ từ thanh menu chính',
+      'Thu phóng: Cuộn chuột hoặc vuốt 2 ngón tay trên touchpad',
+      'Di chuyển: Nhấp chuột trái và kéo rê trên màn hình',
+      'Xem thông tin: Bấm trực tiếp vào ảnh/tên thành viên để mở card thông tin chi tiết',
+      'Lọc nhánh: Nhấp vào thành viên → chọn "Xem cây từ đây" để chỉ xem dòng dõi nhánh đó',
     ],
-    tip: 'Mẹo: Khi gia phả lớn (>50 người), dùng "Xem cây từ đây" để tập trung vào một nhánh.',
+    tip: 'Mẹo: Khi cây gia phả đông (>50 người), tính năng "Xem cây từ đây" sẽ giúp bạn tập trung dễ quan sát.',
   },
   {
-    title: 'Quản lý sự kiện & ngày giỗ',
+    title: '3. Tự động hóa Lịch tế lễ & Ngày giỗ',
     steps: [
-      'Ngày giỗ tự động tính từ ngày mất âm lịch (nhập ở trang thành viên)',
-      'Thêm sự kiện thủ công: nhấn "Thêm sự kiện"',
-      'Loại sự kiện: Giỗ (ngày giỗ), Lễ/Tết (Tết Nguyên Đán, Rằm…), Khác (họp họ…)',
-      'Nhập ngày âm lịch (ví dụ: 12/3) + chọn người liên quan',
-      'Bật "Lặp lại hàng năm" cho ngày giỗ và lễ tết',
+      'Ngày giỗ tự động tính dựa trên ngày mất Âm lịch của thành viên',
+      'Thêm sự kiện thủ công: Nhấn "Thêm sự kiện"',
+      'Phân loại: Ngày Giỗ, Lễ Tết (Tết Nguyên Đán, Rằm tháng 7…), Họp họ',
+      'Nhập ngày Âm lịch (VD: 15/7 ÂL) và gán người liên quan',
+      'Bật tùy chọn "Lặp lại hàng năm" để tự nhắc nhở',
     ],
-    tip: 'Lưu ý: Ngày âm lịch được tự động chuyển sang dương lịch để hiển thị sự kiện sắp tới.',
+    tip: 'Lưu ý: Hệ thống tự động quy đổi Âm lịch sang Dương lịch năm hiện tại để thông báo chính xác.',
   },
 ];
 
 const desktopBackupWorkflow = {
-  title: 'Sao lưu dữ liệu (Desktop)',
+  title: '4. Sao lưu & Bảo toàn Dữ liệu (Desktop)',
   steps: [
-    'Dữ liệu lưu tại ~/AncestorTree/ (data/ancestortree.db + media/people/)',
-    'Sao lưu: đóng app → copy thư mục ~/AncestorTree/ ra USB hoặc Google Drive',
-    'Khôi phục: đóng app → copy thư mục từ backup về ~/AncestorTree/ → mở app',
-    'Chuyển máy: sao lưu từ máy cũ → cài app trên máy mới → copy thư mục vào',
-    'Nên sao lưu ít nhất 1 lần/tháng',
+    'Dữ liệu gia phả được lưu tại thư mục ~/AncestorTree/ (data/ + media/)',
+    'Sao lưu: Đóng ứng dụng → copy thư mục ~/AncestorTree/ ra USB hoặc Google Drive',
+    'Khôi phục: Đóng app → chép thư mục backup đè về ~/AncestorTree/ → mở lại app',
+    'Nên tiến hành sao lưu định kỳ ít nhất 1 lần / tháng',
   ],
-  tip: 'Lưu ý: Sao lưu cả thư mục data/ (database) và media/ (ảnh thành viên).',
+  tip: 'Lưu ý: Cần sao lưu cả file dữ liệu .db lẫn ảnh thành viên trong thư mục media/.',
 };
 
-// -- Section C: Roles --
-
 const roles = [
-  { role: 'Admin', permissions: 'Toàn quyền: CRUD tất cả dữ liệu, quản lý người dùng, phân quyền, cài đặt hệ thống' },
-  { role: 'Editor', permissions: 'Thêm / sửa / xóa thành viên, sự kiện, thành tích, quỹ, hương ước, cầu đương' },
-  { role: 'Viewer', permissions: 'Xem tất cả thông tin (bao gồm liên lạc), không chỉnh sửa được' },
-  { role: 'Guest', permissions: 'Xem thông tin công khai, không thấy số điện thoại/email/Zalo' },
+  { role: 'Admin', badge: 'Quản trị viên', color: 'bg-rose-500 text-white', desc: 'Toàn quyền: Thêm/sửa/xóa tất cả dữ liệu, phê duyệt đề xuất, quản lý người dùng & cài đặt hệ thống.' },
+  { role: 'Editor', badge: 'Biên tập viên', color: 'bg-blue-600 text-white', desc: 'Thêm, chỉnh sửa thông tin thành viên, sự kiện, vinh danh, quỹ khuyến học, hương ước.' },
+  { role: 'Viewer', badge: 'Thành viên', color: 'bg-emerald-600 text-white', desc: 'Xem tất cả thông tin gia phả (bao gồm danh bạ liên lạc), gửi đề xuất chỉnh sửa.' },
+  { role: 'Guest', badge: 'Khách', color: 'bg-slate-500 text-white', desc: 'Xem thông tin công khai dòng họ, ẩn các dữ liệu cá nhân nhạy cảm.' },
 ];
-
-// -- Section D: Tips --
-
-const tips = [
-  'Bắt đầu từ thủy tổ — nhập thông tin từ đời cao nhất trở xuống để cây gia phả chính xác',
-  'Chọn Cha/Mẹ ngay khi tạo thành viên — cây phả hệ và quan hệ gia đình tự động cập nhật',
-  'Ghi ngày mất âm lịch — đây là trường quan trọng nhất để tính ngày giỗ chính xác hàng năm',
-  'Sao lưu thường xuyên — dữ liệu gia phả là tài sản vô giá, sao lưu ít nhất 1 lần/tháng',
-  'Dùng tìm kiếm khi gia phả lớn (>50 người) — nhanh hơn cuộn trang rất nhiều',
-  'Thêm quan hệ từ trang chi tiết — mở thành viên → phần Quan hệ → Thêm con hoặc Thêm vợ/chồng',
-];
-
-// -- Section E: FAQ --
 
 const faqItems = [
   {
-    q: 'Dữ liệu có mất khi cập nhật ứng dụng không?',
-    a: 'Không. Dữ liệu được lưu riêng (Desktop: ~/AncestorTree/, Web: Supabase cloud), không bị ảnh hưởng khi cập nhật.',
+    q: 'Dữ liệu gia phả có bị mất khi cập nhật phần mềm không?',
+    a: 'Hoàn toàn không. Dữ liệu được lưu trữ độc lập (SQLite trên Desktop hoặc PostgreSQL Cloud trên Web), không bị xóa khi cập nhật.',
   },
   {
-    q: 'Có thể chuyển dữ liệu từ Desktop sang Web không?',
-    a: 'Có. Sử dụng tính năng Export/Import (sẽ có trong phiên bản tương lai v2.5.0).',
+    q: 'Ứng dụng hỗ trợ lưu trữ bao nhiêu thành viên?',
+    a: 'Không giới hạn. Ứng dụng đã được thử nghiệm mượt mà với 1.000+ thành viên qua 15+ thế hệ.',
   },
   {
-    q: 'Ứng dụng hỗ trợ bao nhiêu thành viên?',
-    a: 'Không giới hạn cứng. Đã test tốt với 500+ thành viên, 10+ đời. Cây gia phả và tìm kiếm vẫn mượt.',
+    q: 'Làm sao để thêm mối quan hệ vợ/chồng hoặc con cái?',
+    a: 'Bạn mở trang Chi tiết thành viên → cuộn tới mục Quan hệ gia đình → bấm "Thêm quan hệ" → chọn "Thêm con" hoặc "Thêm vợ/chồng".',
   },
   {
-    q: 'Cách thêm quan hệ gia đình (vợ/chồng, con cái)?',
-    a: 'Mở trang chi tiết thành viên → phần Quan hệ gia đình → nhấn "Thêm quan hệ" → chọn "Thêm con" hoặc "Thêm vợ/chồng". Quan hệ tự động cập nhật ở cả hai phía.',
-  },
-  {
-    q: 'Cầu đương hoạt động như thế nào?',
-    a: 'Cầu đương là phong tục phân công lo việc cúng giỗ giữa các gia đình. Ứng dụng dùng thuật toán DFS (duyệt cây theo chiều sâu) để xoay vòng tự động, đảm bảo công bằng. Admin tạo đợt mới → hệ thống phân công → có thể điều chỉnh thủ công.',
+    q: 'Chức năng Cầu đương tự động phân công như thế nào?',
+    a: 'Cầu đương sử dụng thuật toán duyệt cây gia phả theo chiều sâu (DFS) để xoay vòng trách nhiệm làm cỗ cúng giữa các gia đình theo thứ tự đời, đảm bảo công bằng và minh bạch.',
   },
 ];
-
-// -- Page component --
 
 export default function HelpPage() {
   const allWorkflows = isDesktop
@@ -130,146 +124,131 @@ export default function HelpPage() {
     : workflows;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-16">
-      {/* Header */}
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Hướng dẫn sử dụng</h1>
-        <p className="text-gray-500 max-w-2xl mx-auto">
-          Hướng dẫn chi tiết các tính năng của ứng dụng Gia Phả Điện Tử.
-        </p>
+    <div className="container mx-auto px-4 py-6 max-w-5xl space-y-10 pb-24">
+      {/* Hero Header Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-800 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <BookOpen className="h-56 w-56" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+              <HelpCircle className="h-6 w-6 text-blue-200" />
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Center Hướng Dẫn Sử Dụng</h1>
+              <p className="text-xs sm:text-sm text-blue-100/90">
+                Cẩm nang toàn tập hướng dẫn thao tác, quy trình và mẹo quản lý Gia Phả Điện Tử
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Section A — Thanh điều hướng */}
-      <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Thanh điều hướng</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {navItems.map((item) => (
-            <div key={item.name} className="bg-gray-50 rounded-lg px-4 py-3 border">
-              <p className="font-medium text-sm text-gray-900">{item.name}</p>
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
+      {/* Section 1: Overview Navigation */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-blue-600 text-white shadow-xs">
+            <BookOpen className="h-4 w-4" />
+          </div>
+          <h2 className="text-lg font-bold">1. Tổng quan các chức năng ứng dụng</h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Card key={item.name} className="hover:shadow-md transition-shadow border-border/80">
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className={`p-2 rounded-lg ${item.color}`}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <span className="font-bold text-sm text-foreground">{item.name}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
-      {/* Section B — Hướng dẫn từng bước */}
-      <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Hướng dẫn từng bước</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {allWorkflows.map((workflow) => (
-            <Card key={workflow.title}>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base">{workflow.title}</CardTitle>
+      {/* Section 2: Workflows */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-xs">
+            <Sparkles className="h-4 w-4" />
+          </div>
+          <h2 className="text-lg font-bold">2. Quy trình làm việc quan trọng</h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {allWorkflows.map((wf, idx) => (
+            <Card key={idx} className="shadow-xs border-border/80">
+              <CardHeader className="bg-muted/30 pb-3 border-b">
+                <CardTitle className="text-sm font-bold flex items-center gap-2">
+                  {wf.title}
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <ol className="space-y-2">
-                  {workflow.steps.map((step, i) => (
-                    <li key={i} className="flex gap-3 text-sm text-gray-600">
-                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-medium">
-                        {i + 1}
-                      </span>
+              <CardContent className="p-4 space-y-3">
+                <ul className="space-y-2">
+                  {wf.steps.map((step, sIdx) => (
+                    <li key={sIdx} className="flex items-start gap-2 text-xs text-foreground/90">
+                      <ChevronRight className="h-3.5 w-3.5 text-blue-600 shrink-0 mt-0.5" />
                       <span>{step}</span>
                     </li>
                   ))}
-                </ol>
-                <p className="text-xs text-emerald-700 bg-emerald-50 rounded-md px-3 py-2">
-                  {workflow.tip}
-                </p>
+                </ul>
+                <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-900 dark:text-amber-200 text-[11px] font-medium flex items-center gap-1.5">
+                  <Lightbulb className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                  <span>{wf.tip}</span>
+                </div>
               </CardContent>
             </Card>
           ))}
         </div>
       </section>
 
-      {/* Section C — Phân quyền */}
-      <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Phân quyền người dùng</h2>
-        <div className="max-w-3xl mx-auto">
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border">
-              <thead>
-                <tr className="bg-emerald-50">
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Vai trò</th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Quyền hạn</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {roles.map((r) => (
-                  <tr key={r.role}>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                      <Badge variant="outline">{r.role}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-600">{r.permissions}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* Section 3: Roles & Permissions */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-purple-600 text-white shadow-xs">
+            <Shield className="h-4 w-4" />
           </div>
-          {isDesktop && (
-            <p className="text-sm text-gray-500 mt-3 text-center">
-              Bản Desktop: bạn tự động là Admin — toàn quyền quản lý dữ liệu trên máy.
-            </p>
-          )}
+          <h2 className="text-lg font-bold">3. Phân quyền &amp; Vai trò tài khoản</h2>
         </div>
-      </section>
 
-      {/* Section D — Mẹo sử dụng */}
-      <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Mẹo sử dụng</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-4xl mx-auto">
-          {tips.map((tip, i) => (
-            <div key={i} className="flex gap-3 bg-gray-50 rounded-lg px-4 py-3 border">
-              <span className="flex-shrink-0 text-emerald-600 font-semibold text-sm">#{i + 1}</span>
-              <p className="text-sm text-gray-600">{tip}</p>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {roles.map((r) => (
+            <Card key={r.role} className="border-border/80 shadow-xs">
+              <CardContent className="p-4 space-y-2">
+                <Badge className={`${r.color} text-xs font-bold`}>{r.badge}</Badge>
+                <p className="text-xs text-muted-foreground leading-relaxed pt-1">{r.desc}</p>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </section>
 
-      {/* Section E — Câu hỏi thường gặp */}
-      <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">Câu hỏi thường gặp</h2>
-
-        {/* Desktop vs Web comparison — only in desktop mode */}
-        {isDesktop && (
-          <div className="max-w-3xl mx-auto mb-8">
-            <h3 className="text-base font-semibold text-gray-900 mb-3 text-center">Desktop vs Web</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border">
-                <thead>
-                  <tr className="bg-emerald-50">
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900" />
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Desktop</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Web</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {[
-                    { label: 'Dữ liệu', desktop: 'Lưu trên máy (SQLite)', web: 'Cloud (Supabase)' },
-                    { label: 'Internet', desktop: 'Không cần', web: 'Cần kết nối' },
-                    { label: 'Người dùng', desktop: '1 người (admin)', web: 'Nhiều người, phân quyền' },
-                    { label: 'Cài đặt', desktop: 'Tải file, click cài', web: 'Cần Node.js, Docker' },
-                    { label: 'Chức năng', desktop: 'Giống nhau 100%', web: 'Giống nhau 100%' },
-                  ].map((row) => (
-                    <tr key={row.label}>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{row.label}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{row.desktop}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{row.web}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {/* Section 4: FAQ */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="p-2 rounded-lg bg-indigo-600 text-white shadow-xs">
+            <HelpCircle className="h-4 w-4" />
           </div>
-        )}
+          <h2 className="text-lg font-bold">4. Câu hỏi thường gặp (FAQ)</h2>
+        </div>
 
-        {/* FAQ items */}
-        <div className="max-w-3xl mx-auto space-y-4">
-          {faqItems.map((item) => (
-            <Card key={item.q}>
-              <CardContent className="pt-6">
-                <h4 className="font-semibold text-gray-900 mb-2">{item.q}</h4>
-                <p className="text-sm text-gray-600">{item.a}</p>
+        <div className="space-y-3">
+          {faqItems.map((item, idx) => (
+            <Card key={idx} className="border-border/80 shadow-xs">
+              <CardContent className="p-4 space-y-2">
+                <p className="font-bold text-sm text-foreground flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                  {item.q}
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed pl-6">{item.a}</p>
               </CardContent>
             </Card>
           ))}
