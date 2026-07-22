@@ -28,7 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, User, Calendar, Phone, FileText, Heart, Shield, Sparkles } from 'lucide-react';
 import type { Person } from '@/types';
 
 interface PersonFormProps {
@@ -82,21 +82,28 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
 
   // Auto-convert solar death date to lunar date
   useEffect(() => {
+    console.log("DEBUG: deathDate changed to:", deathDate);
     if (!deathDate) return;
     const parts = deathDate.split('-');
+    console.log("DEBUG: split parts of deathDate:", parts);
     if (parts.length === 3) {
       const year = parseInt(parts[0], 10);
       const month = parseInt(parts[1], 10);
       const day = parseInt(parts[2], 10);
+      console.log("DEBUG: Parsed values:", { day, month, year });
       
       if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
         try {
           const lunar = solarToLunar(day, month, year);
+          console.log("DEBUG: Calculated Lunar date:", lunar);
+          
           // Set formatted value e.g. "15/7"
-          form.setValue('death_lunar', `${lunar.day}/${lunar.month}`, { shouldValidate: true });
+          form.setValue('death_lunar', `${lunar.day}/${lunar.month}`, { shouldValidate: true, shouldDirty: true });
           
           // Sync death_year with the solar death year
-          form.setValue('death_year', year, { shouldValidate: true });
+          form.setValue('death_year', year, { shouldValidate: true, shouldDirty: true });
+          
+          console.log("DEBUG: Successfully called form.setValue for death_lunar and death_year");
         } catch (error) {
           console.error('Lỗi chuyển đổi lịch âm:', error);
         }
@@ -105,6 +112,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
   }, [deathDate, form]);
 
   const computedLunarText = useMemo(() => {
+    console.log("DEBUG: computedLunarText recalculating for:", deathDate);
     if (!deathDate) return '';
     const parts = deathDate.split('-');
     if (parts.length === 3) {
@@ -132,22 +140,25 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-4xl mx-auto pb-12">
         {/* Basic Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Thông tin cơ bản</CardTitle>
+        <Card className="rounded-2xl border-slate-200/80 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+          <CardHeader className="bg-slate-50/50 border-b border-slate-100/80 px-6 py-4">
+            <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <User className="h-5 w-5 text-emerald-700" />
+              Thông Tin Cơ Bản
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <FormField
                 control={form.control}
                 name="display_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên hiển thị *</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Tên hiển thị *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nguyễn Văn A" {...field} />
+                      <Input placeholder="Ví dụ: Đặng Đình A" {...field} className="rounded-xl border-slate-200 focus-visible:ring-emerald-500 text-sm shadow-2xs" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -159,26 +170,26 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="handle"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Handle *</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Handle *</FormLabel>
                     <FormControl>
-                      <Input placeholder="nguyen-van-a" {...field} />
+                      <Input placeholder="dang-dinh-a" {...field} className="rounded-xl border-slate-200 focus-visible:ring-emerald-500 text-sm shadow-2xs" />
                     </FormControl>
-                    <FormDescription>URL-friendly, không dấu</FormDescription>
+                    <FormDescription className="text-xs text-slate-400">Đường dẫn thân thiện (chỉ dùng chữ thường, số, gạch ngang)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-4 bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
               <FormField
                 control={form.control}
                 name="surname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Họ</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Họ</FormLabel>
                     <FormControl>
-                      <Input placeholder="Đặng" {...field} />
+                      <Input placeholder="Đặng" {...field} className="rounded-xl bg-white border-slate-200 focus-visible:ring-emerald-500 text-sm" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -189,9 +200,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="middle_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên đệm</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Tên đệm</FormLabel>
                     <FormControl>
-                      <Input placeholder="Đình" {...field} />
+                      <Input placeholder="Đình" {...field} className="rounded-xl bg-white border-slate-200 focus-visible:ring-emerald-500 text-sm" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -202,9 +213,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="first_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Tên</FormLabel>
                     <FormControl>
-                      <Input placeholder="Tài" {...field} />
+                      <Input placeholder="A" {...field} className="rounded-xl bg-white border-slate-200 focus-visible:ring-emerald-500 text-sm" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -212,17 +223,17 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <FormField
                 control={form.control}
                 name="pen_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên tự</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Tên tự</FormLabel>
                     <FormControl>
-                      <Input placeholder="Tên tự (courtesy name)" {...field} />
+                      <Input placeholder="Ví dụ: Minh Đức" {...field} className="rounded-xl border-slate-200 focus-visible:ring-emerald-500 text-sm" />
                     </FormControl>
-                    <FormDescription>Tên chữ dùng trong giao tiếp</FormDescription>
+                    <FormDescription className="text-xs text-slate-400">Tên chữ dùng khi trưởng thành / giao tiếp rộng</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -232,31 +243,31 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="taboo_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tên húy</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Tên húy</FormLabel>
                     <FormControl>
-                      <Input placeholder="Tên húy (taboo name)" {...field} />
+                      <Input placeholder="Tên cúng cơm / Tên thật" {...field} className="rounded-xl border-slate-200 focus-visible:ring-emerald-500 text-sm" />
                     </FormControl>
-                    <FormDescription>Tên thật, kiêng gọi trực tiếp</FormDescription>
+                    <FormDescription className="text-xs text-slate-400">Tên thật trong gia tộc (tránh gọi trực tiếp)</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
               <FormField
                 control={form.control}
                 name="gender"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Giới tính *</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Giới tính *</FormLabel>
                     <Select onValueChange={(v) => field.onChange(parseInt(v) as 1 | 2)} defaultValue={field.value?.toString()}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="rounded-xl border-slate-200 focus:ring-emerald-500 text-sm">
                           <SelectValue placeholder="Chọn" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="rounded-xl">
                         <SelectItem value="1">Nam</SelectItem>
                         <SelectItem value="2">Nữ</SelectItem>
                       </SelectContent>
@@ -271,7 +282,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="generation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Đời *</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Đời thứ *</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -279,12 +290,12 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                         max={20}
                         {...field}
                         disabled={lockedGeneration !== undefined}
-                        className={lockedGeneration !== undefined ? 'bg-muted text-muted-foreground' : ''}
+                        className={`rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500 ${lockedGeneration !== undefined ? 'bg-slate-100 text-slate-500 font-bold border-slate-200' : ''}`}
                       />
                     </FormControl>
                     {lockedGeneration !== undefined && (
-                      <FormDescription className="text-xs text-amber-600">
-                        Tự động từ đời cha/mẹ — không thể sửa
+                      <FormDescription className="text-[10px] font-semibold text-amber-800">
+                        Thừa kế từ cha/mẹ
                       </FormDescription>
                     )}
                     <FormMessage />
@@ -297,7 +308,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="chi"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Chi</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Chi tộc</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
@@ -306,6 +317,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                         {...field} 
                         value={field.value ?? ''} 
                         onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                        className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />
                     </FormControl>
                     <FormMessage />
@@ -318,14 +330,14 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="privacy_level"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quyền riêng tư</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Quyền riêng tư</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="rounded-xl border-slate-200 focus:ring-emerald-500 text-sm">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
+                      <SelectContent className="rounded-xl">
                         <SelectItem value="0">Công khai</SelectItem>
                         <SelectItem value="1">Thành viên</SelectItem>
                         <SelectItem value="2">Riêng tư</SelectItem>
@@ -337,16 +349,16 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               />
             </div>
 
-            <div className="flex gap-6">
+            <div className="flex gap-8 pt-3 border-t border-slate-100">
               <FormField
                 control={form.control}
                 name="is_living"
                 render={({ field }) => (
-                  <FormItem className="flex items-center space-x-2 space-y-0">
+                  <FormItem className="flex items-center space-x-2 space-y-0 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100/80 transition-colors">
                     <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} className="rounded" />
                     </FormControl>
-                    <FormLabel className="font-normal">Còn sống</FormLabel>
+                    <FormLabel className="font-semibold text-slate-700 text-sm cursor-pointer">Còn sống</FormLabel>
                   </FormItem>
                 )}
               />
@@ -355,11 +367,11 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 control={form.control}
                 name="is_patrilineal"
                 render={({ field }) => (
-                  <FormItem className="flex items-center space-x-2 space-y-0">
+                  <FormItem className="flex items-center space-x-2 space-y-0 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100 cursor-pointer hover:bg-slate-100/80 transition-colors">
                     <FormControl>
-                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} className="rounded" />
                     </FormControl>
-                    <FormLabel className="font-normal">Chính tộc (dòng cha)</FormLabel>
+                    <FormLabel className="font-semibold text-slate-700 text-sm cursor-pointer">Chính tộc (dòng cha)</FormLabel>
                   </FormItem>
                 )}
               />
@@ -368,25 +380,29 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
         </Card>
 
         {/* Birth & Death */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Sinh / Mất</CardTitle>
+        <Card className="rounded-2xl border-slate-200/80 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+          <CardHeader className="bg-slate-50/50 border-b border-slate-100/80 px-6 py-4">
+            <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-emerald-700" />
+              Thông Tin Sinh / Mất
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <CardContent className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <FormField
                 control={form.control}
                 name="birth_year"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Năm sinh</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Năm sinh</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
-                        placeholder="1990" 
+                        placeholder="Ví dụ: 1990" 
                         {...field}
                         value={field.value ?? ''}
                         onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                        className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />
                     </FormControl>
                     <FormMessage />
@@ -398,9 +414,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="birth_date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ngày sinh</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Ngày sinh</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input type="date" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -411,9 +427,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="birth_place"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nơi sinh</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Nơi sinh</FormLabel>
                     <FormControl>
-                      <Input placeholder="Đà Nẵng" {...field} />
+                      <Input placeholder="Ví dụ: Đà Nẵng" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -422,21 +438,15 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
             </div>
 
             {!isLiving && (
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-5 rounded-2xl bg-amber-500/5 border border-amber-300/30 space-y-4 md:space-y-0">
                 <FormField
                   control={form.control}
-                  name="death_year"
+                  name="death_date"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Năm mất</FormLabel>
+                      <FormLabel className="font-bold text-slate-700">Ngày mất (Dương lịch)</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
-                          placeholder="2020" 
-                          {...field}
-                          value={field.value ?? ''}
-                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
-                        />
+                        <Input type="date" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -444,12 +454,19 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 />
                 <FormField
                   control={form.control}
-                  name="death_date"
+                  name="death_year"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ngày mất</FormLabel>
+                      <FormLabel className="font-bold text-slate-700">Năm mất</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input 
+                          type="number" 
+                          placeholder="Ví dụ: 2026" 
+                          {...field}
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                          className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -460,16 +477,16 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                   name="death_lunar"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Ngày giỗ (Âm)</FormLabel>
+                      <FormLabel className="font-bold text-slate-700">Ngày giỗ (Âm)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ví dụ: 15/7" {...field} />
+                        <Input placeholder="Ví dụ: 15/7" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
                       </FormControl>
                       {computedLunarText ? (
-                        <FormDescription className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/50 inline-block mt-1">
+                        <FormDescription className="text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200/50 inline-block mt-1">
                           {computedLunarText}
                         </FormDescription>
                       ) : (
-                        <FormDescription>Tự động tính từ ngày mất</FormDescription>
+                        <FormDescription className="text-xs text-slate-400">Tự động tính từ ngày mất</FormDescription>
                       )}
                       <FormMessage />
                     </FormItem>
@@ -480,9 +497,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                   name="death_place"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Nơi mất</FormLabel>
+                      <FormLabel className="font-bold text-slate-700">Nơi mất</FormLabel>
                       <FormControl>
-                        <Input placeholder="Hà Nội" {...field} />
+                        <Input placeholder="Ví dụ: Hà Nội" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -496,9 +513,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               name="hometown"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Quê quán</FormLabel>
+                  <FormLabel className="font-bold text-slate-700">Quê quán</FormLabel>
                   <FormControl>
-                    <Input placeholder="An Trạch, Hòa Tiến, Đà Nẵng" {...field} />
+                    <Input placeholder="Ví dụ: An Trạch, Hòa Tiến, Hòa Vang, Đà Nẵng" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -508,20 +525,23 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
         </Card>
 
         {/* Contact */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Liên hệ</CardTitle>
+        <Card className="rounded-2xl border-slate-200/80 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+          <CardHeader className="bg-slate-50/50 border-b border-slate-100/80 px-6 py-4">
+            <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <Phone className="h-5 w-5 text-emerald-700" />
+              Thông Tin Liên Hệ
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CardContent className="p-6 space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <FormField
                 control={form.control}
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Điện thoại</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Số điện thoại</FormLabel>
                     <FormControl>
-                      <Input placeholder="0912345678" {...field} />
+                      <Input placeholder="Ví dụ: 0912345678" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -532,9 +552,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="email@example.com" {...field} />
+                      <Input type="email" placeholder="example@mail.com" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -545,9 +565,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="zalo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Zalo</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Zalo</FormLabel>
                     <FormControl>
-                      <Input placeholder="0912345678" {...field} />
+                      <Input placeholder="Số điện thoại Zalo" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -558,9 +578,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="facebook"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Facebook</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Facebook</FormLabel>
                     <FormControl>
-                      <Input placeholder="https://facebook.com/username" {...field} />
+                      <Input placeholder="Đường dẫn trang cá nhân" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -572,9 +592,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               name="address"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Địa chỉ hiện tại</FormLabel>
+                  <FormLabel className="font-bold text-slate-700">Địa chỉ thường trú hiện tại</FormLabel>
                   <FormControl>
-                    <Input placeholder="Số 01 Đường Đinh Thị Thôi, xã Hòa Tiến, TP. Đà Nẵng" {...field} />
+                    <Input placeholder="Số nhà, Tên đường, Quận/Huyện, Tỉnh/Thành phố" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -583,20 +603,23 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
           </CardContent>
         </Card>
 
-        {/* Bio */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Tiểu sử & Ghi chú</CardTitle>
+        {/* Bio & Autobiography */}
+        <Card className="rounded-2xl border-slate-200/80 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+          <CardHeader className="bg-slate-50/50 border-b border-slate-100/80 px-6 py-4">
+            <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <FileText className="h-5 w-5 text-emerald-700" />
+              Tiểu Sử & Ghi Chú
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="p-6 space-y-5">
             <FormField
               control={form.control}
               name="occupation"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nghề nghiệp</FormLabel>
+                  <FormLabel className="font-bold text-slate-700">Nghề nghiệp / Học vị</FormLabel>
                   <FormControl>
-                    <Input placeholder="Giáo viên" {...field} />
+                    <Input placeholder="Ví dụ: Kỹ sư, Nhà báo, Giáo viên..." {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -607,9 +630,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               name="biography"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tiểu sử</FormLabel>
+                  <FormLabel className="font-bold text-slate-700">Tiểu sử tóm tắt</FormLabel>
                   <FormControl>
-                    <Textarea rows={4} placeholder="Giới thiệu về người này..." {...field} />
+                    <Textarea rows={5} placeholder="Ghi nhận tóm tắt về cuộc đời, thành tích công hiến..." {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -620,9 +643,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ghi chú</FormLabel>
+                  <FormLabel className="font-bold text-slate-700">Ghi chú thêm</FormLabel>
                   <FormControl>
-                    <Textarea rows={3} placeholder="Ghi chú thêm..." {...field} />
+                    <Textarea rows={3} placeholder="Thông tin bổ sung khác..." {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -633,9 +656,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               name="avatar_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>URL Ảnh đại diện</FormLabel>
+                  <FormLabel className="font-bold text-slate-700">Đường dẫn Ảnh đại diện (URL)</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://example.com/avatar.jpg" {...field} />
+                    <Input placeholder="https://example.com/avatar.jpg" {...field} className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -644,18 +667,18 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
           </CardContent>
         </Card>
 
-        {/* Submit */}
-        <div className="flex justify-end gap-4">
-          <Button type="submit" disabled={isLoading}>
+        {/* Submit Action buttons */}
+        <div className="flex justify-end gap-3 pt-4">
+          <Button type="submit" disabled={isLoading} className="rounded-xl px-8 py-5 text-sm font-bold bg-gradient-to-r from-emerald-800 to-amber-800 hover:from-emerald-900 hover:to-amber-900 text-white shadow-md shadow-emerald-950/20 hover:scale-102 transition-all duration-200">
             {isLoading ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Đang lưu...
+                <Loader2 className="h-4 w-4 mr-2 animate-spin text-amber-300" />
+                Đang Lưu Thông Tin...
               </>
             ) : (
               <>
-                <Save className="h-4 w-4 mr-2" />
-                Lưu
+                <Save className="h-4 w-4 mr-2 text-amber-300" />
+                Lưu Thành Viên
               </>
             )}
           </Button>
