@@ -95,11 +95,8 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
           // Set formatted value e.g. "15/7"
           form.setValue('death_lunar', `${lunar.day}/${lunar.month}`, { shouldValidate: true });
           
-          // Sync death_year with the solar death year if empty
-          const currentDeathYear = form.getValues('death_year');
-          if (!currentDeathYear) {
-            form.setValue('death_year', year, { shouldValidate: true });
-          }
+          // Sync death_year with the solar death year
+          form.setValue('death_year', year, { shouldValidate: true });
         } catch (error) {
           console.error('Lỗi chuyển đổi lịch âm:', error);
         }
