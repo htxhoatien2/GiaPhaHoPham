@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { notifyMemberUpdate } from './supabase-data-notifications';
 import type {
   Person, Family, Profile, Contribution, Event, Media,
   CreatePersonInput, UpdatePersonInput, CreateMediaInput, ContributionStatus, EventType,
@@ -72,6 +73,13 @@ export async function createPerson(input: CreatePersonInput): Promise<Person> {
     .single();
 
   if (error) throw error;
+
+  try {
+    await notifyMemberUpdate('create', data.display_name, data.id);
+  } catch (e) {
+    console.warn('Failed to send member notification:', e);
+  }
+
   return data;
 }
 
@@ -89,16 +97,35 @@ export async function updatePerson(id: string, input: UpdatePersonInput): Promis
     .single();
 
   if (error) throw error;
+
+  try {
+    await notifyMemberUpdate('update', data.display_name, data.id);
+  } catch (e) {
+    console.warn('Failed to send member notification:', e);
+  }
+
   return data;
 }
 
 export async function deletePerson(id: string): Promise<void> {
+  let personName = 'thành viên';
+  try {
+    const person = await getPerson(id);
+    if (person) personName = person.display_name;
+  } catch {}
+
   const { error } = await supabase
     .from('people')
     .delete()
     .eq('id', id);
   
   if (error) throw error;
+
+  try {
+    await notifyMemberUpdate('delete', personName, id);
+  } catch (e) {
+    console.warn('Failed to send member notification:', e);
+  }
 }
 
 export async function searchPeople(query: string): Promise<Person[]> {

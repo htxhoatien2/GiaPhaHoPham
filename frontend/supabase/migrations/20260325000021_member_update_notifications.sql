@@ -43,8 +43,7 @@ BEGIN
             '/people/' || NEW.id,
             current_actor,
             NEW.id::text
-        FROM auth.users u
-        WHERE current_actor IS NULL OR u.id != current_actor;
+        FROM auth.users u;
 
         RETURN NEW;
     ELSIF (TG_OP = 'UPDATE') THEN
@@ -57,8 +56,7 @@ BEGIN
             '/people/' || NEW.id,
             current_actor,
             NEW.id::text
-        FROM auth.users u
-        WHERE current_actor IS NULL OR u.id != current_actor;
+        FROM auth.users u;
 
         RETURN NEW;
     ELSIF (TG_OP = 'DELETE') THEN
@@ -71,8 +69,7 @@ BEGIN
             '/people',
             current_actor,
             OLD.id::text
-        FROM auth.users u
-        WHERE current_actor IS NULL OR u.id != current_actor;
+        FROM auth.users u;
 
         RETURN OLD;
     END IF;
