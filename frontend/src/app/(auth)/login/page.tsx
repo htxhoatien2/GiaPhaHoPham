@@ -18,12 +18,9 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/components/auth/auth-provider';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
-import { CLAN_NAME } from '@/lib/clan-config';
-import { useClanSettings } from '@/hooks/use-clan-settings';
-import { ShieldCheck, ArrowLeft, Loader2, Mail, KeyRound } from 'lucide-react';
-import type { LoginMethod } from '@/types';
+import { ClanLogo } from '@/components/common/clan-logo';
 
-// ─── TOTP second step ──────────────────────────────────────────────────────────
+// ─── Main login page wrapper ───────────────────────────────────────────────────
 
 interface TotpStepProps {
   factorId: string;
@@ -424,12 +421,12 @@ function LoginForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-emerald-100 p-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mb-4">
-            {clanInitial}
+        <CardHeader className="text-center flex flex-col items-center">
+          <div className="mb-3">
+            <ClanLogo name={clanName} size="lg" showText={false} clickable={false} />
           </div>
-          <CardTitle>{cardTitle}</CardTitle>
-          <CardDescription>{cardDescription}</CardDescription>
+          <CardTitle className="text-xl font-extrabold">{clanName}</CardTitle>
+          <CardDescription className="text-xs text-muted-foreground mt-0.5">{cardDescription}</CardDescription>
         </CardHeader>
         <CardContent>
           {totpFactorId ? (

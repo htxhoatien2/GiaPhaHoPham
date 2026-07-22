@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useClanSettings, useUpdateClanSettings } from '@/hooks/use-clan-settings';
 import { useAuth } from '@/components/auth/auth-provider';
+import { ClanLogo } from '@/components/common/clan-logo';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -462,17 +463,10 @@ export default function AdminSettingsPage() {
                     </p>
                     <Badge variant="outline" className="text-[10px] bg-background">Live Preview</Badge>
                   </div>
-                  <div className="flex items-center gap-3 p-2.5 bg-background rounded-lg border shadow-sm">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-600 text-white font-bold text-lg shrink-0 shadow-inner">
-                      {previewInitial}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-sm truncate">{clanName || ENV_CLAN_NAME}</p>
-                      {previewSubtitle && (
-                        <p className="text-xs text-muted-foreground truncate">{previewSubtitle}</p>
-                      )}
-                    </div>
+                  <div className="p-3 bg-background rounded-lg border shadow-sm">
+                    <ClanLogo name={clanName || ENV_CLAN_NAME} fullName={clanFullName || ENV_CLAN_FULL_NAME} size="md" clickable={false} />
                   </div>
+                </div>
                 </div>
               </CardContent>
             </Card>

@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { ClanLogo } from '@/components/common/clan-logo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -200,27 +201,12 @@ export function AppSidebar() {
   const { data: cs } = useClanSettings();
   const clanName = cs?.clan_name ?? CLAN_NAME;
   const clanFullName = cs?.clan_full_name ?? CLAN_FULL_NAME;
-  const clanInitial = deriveInitial(clanName);
-  const clanSubtitle = deriveSubtitle(clanFullName, clanName);
-
-  const getInitials = (name?: string) => {
-    if (!name) return 'U';
-    return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-  };
 
   return (
     <Sidebar className="border-r border-slate-200/80 bg-white">
       {/* Brand Header */}
       <SidebarHeader className="border-b border-slate-100 px-4 py-4 bg-slate-50/60">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-800 to-amber-800 text-white font-extrabold text-lg shadow-md shadow-emerald-950/20 group-hover:scale-105 transition-transform duration-200">
-            {clanInitial}
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-bold text-sm text-slate-900 truncate group-hover:text-emerald-900 transition-colors">{clanName}</span>
-            {clanSubtitle && <span className="text-xs text-slate-500 truncate font-normal">{clanSubtitle}</span>}
-          </div>
-        </Link>
+        <ClanLogo name={clanName} fullName={clanFullName} size="md" clickable={true} />
       </SidebarHeader>
 
       <SidebarContent className="px-2 py-3 space-y-4">
