@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/common/page-header';
 
 const isDesktop = process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true';
 
@@ -128,31 +129,21 @@ export default function HelpPage() {
   return (
     <div className="container mx-auto px-4 py-6 max-w-5xl space-y-10 pb-24">
       {/* Hero Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-800 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
-        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
-          <BookOpen className="h-56 w-56" />
-        </div>
-        <div className="relative z-10 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
-                <HelpCircle className="h-6 w-6 text-blue-200" />
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Center Hướng Dẫn Sử Dụng</h1>
-                <p className="text-xs sm:text-sm text-blue-100/90">
-                  Cẩm nang toàn tập hướng dẫn thao tác, quy trình và mẹo quản lý Gia Phả Điện Tử
-                </p>
-              </div>
-            </div>
-            <Link href="/guide" className="shrink-0">
-              <Button className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs shadow-md">
-                <BookOpen className="h-4 w-4 mr-2" /> Đọc Ebook Hướng Dẫn (v2.5.0)
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Center Hướng Dẫn Sử Dụng"
+        description="Cẩm nang toàn tập hướng dẫn thao tác, quy trình và mẹo quản lý Gia Phả Điện Tử"
+        icon={HelpCircle}
+        badge="Cẩm nang nhanh"
+        theme="indigo"
+        breadcrumbs={[{ label: 'Hướng dẫn sử dụng' }]}
+        actions={
+          <Link href="/guide">
+            <Button className="bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs shadow-md">
+              <BookOpen className="h-4 w-4 mr-1.5" /> Đọc Ebook Hướng Dẫn (v2.5.0)
+            </Button>
+          </Link>
+        }
+      />
 
       {/* Section 1: Overview Navigation */}
       <section className="space-y-4">

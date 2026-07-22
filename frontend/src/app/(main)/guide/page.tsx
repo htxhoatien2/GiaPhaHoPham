@@ -46,6 +46,7 @@ import {
   Check,
   Share2,
 } from 'lucide-react';
+import { PageHeader } from '@/components/common/page-header';
 
 interface Chapter {
   id: string;
@@ -508,26 +509,15 @@ Chi tộc Phạm Văn – An Trạch, Hòa Tiến, Đà Nẵng`;
   return (
     <div className="container mx-auto px-4 py-6 max-w-6xl space-y-8 pb-24">
       {/* Top Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-900 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
-        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
-          <BookOpen className="h-64 w-64" />
-        </div>
-        <div className="relative z-10 space-y-3">
-          <div className="flex items-center gap-2">
-            <Badge className="bg-amber-500 text-black font-bold hover:bg-amber-400">
-              Ebook v2.5.0
-            </Badge>
-            <span className="text-xs text-blue-200">Chi tộc Phạm Văn – An Trạch, Hòa Tiến</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Ebook Hướng Dẫn Sử Dụng Toàn Tập
-          </h1>
-          <p className="text-xs sm:text-sm text-blue-100/90 max-w-2xl leading-relaxed">
-            Cẩm nang tra cứu và hướng dẫn chi tiết từng trang, từng chức năng, quy trình vận hành phả hệ dành cho con cháu dòng họ và Ban quản trị AncestorTree.
-          </p>
-
-          {/* Action Toolbar */}
-          <div className="flex flex-wrap items-center gap-2 pt-2">
+      <PageHeader
+        title="Ebook Hướng Dẫn Sử Dụng Toàn Tập"
+        description="Cẩm nang tra cứu và hướng dẫn chi tiết từng trang, từng chức năng, quy trình vận hành phả hệ dành cho con cháu dòng họ và Ban quản trị AncestorTree."
+        icon={BookOpen}
+        badge="Ebook v2.5.0"
+        theme="indigo"
+        breadcrumbs={[{ label: 'Ebook Hướng dẫn' }]}
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               size="sm"
               variant="secondary"
@@ -554,8 +544,8 @@ Chi tộc Phạm Văn – An Trạch, Hòa Tiến, Đà Nẵng`;
               {copied ? 'Đã sao chép link' : 'Chia sẻ trang này'}
             </Button>
           </div>
-        </div>
-      </div>
+        }
+      />
 
       {/* Filter & Search Bar */}
       <div className="space-y-4 bg-card border border-border/80 rounded-2xl p-4 shadow-xs">

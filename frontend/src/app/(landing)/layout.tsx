@@ -26,18 +26,21 @@ export default function LandingLayout({
             </Link>
             <span className="hidden sm:inline text-xs text-gray-400 ml-1">Gia Phả Điện Tử</span>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/council" className="hidden sm:inline text-sm text-gray-600 hover:text-gray-900 transition-colors">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/council" className="hidden md:inline-flex text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
               Hội đồng
             </Link>
-            <Link href="/ancestral-hall" className="hidden sm:inline text-sm text-gray-600 hover:text-gray-900 transition-colors">
+            <Link href="/ancestral-hall" className="hidden md:inline-flex text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
               Nhà thờ
             </Link>
-            <Link href="/guide" className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
-              📖 Ebook Hướng dẫn
+            <Link href="/guide" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-800 dark:text-amber-300 font-bold text-xs hover:bg-amber-500/20 transition-all border border-amber-500/30">
+              <span>📖</span> Ebook Hướng dẫn
             </Link>
-            <Link href="/register-member" className="hidden sm:inline text-sm text-gray-600 hover:text-gray-900 transition-colors">
+            <Link href="/register-member" className="hidden sm:inline-flex text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
               Ghi danh
+            </Link>
+            <Link href="/login" className="inline-flex text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-800 text-white hover:bg-emerald-900 transition-all shadow-xs">
+              Đăng nhập
             </Link>
           </div>
         </div>
