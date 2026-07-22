@@ -33,6 +33,9 @@ export default function LandingLayout({
             <Link href="/ancestral-hall" className="hidden sm:inline text-sm text-gray-600 hover:text-gray-900 transition-colors">
               Nhà thờ
             </Link>
+            <Link href="/guide" className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+              📖 Ebook Hướng dẫn
+            </Link>
             <Link href="/register-member" className="hidden sm:inline text-sm text-gray-600 hover:text-gray-900 transition-colors">
               Ghi danh
             </Link>
