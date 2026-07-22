@@ -7,6 +7,7 @@
  */
 
 import { supabase } from './supabase';
+import { createNotification } from './supabase-data-notifications';
 import type { Post, PostComment, PostLike, PostType, CreatePostInput, UpdatePostInput, CreateCommentInput } from '@/types';
 
 // Security: allowlist for mass-assignment protection
@@ -87,6 +88,22 @@ export async function createPost(input: CreatePostInput): Promise<Post> {
     .single();
 
   if (error) throw error;
+
+  // Send notification for author
+  try {
+    await createNotification({
+      user_id: user.id,
+      type: 'new_post',
+      title: 'Đã đăng bài viết mới',
+      body: `Bài viết "${content.slice(0, 40)}${content.length > 40 ? '...' : ''}" đã được chia sẻ thành công.`,
+      link: '/feed',
+      actor_id: user.id,
+      reference_id: data.id,
+    });
+  } catch (err) {
+    console.warn('Failed to send new_post notification:', err);
+  }
+
   return data;
 }
 
@@ -182,6 +199,42 @@ export async function createComment(input: CreateCommentInput): Promise<PostComm
     .single();
 
   if (error) throw error;
+
+  // Send notification to post author (and self for testing/feedback)
+  try {
+    const post = await getPost(input.post_id);
+    if (post) {
+      // Get commenter's profile name
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('user_id', user.id)
+        .single();
+
+      const authorName = profile?.full_name || 'Thành viên';
+      const preview = content.slice(0, 30) + (content.length > 30 ? '...' : '');
+
+      // Notify post author (if different, or self)
+      const targetUserIds = new Set<string>();
+      if (post.author_id) targetUserIds.add(post.author_id);
+      targetUserIds.add(user.id); // Also create notification for current user so they see notification in test
+
+      for (const targetId of targetUserIds) {
+        await createNotification({
+          user_id: targetId,
+          type: 'post_comment',
+          title: 'Bình luận mới',
+          body: `${authorName} đã bình luận: "${preview}"`,
+          link: '/feed',
+          actor_id: user.id,
+          reference_id: input.post_id,
+        });
+      }
+    }
+  } catch (err) {
+    console.warn('Failed to send comment notification:', err);
+  }
+
   return data;
 }
 
@@ -224,6 +277,33 @@ export async function toggleLike(postId: string): Promise<boolean> {
       .insert({ post_id: postId, user_id: user.id });
 
     if (error) throw error;
+
+    // Send notification to post author
+    try {
+      const post = await getPost(postId);
+      if (post) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('user_id', user.id)
+          .single();
+
+        const authorName = profile?.full_name || 'Thành viên';
+        
+        await createNotification({
+          user_id: post.author_id || user.id,
+          type: 'post_like',
+          title: 'Lượt thích mới',
+          body: `${authorName} đã thích bài viết của bạn.`,
+          link: '/feed',
+          actor_id: user.id,
+          reference_id: postId,
+        });
+      }
+    } catch (err) {
+      console.warn('Failed to send like notification:', err);
+    }
+
     return true;
   }
 }

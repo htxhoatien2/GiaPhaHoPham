@@ -23,6 +23,7 @@ import {
   toggleLike,
   getUserLikedPosts,
 } from '@/lib/supabase-data-feed';
+import { notificationKeys } from '@/hooks/use-notifications';
 import type { PostType, CreatePostInput, UpdatePostInput, CreateCommentInput } from '@/types';
 
 // ─── Query Keys ─────────────────────────────────────────────────────
@@ -78,6 +79,7 @@ export function useCreatePost() {
     mutationFn: (input: CreatePostInput) => createPost(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postKeys.all });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 }
@@ -120,6 +122,7 @@ export function useCreateComment() {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: postKeys.comments(variables.post_id) });
       queryClient.invalidateQueries({ queryKey: postKeys.all });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 }
@@ -131,6 +134,7 @@ export function useDeleteComment() {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: postKeys.comments(variables.postId) });
       queryClient.invalidateQueries({ queryKey: postKeys.all });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 }
@@ -141,6 +145,7 @@ export function useToggleLike() {
     mutationFn: (postId: string) => toggleLike(postId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postKeys.all });
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
     },
   });
 }
