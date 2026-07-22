@@ -8,10 +8,11 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personSchema, type PersonFormData, defaultPersonValues } from '@/lib/validations/person';
+import { solarToLunar } from '@/lib/lunar-calendar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -77,6 +78,53 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
   });
 
   const isLiving = form.watch('is_living');
+  const deathDate = form.watch('death_date');
+
+  // Auto-convert solar death date to lunar date
+  useEffect(() => {
+    if (!deathDate) return;
+    const parts = deathDate.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10);
+      const day = parseInt(parts[2], 10);
+      
+      if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+        try {
+          const lunar = solarToLunar(day, month, year);
+          // Set formatted value e.g. "15/7"
+          form.setValue('death_lunar', `${lunar.day}/${lunar.month}`, { shouldValidate: true });
+          
+          // Sync death_year with the solar death year if empty
+          const currentDeathYear = form.getValues('death_year');
+          if (!currentDeathYear) {
+            form.setValue('death_year', year, { shouldValidate: true });
+          }
+        } catch (error) {
+          console.error('Lỗi chuyển đổi lịch âm:', error);
+        }
+      }
+    }
+  }, [deathDate, form]);
+
+  const computedLunarText = useMemo(() => {
+    if (!deathDate) return '';
+    const parts = deathDate.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10);
+      const day = parseInt(parts[2], 10);
+      if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
+        try {
+          const lunar = solarToLunar(day, month, year);
+          return `Âm lịch: Ngày ${lunar.day} tháng ${lunar.month} năm ${lunar.year}${lunar.leap ? ' (Nhuận)' : ''}`;
+        } catch {
+          return '';
+        }
+      }
+    }
+    return '';
+  }, [deathDate]);
 
   // Sync lockedGeneration into form whenever parent selection changes
   useEffect(() => {
@@ -417,9 +465,15 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                     <FormItem>
                       <FormLabel>Ngày giỗ (Âm)</FormLabel>
                       <FormControl>
-                        <Input placeholder="15/7" {...field} />
+                        <Input placeholder="Ví dụ: 15/7" {...field} />
                       </FormControl>
-                      <FormDescription>DD/MM</FormDescription>
+                      {computedLunarText ? (
+                        <FormDescription className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/50 inline-block mt-1">
+                          {computedLunarText}
+                        </FormDescription>
+                      ) : (
+                        <FormDescription>Tự động tính từ ngày mất</FormDescription>
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}

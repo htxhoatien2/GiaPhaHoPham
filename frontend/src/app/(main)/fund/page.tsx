@@ -120,7 +120,6 @@ export default function FundPage() {
   }
 
   return (
-  return (
     <div className="container mx-auto px-4 py-8 space-y-8 max-w-6xl">
       {/* Header Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900 via-emerald-850 to-amber-900 p-8 text-white shadow-xl shadow-emerald-950/20">
