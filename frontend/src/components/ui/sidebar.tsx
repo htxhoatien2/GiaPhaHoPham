@@ -258,22 +258,31 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, state } = useSidebar()
 
   return (
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
-      variant="ghost"
-      size="icon"
-      className={cn("size-7", className)}
+      variant="outline"
+      size="sm"
+      className={cn(
+        "h-9 px-2.5 sm:px-3 rounded-xl border-amber-200/80 dark:border-amber-900/60 bg-gradient-to-r from-amber-50/90 via-slate-50 to-amber-50/60 dark:from-amber-950/40 dark:to-slate-900/40 hover:border-amber-400 hover:bg-amber-100/50 shadow-2xs text-slate-800 dark:text-slate-200 transition-all duration-200 active:scale-95 flex items-center gap-2 group shrink-0 cursor-pointer",
+        className
+      )}
       onClick={(event) => {
         onClick?.(event)
         toggleSidebar()
       }}
+      title={state === "expanded" ? "Thu gọn thanh điều hướng (Ctrl+B)" : "Mở rộng thanh điều hướng (Ctrl+B)"}
       {...props}
     >
-      <PanelLeftIcon />
+      <div className="p-1 rounded-lg bg-amber-600/10 text-amber-700 dark:text-amber-300 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200">
+        <PanelLeftIcon className={cn("h-4 w-4 transition-transform duration-300 ease-out", state === "collapsed" && "rotate-180")} />
+      </div>
+      <span className="hidden sm:inline font-bold text-xs text-amber-950 dark:text-amber-200 tracking-tight">
+        {state === "expanded" ? "Thu gọn Menu" : "Mở Menu"}
+      </span>
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
