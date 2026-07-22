@@ -109,8 +109,27 @@ export async function createNotification(input: CreateNotificationInput): Promis
     .single();
 
   if (error) {
-    console.error('Failed to create notification:', error);
-    return null;
+    // Fallback if live Supabase table has check constraint on older type values
+    const fallbackType = (input.type === 'member_updated' || input.type === 'member_deleted') ? 'new_member' : 'system';
+    const { data: fallbackData, error: fallbackError } = await supabase
+      .from('notifications')
+      .insert({
+        user_id: targetUserId,
+        type: fallbackType,
+        title: input.title,
+        body: input.body || null,
+        link: input.link || null,
+        actor_id: input.actor_id || user?.id || null,
+        reference_id: input.reference_id || null,
+      })
+      .select()
+      .single();
+
+    if (fallbackError) {
+      console.error('Failed to create notification (fallback error):', fallbackError);
+      return null;
+    }
+    return fallbackData;
   }
   return data;
 }
