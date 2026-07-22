@@ -506,11 +506,11 @@ export type PostType = 'general' | 'photo' | 'milestone' | 'memory' | 'announcem
 export type PostStatus = 'published' | 'hidden';
 
 export const POST_TYPE_LABELS: Record<PostType, string> = {
-  general: 'Chung',
-  photo: 'Ảnh',
+  general: 'Thảo luận',
+  announcement: 'Thông báo',
+  photo: 'Hình ảnh',
   milestone: 'Tin vui',
   memory: 'Kỷ niệm',
-  announcement: 'Thông báo',
 };
 
 export interface Post {

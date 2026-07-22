@@ -22,11 +22,11 @@ import type { PostType, Profile } from '@/types';
 
 const FILTER_TABS: { key: PostType | 'all'; label: string; icon: string }[] = [
   { key: 'all', label: 'Tất cả', icon: '🌐' },
-  { key: 'general', label: POST_TYPE_LABELS.general, icon: '💬' },
-  { key: 'announcement', label: POST_TYPE_LABELS.announcement, icon: '📢' },
-  { key: 'event', label: POST_TYPE_LABELS.event, icon: '📅' },
-  { key: 'ceremony', label: POST_TYPE_LABELS.ceremony, icon: '🏮' },
-  { key: 'memorial', label: POST_TYPE_LABELS.memorial, icon: '🕯️' },
+  { key: 'general', label: 'Thảo luận', icon: '💬' },
+  { key: 'announcement', label: 'Thông báo', icon: '📢' },
+  { key: 'photo', label: 'Hình ảnh', icon: '🖼️' },
+  { key: 'milestone', label: 'Tin vui', icon: '🎉' },
+  { key: 'memory', label: 'Kỷ niệm', icon: '🕯️' },
 ];
 
 export default function FeedPage() {
