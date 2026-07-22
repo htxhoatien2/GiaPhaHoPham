@@ -106,12 +106,12 @@ const cultureNavGroup = {
 const utilityNavGroup = {
   label: 'Tiện ích & Khác',
   items: [
-    { title: 'Ebook Hướng dẫn', url: '/guide', icon: BookOpen },
     { title: 'Thống kê dòng họ', url: '/stats', icon: BarChart3 },
     { title: 'Thông báo', url: '/notifications', icon: Bell },
     { title: 'Đề xuất ý kiến', url: '/contributions', icon: ClipboardList },
     { title: 'Tài liệu dòng họ', url: '/documents', icon: FileText },
     { title: 'Hướng dẫn sử dụng', url: '/help', icon: HelpCircle },
+    { title: 'Ebook Hướng dẫn', url: '/guide', icon: BookOpen },
   ],
 };
 
