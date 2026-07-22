@@ -1140,43 +1140,43 @@ export function FamilyTree() {
         )}
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Controls Bar - Single Horizontal Row */}
+      <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 w-full shrink-0 border-b pb-2">
         {/* Zoom controls */}
-        <div className="flex items-center gap-1 border rounded-lg p-1">
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleZoomOut}>
-            <ZoomOut className="h-4 w-4" />
+        <div className="flex items-center gap-0.5 border rounded-lg p-0.5 shrink-0 bg-background">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomOut} title="Thu nhỏ">
+            <ZoomOut className="h-3.5 w-3.5" />
           </Button>
-          <span className="text-sm w-12 text-center">{Math.round(scale * 100)}%</span>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleZoomIn}>
-            <ZoomIn className="h-4 w-4" />
+          <span className="text-xs font-mono w-10 text-center font-medium">{Math.round(scale * 100)}%</span>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleZoomIn} title="Phóng to">
+            <ZoomIn className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleReset}>
-            <RotateCcw className="h-4 w-4" />
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleReset} title="Khôi phục">
+            <RotateCcw className="h-3.5 w-3.5" />
           </Button>
         </div>
 
         {/* View mode filter */}
         <Select value={viewMode} onValueChange={(v) => handleViewModeChange(v as ViewMode)}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-32 h-8 text-xs font-medium shrink-0">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">
-              <span className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
+            <SelectItem value="all" className="text-xs">
+              <span className="flex items-center gap-1.5">
+                <Users className="h-3.5 w-3.5 text-blue-600" />
                 Tất cả
               </span>
             </SelectItem>
-            <SelectItem value="ancestors">
-              <span className="flex items-center gap-2">
-                <ArrowUpFromLine className="h-4 w-4" />
+            <SelectItem value="ancestors" className="text-xs">
+              <span className="flex items-center gap-1.5">
+                <ArrowUpFromLine className="h-3.5 w-3.5 text-amber-600" />
                 Tổ tiên
               </span>
             </SelectItem>
-            <SelectItem value="descendants">
-              <span className="flex items-center gap-2">
-                <ArrowDownFromLine className="h-4 w-4" />
+            <SelectItem value="descendants" className="text-xs">
+              <span className="flex items-center gap-1.5">
+                <ArrowDownFromLine className="h-3.5 w-3.5 text-emerald-600" />
                 Con cháu
               </span>
             </SelectItem>
@@ -1184,95 +1184,96 @@ export function FamilyTree() {
         </Select>
 
         {/* Expand / Collapse all */}
-        <div className="flex items-center gap-1 border rounded-lg p-1">
-          <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={handleExpandAll}>
-            <ChevronDown className="h-3 w-3 mr-1" />
+        <div className="flex items-center gap-0.5 border rounded-lg p-0.5 shrink-0 bg-background">
+          <Button variant="ghost" size="sm" className="h-7 text-xs px-2 whitespace-nowrap" onClick={handleExpandAll}>
+            <ChevronDown className="h-3.5 w-3.5 mr-1" />
             Mở rộng
           </Button>
-          <Button variant="ghost" size="sm" className="h-8 text-xs" onClick={handleCollapseAll}>
-            <ChevronRight className="h-3 w-3 mr-1" />
+          <Button variant="ghost" size="sm" className="h-7 text-xs px-2 whitespace-nowrap" onClick={handleCollapseAll}>
+            <ChevronRight className="h-3.5 w-3.5 mr-1" />
             Thu gọn
           </Button>
         </div>
 
         {/* Toggle minimap */}
         <Button
-          variant={showMinimap ? 'secondary' : 'ghost'}
+          variant={showMinimap ? 'secondary' : 'outline'}
           size="sm"
           onClick={() => setShowMinimap(!showMinimap)}
-          className="hidden md:flex"
+          className="h-8 text-xs px-2.5 shrink-0 whitespace-nowrap"
         >
-          <Maximize2 className="h-4 w-4 mr-2" />
+          <Maximize2 className="h-3.5 w-3.5 mr-1.5 text-purple-600" />
           Minimap
         </Button>
 
         {/* Tree-only PDF export */}
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={handleExportPdf}
           disabled={isExportingPdf || isExportingFull || isExportingWord || !layout}
-          className="hidden md:flex"
+          className="h-8 text-xs px-2.5 shrink-0 whitespace-nowrap"
           title="Xuất sơ đồ cây (PDF)"
         >
           {isExportingPdf ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
           ) : (
-            <FileDown className="h-4 w-4 mr-2" />
+            <FileDown className="h-3.5 w-3.5 mr-1.5 text-rose-600" />
           )}
           PDF
         </Button>
 
         {/* Tree-only Image export */}
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={handleExportImage}
           disabled={isExportingImage || isExportingPdf || isExportingFull || isExportingWord || !layout}
-          className="hidden md:flex"
+          className="h-8 text-xs px-2.5 shrink-0 whitespace-nowrap"
           title="Xuất sơ đồ cây ra ảnh PNG phục vụ in ấn"
         >
           {isExportingImage ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
           ) : (
-            <FileImage className="h-4 w-4 mr-2 text-emerald-700" />
+            <FileImage className="h-3.5 w-3.5 mr-1.5 text-emerald-600" />
           )}
           Xuất File Ảnh
         </Button>
 
         {/* Full genealogy PDF export */}
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={() => setShowExportDialog(true)}
           disabled={isExportingFull || isExportingPdf || isExportingWord || !layout}
-          className="hidden md:flex"
+          className="h-8 text-xs px-2.5 shrink-0 whitespace-nowrap bg-blue-50/50 hover:bg-blue-100 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border-blue-200"
           title="Xuất đầy đủ Gia Phả (bìa + lịch sử + cây + lý lịch thành viên)"
         >
           {isExportingFull ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
           ) : (
-            <BookText className="h-4 w-4 mr-2" />
+            <BookText className="h-3.5 w-3.5 mr-1.5 text-blue-600" />
           )}
           Xuất Gia Phả PDF
         </Button>
 
         {/* Full genealogy WORD export */}
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
           onClick={() => setShowWordDialog(true)}
           disabled={isExportingWord || isExportingFull || isExportingPdf || !layout}
-          className="hidden md:flex"
+          className="h-8 text-xs px-2.5 shrink-0 whitespace-nowrap bg-indigo-50/50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300 border-indigo-200"
           title="Xuất đầy đủ Gia Phả ra định dạng Word (.docx)"
         >
           {isExportingWord ? (
-            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
           ) : (
-            <FileText className="h-4 w-4 mr-2 text-blue-700" />
+            <FileText className="h-3.5 w-3.5 mr-1.5 text-indigo-600" />
           )}
           Xuất Gia Phả Word
         </Button>
+      </div>
 
         {/* Pan indicator */}
         <div className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
