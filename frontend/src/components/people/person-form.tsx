@@ -41,7 +41,7 @@ interface PersonFormProps {
 
 const getFriendlyLunarDate = (deathDateStr?: string, lunarStr?: string) => {
   if (!lunarStr) return '';
-  const match = lunarStr.match(/^(\d{1,2})\/(\d{1,2})$/);
+  const match = lunarStr.match(/^(\d{1,2})\/(\d{1,2})(\s*\(Nhuận\))?$/);
   if (match && deathDateStr) {
     const parts = deathDateStr.split('-');
     if (parts.length === 3) {
@@ -55,7 +55,7 @@ const getFriendlyLunarDate = (deathDateStr?: string, lunarStr?: string) => {
         const can = CAN[lunar.year % 10];
         const chiIndex = (lunar.year - 4) % 12;
         const chi = CHI[chiIndex < 0 ? chiIndex + 12 : chiIndex];
-        return `Ngày ${match[1]} tháng ${match[2]} năm ${can} ${chi}`;
+        return `${match[1]}/${match[2]}${match[3] || ''} ${can} ${chi}`;
       } catch {
         return lunarStr;
       }
@@ -122,8 +122,18 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
           const lunar = solarToLunar(day, month, year);
           console.log("DEBUG: Calculated Lunar date:", lunar);
           
-          // Set formatted value e.g. "15/7"
-          form.setValue('death_lunar', `${lunar.day}/${lunar.month}`, { shouldValidate: true, shouldDirty: true });
+          // Calculate Can Chi for lunar year
+          const CAN = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"];
+          const CHI = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+          const can = CAN[lunar.year % 10];
+          const chiIndex = (lunar.year - 4) % 12;
+          const chi = CHI[chiIndex < 0 ? chiIndex + 12 : chiIndex];
+          const canChiYear = `${can} ${chi}`;
+          
+          const friendlyText = `${lunar.day}/${lunar.month}${lunar.leap ? ' (Nhuận)' : ''} ${canChiYear}`;
+          
+          // Set formatted value e.g. "15/7 Bính Ngọ" directly into the field
+          form.setValue('death_lunar', friendlyText, { shouldValidate: true, shouldDirty: true });
           
           // Sync death_year with the solar death year
           form.setValue('death_year', year, { shouldValidate: true, shouldDirty: true });
@@ -139,11 +149,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
   const handleSubmitInterceptor = async (data: PersonFormData) => {
     const formattedData = { ...data };
     if (data.death_lunar) {
-      const match = data.death_lunar.match(/^Ngày\s+(\d{1,2})\s+tháng\s+(\d{1,2})/i);
+      const match = data.death_lunar.match(/^(\d{1,2}\/\d{1,2}(\s*\(Nhuận\))?)/i);
       if (match) {
-        const day = parseInt(match[1], 10);
-        const month = parseInt(match[2], 10);
-        formattedData.death_lunar = `${day}/${month}`;
+        formattedData.death_lunar = match[1].trim();
       }
     }
     await onSubmit(formattedData);
@@ -497,9 +505,8 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                     <FormItem>
                       <FormLabel className="font-bold text-slate-700">Ngày giỗ (Âm)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ví dụ: Ngày 15 tháng 7 năm Bính Ngọ" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
+                        <Input placeholder="Ví dụ: 15/7 Bính Ngọ" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
                       </FormControl>
-                      <FormDescription className="text-xs text-slate-400">Tự động quy đổi âm lịch khi điền Ngày mất</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
