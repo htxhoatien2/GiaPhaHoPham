@@ -22,20 +22,28 @@ const requiredNumericString = z.preprocess(
   z.number()
 );
 
-// Lunar date format: DD/MM where day 1-30, month 1-12
+// Lunar date format: DD/MM (e.g. 15/7) or friendly format (e.g. Ngày 15 tháng 7 năm Bính Ngọ)
 const lunarDateSchema = z
   .string()
   .optional()
   .refine(
     (val) => {
       if (!val) return true;
-      const match = val.match(/^(\d{1,2})\/(\d{1,2})$/);
-      if (!match) return false;
-      const day = parseInt(match[1]);
-      const month = parseInt(match[2]);
-      return day >= 1 && day <= 30 && month >= 1 && month <= 12;
+      const shortMatch = val.match(/^(\d{1,2})\/(\d{1,2})$/);
+      if (shortMatch) {
+        const day = parseInt(shortMatch[1]);
+        const month = parseInt(shortMatch[2]);
+        return day >= 1 && day <= 30 && month >= 1 && month <= 12;
+      }
+      const friendlyMatch = val.match(/^Ngày\s+(\d{1,2})\s+tháng\s+(\d{1,2})/i);
+      if (friendlyMatch) {
+        const day = parseInt(friendlyMatch[1]);
+        const month = parseInt(friendlyMatch[2]);
+        return day >= 1 && day <= 30 && month >= 1 && month <= 12;
+      }
+      return false;
     },
-    { message: 'Ngày âm lịch không hợp lệ. VD: 15/7 (ngày/tháng)' }
+    { message: 'Ngày âm lịch không hợp lệ. VD: 15/7 hoặc Ngày 15 tháng 7 năm Bính Ngọ' }
   );
 
 const yearSchema = z.preprocess(

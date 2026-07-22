@@ -39,6 +39,31 @@ interface PersonFormProps {
   isLoading?: boolean;
 }
 
+const getFriendlyLunarDate = (deathDateStr?: string, lunarStr?: string) => {
+  if (!lunarStr) return '';
+  const match = lunarStr.match(/^(\d{1,2})\/(\d{1,2})$/);
+  if (match && deathDateStr) {
+    const parts = deathDateStr.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10);
+      const day = parseInt(parts[2], 10);
+      try {
+        const lunar = solarToLunar(day, month, year);
+        const CAN = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"];
+        const CHI = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+        const can = CAN[lunar.year % 10];
+        const chiIndex = (lunar.year - 4) % 12;
+        const chi = CHI[chiIndex < 0 ? chiIndex + 12 : chiIndex];
+        return `Ngày ${match[1]} tháng ${match[2]} năm ${can} ${chi}`;
+      } catch {
+        return lunarStr;
+      }
+    }
+  }
+  return lunarStr;
+};
+
 export function PersonForm({ person, defaultValues: extraDefaults, lockedGeneration, onSubmit, isLoading }: PersonFormProps) {
   const form = useForm<PersonFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +85,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
       death_date: person.death_date || '',
       death_year: person.death_year || undefined,
       death_place: person.death_place || '',
-      death_lunar: person.death_lunar || '',
+      death_lunar: person.death_lunar ? getFriendlyLunarDate(person.death_date, person.death_lunar) : '',
       is_living: person.is_living,
       is_patrilineal: person.is_patrilineal,
       phone: person.phone || '',
@@ -111,25 +136,18 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
     }
   }, [deathDate, form]);
 
-  const computedLunarText = useMemo(() => {
-    console.log("DEBUG: computedLunarText recalculating for:", deathDate);
-    if (!deathDate) return '';
-    const parts = deathDate.split('-');
-    if (parts.length === 3) {
-      const year = parseInt(parts[0], 10);
-      const month = parseInt(parts[1], 10);
-      const day = parseInt(parts[2], 10);
-      if (!isNaN(year) && !isNaN(month) && !isNaN(day)) {
-        try {
-          const lunar = solarToLunar(day, month, year);
-          return `Âm lịch: Ngày ${lunar.day} tháng ${lunar.month} năm ${lunar.year}${lunar.leap ? ' (Nhuận)' : ''}`;
-        } catch {
-          return '';
-        }
+  const handleSubmitInterceptor = async (data: PersonFormData) => {
+    const formattedData = { ...data };
+    if (data.death_lunar) {
+      const match = data.death_lunar.match(/^Ngày\s+(\d{1,2})\s+tháng\s+(\d{1,2})/i);
+      if (match) {
+        const day = parseInt(match[1], 10);
+        const month = parseInt(match[2], 10);
+        formattedData.death_lunar = `${day}/${month}`;
       }
     }
-    return '';
-  }, [deathDate]);
+    await onSubmit(formattedData);
+  };
 
   // Sync lockedGeneration into form whenever parent selection changes
   useEffect(() => {
@@ -140,7 +158,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-4xl mx-auto pb-12">
+      <form onSubmit={form.handleSubmit(handleSubmitInterceptor)} className="space-y-8 max-w-4xl mx-auto pb-12">
         {/* Basic Info */}
         <Card className="rounded-2xl border-slate-200/80 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
           <CardHeader className="bg-slate-50/50 border-b border-slate-100/80 px-6 py-4">
@@ -479,15 +497,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                     <FormItem>
                       <FormLabel className="font-bold text-slate-700">Ngày giỗ (Âm)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ví dụ: 15/7" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
+                        <Input placeholder="Ví dụ: Ngày 15 tháng 7 năm Bính Ngọ" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
                       </FormControl>
-                      {computedLunarText ? (
-                        <FormDescription className="text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200/50 inline-block mt-1">
-                          {computedLunarText}
-                        </FormDescription>
-                      ) : (
-                        <FormDescription className="text-xs text-slate-400">Tự động tính từ ngày mất</FormDescription>
-                      )}
+                      <FormDescription className="text-xs text-slate-400">Tự động quy đổi âm lịch khi điền Ngày mất</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
