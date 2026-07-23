@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation';
 import { useClanSettings, useUpdateClanSettings } from '@/hooks/use-clan-settings';
 import { useAuth } from '@/components/auth/auth-provider';
 import { ClanLogo } from '@/components/common/clan-logo';
+import { ClanBanner } from '@/components/common/clan-banner';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -459,13 +461,24 @@ export default function AdminSettingsPage() {
                 <div className="rounded-xl border border-amber-200/80 bg-amber-50/30 dark:bg-amber-950/20 dark:border-amber-900/40 p-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <p className="text-[11px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                      <Building className="h-3.5 w-3.5" /> Xem trước giao diện Sidebar
+                      <Building className="h-3.5 w-3.5" /> Xem trước giao diện Logo & Sidebar
                     </p>
                     <Badge variant="outline" className="text-[10px] bg-background">Live Preview</Badge>
                   </div>
                   <div className="p-3 bg-background rounded-lg border shadow-sm">
                     <ClanLogo name={clanName || ENV_CLAN_NAME} fullName={clanFullName || ENV_CLAN_FULL_NAME} size="md" clickable={false} />
                   </div>
+                </div>
+
+                {/* Banner Preview Component */}
+                <div className="rounded-xl border border-amber-200/80 bg-amber-50/30 dark:bg-amber-950/20 dark:border-amber-900/40 p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[11px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                      <Building className="h-3.5 w-3.5" /> Banner chính thức Từ đường Tộc Phạm Văn An Trạch
+                    </p>
+                    <Badge variant="outline" className="text-[10px] bg-background">Banner 2026</Badge>
+                  </div>
+                  <ClanBanner className="mt-2" />
                 </div>
                 </div>
               </CardContent>

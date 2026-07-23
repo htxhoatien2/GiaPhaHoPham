@@ -20,6 +20,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CLAN_NAME, CLAN_FULL_NAME } from '@/lib/clan-config';
 import { ClanLogo } from '@/components/common/clan-logo';
+import { ClanBanner } from '@/components/common/clan-banner';
+
 
 
 const GITHUB_REPO = 'https://github.com/htxhoatien2/GiaPhaHoPham';
@@ -205,6 +207,12 @@ export default function WelcomePage() {
               </a>
             </Button>
           </div>
+
+          {/* Official Clan Banner Display */}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <ClanBanner className="ring-2 ring-amber-400/40 shadow-2xl rounded-2xl overflow-hidden" />
+          </div>
+
           <div className="mt-6">
             <div className="flex items-center gap-3">
               <Button variant="link" className="text-emerald-200 hover:text-white" asChild>
