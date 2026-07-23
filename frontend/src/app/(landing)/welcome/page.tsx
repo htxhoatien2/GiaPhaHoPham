@@ -18,7 +18,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CLAN_NAME } from '@/lib/clan-config';
+import { CLAN_NAME, CLAN_FULL_NAME } from '@/lib/clan-config';
+import { ClanLogo } from '@/components/common/clan-logo';
+
 
 const GITHUB_REPO = 'https://github.com/htxhoatien2/GiaPhaHoPham';
 const GITHUB_RELEASES = `${GITHUB_REPO}/releases`;
@@ -176,12 +178,16 @@ export default function WelcomePage() {
           <div className="absolute bottom-10 right-20 w-96 h-96 bg-emerald-300 rounded-full blur-3xl" />
         </div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
-          <Badge variant="secondary" className="mb-6 text-sm px-4 py-1">
-            Open Source &middot; MIT License &middot; v2.5.0
+          <div className="mb-6 flex justify-center">
+            <ClanLogo size="xl" showText={false} clickable={false} className="ring-4 ring-amber-400/50 shadow-2xl" />
+          </div>
+          <Badge variant="secondary" className="mb-6 text-sm px-4 py-1 bg-amber-500/20 text-amber-200 border border-amber-400/30">
+            {CLAN_FULL_NAME} &middot; Gia Phả Điện Tử
           </Badge>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
-            Gia Phả Điện Tử
+            {CLAN_NAME}
           </h1>
+
           <p className="text-lg sm:text-xl text-emerald-100 max-w-2xl mx-auto mb-10">
             Gìn giữ tinh hoa — Tiếp bước cha ông
           </p>

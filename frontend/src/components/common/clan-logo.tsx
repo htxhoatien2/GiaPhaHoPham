@@ -1,17 +1,17 @@
 /**
- * @project AncestorTree
+ * @project AncestorTree / Gia Phả Tộc Phạm Văn An Trạch
  * @file src/components/common/clan-logo.tsx
- * @description Modern, premium visual logo emblem for "Phạm Văn Tộc"
- * @version 1.0.0
- * @updated 2026-03-25
+ * @description Official Clan Emblem component for "Tộc Phạm Văn An Trạch"
+ * Renders official uploaded clan logo with scalable vector fallback.
  */
 
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Sparkles, Shield, Landmark } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { CLAN_NAME as ENV_CLAN_NAME, CLAN_FULL_NAME as ENV_CLAN_FULL_NAME } from '@/lib/clan-config';
+import { ClanLogoSvg } from './clan-logo-svg';
 
 interface ClanLogoProps {
   name?: string;
@@ -23,10 +23,10 @@ interface ClanLogoProps {
 }
 
 const SIZE_MAP = {
-  sm: { box: 'h-8 w-8', icon: 'h-4 w-4', text: 'text-xs', sub: 'text-[10px]' },
-  md: { box: 'h-10 w-10', icon: 'h-5 w-5', text: 'text-sm', sub: 'text-xs' },
-  lg: { box: 'h-14 w-14', icon: 'h-7 w-7', text: 'text-lg', sub: 'text-xs' },
-  xl: { box: 'h-20 w-20', icon: 'h-10 w-10', text: 'text-2xl', sub: 'text-sm' },
+  sm: { box: 'h-8 w-8', px: 32, text: 'text-xs font-semibold', sub: 'text-[10px]' },
+  md: { box: 'h-10 w-10', px: 40, text: 'text-sm font-bold', sub: 'text-xs' },
+  lg: { box: 'h-14 w-14', px: 56, text: 'text-lg font-extrabold', sub: 'text-xs' },
+  xl: { box: 'h-20 w-20', px: 80, text: 'text-2xl font-black', sub: 'text-sm' },
 };
 
 export function ClanLogo({
@@ -37,28 +37,25 @@ export function ClanLogo({
   clickable = true,
   className = '',
 }: ClanLogoProps) {
+  const [imageError, setImageError] = useState(false);
   const sz = SIZE_MAP[size];
 
   const logoGraphic = (
-    <div className={`relative flex ${sz.box} shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-600 via-amber-700 to-amber-900 text-white font-extrabold shadow-lg shadow-amber-950/20 ring-2 ring-amber-400/40 p-0.5 group-hover:scale-105 group-hover:ring-amber-300 transition-all duration-300 ${className}`}>
-      {/* Outer subtle glow */}
-      <div className="absolute inset-0 rounded-2xl bg-amber-400/20 blur-sm pointer-events-none" />
-
-      {/* Inner emblem container */}
-      <div className="relative h-full w-full rounded-xl bg-gradient-to-b from-amber-800 to-amber-950 flex flex-col items-center justify-center border border-amber-400/30 overflow-hidden">
-        {/* Decorative corner patterns */}
-        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-amber-300/60" />
-        <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-amber-300/60" />
-        <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-amber-300/60" />
-        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-amber-300/60" />
-
-        {/* Logo Monogram */}
-        <div className="flex flex-col items-center justify-center leading-none">
-          <span className="text-amber-200 tracking-tighter font-serif font-black text-[110%] drop-shadow-xs">
-            PVT
-          </span>
-        </div>
-      </div>
+    <div
+      className={`relative flex ${sz.box} shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-700/5 to-amber-900/10 dark:from-amber-500/20 dark:to-amber-950/40 border border-amber-500/30 p-0.5 shadow-sm hover:shadow-amber-500/20 group-hover:scale-105 group-hover:border-amber-400 transition-all duration-300 ${className}`}
+    >
+      {!imageError ? (
+        /* Render Official Image Logo */
+        <img
+          src="/clan-logo.png"
+          alt={`Logo ${fullName}`}
+          className="h-full w-full object-contain rounded-xl drop-shadow-xs"
+          onError={() => setImageError(true)}
+        />
+      ) : (
+        /* Scalable SVG Vector Emblem Fallback */
+        <ClanLogoSvg size={sz.px} />
+      )}
     </div>
   );
 
@@ -68,12 +65,14 @@ export function ClanLogo({
       {showText && (
         <div className="flex flex-col min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className={`font-extrabold tracking-tight text-foreground truncate group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors ${sz.text}`}>
+            <span
+              className={`tracking-tight text-foreground truncate group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors ${sz.text}`}
+            >
               {name}
             </span>
-            <Sparkles className="h-3 w-3 text-amber-500 shrink-0" />
+            <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
           </div>
-          <span className={`text-muted-foreground truncate font-normal ${sz.sub}`}>
+          <span className={`text-muted-foreground truncate font-medium ${sz.sub}`}>
             Gia Phả Điện Tử · An Trạch
           </span>
         </div>
@@ -82,7 +81,11 @@ export function ClanLogo({
   );
 
   if (clickable) {
-    return <Link href="/" className="inline-flex">{content}</Link>;
+    return (
+      <Link href="/" className="inline-flex items-center">
+        {content}
+      </Link>
+    );
   }
 
   return content;
