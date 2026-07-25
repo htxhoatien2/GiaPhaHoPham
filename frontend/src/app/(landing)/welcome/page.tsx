@@ -184,15 +184,15 @@ export default function WelcomePage() {
           <div className="mb-6 flex justify-center">
             <ClanLogo size="xl" showText={false} clickable={false} className="ring-4 ring-amber-400/50 shadow-2xl" />
           </div>
-          <Badge variant="secondary" className="mb-6 text-sm px-4 py-1 bg-amber-500/20 text-amber-200 border border-amber-400/30">
-            {CLAN_FULL_NAME} &middot; Gia Phả Điện Tử
+          <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-400/30 rounded-full">
+            Hệ thống Gia Phả Điện Tử
           </Badge>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4">
-            {CLAN_NAME}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-4 text-white">
+            {CLAN_FULL_NAME}
           </h1>
 
-          <p className="text-lg sm:text-xl text-emerald-100 max-w-2xl mx-auto mb-10">
-            Gìn giữ tinh hoa — Tiếp bước cha ông
+          <p className="text-base sm:text-lg text-emerald-100/90 max-w-2xl mx-auto mb-10">
+            Giải pháp số hóa phả hệ, kết nối dòng tộc và gìn giữ di sản cho các thế hệ mai sau.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" variant="secondary" asChild>
@@ -467,11 +467,6 @@ export default function WelcomePage() {
           </div>
         </div>
       </section>
-
-
-
-      {/* ───── 10. Footer ───── */}
-      <AppFooter variant="detailed" />
     </div>
   );
 }
