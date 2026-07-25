@@ -39,7 +39,7 @@ export default function MainLayout({
               {children}
             </VerificationGuard>
           </main>
-          <AppFooter />
+          <AppFooter variant="compact" />
         </SidebarInset>
       </SidebarProvider>
     </ElderlyProvider>
