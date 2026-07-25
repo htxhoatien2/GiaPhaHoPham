@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
 
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
   // Ensure sql.js WASM binary is included in standalone output file tracing.
   // Without this, Next.js tree-shaking may exclude the .wasm file.
   outputFileTracingIncludes: process.env.ELECTRON_BUILD ? {

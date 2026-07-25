@@ -480,7 +480,6 @@ export default function AdminSettingsPage() {
                   </div>
                   <ClanBanner className="mt-2" />
                 </div>
-                </div>
               </CardContent>
             </Card>
           </section>

@@ -4,6 +4,11 @@ echo ===================================
 echo   Đang đồng bộ code lên GitHub...
 echo ===================================
 echo.
+
+echo [0/3] Đang cập nhật Logo & Banner mới vào public...
+call copy-assets.bat
+
+echo.
 echo [1/3] Đang thêm file thay đổi...
 git add .
 echo.

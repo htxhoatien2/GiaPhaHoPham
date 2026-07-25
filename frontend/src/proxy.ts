@@ -1,6 +1,6 @@
 /**
  * @project AncestorTree
- * @file src/middleware.ts
+ * @file src/proxy.ts
  * @description Auth middleware for protected routes — Next.js 16 convention
  * @version 1.6.0
  * @updated 2026-03-01

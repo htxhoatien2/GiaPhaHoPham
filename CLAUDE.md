@@ -411,8 +411,7 @@ chore/upgrade-deps
 - `sqlite-storage-shim.ts` routes media to `/api/media/` (local filesystem)
 - Desktop mode is detected via `process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true'`
 - `supabase.ts` conditionally returns shim client in desktop mode
-- `proxy.ts` (renamed from `middleware.ts` for Next.js 16) handles auth + verification
-- `middleware.ts` re-exports `proxy` as `middleware` per Next.js convention
+- `proxy.ts` handles auth + verification for Next.js 16 (replacing deprecated `middleware.ts`)
 - Middleware bypasses auth when `DESKTOP_MODE=true`, enforces `is_verified` for web
 - Admin/editor accounts bypass verification check — they ARE the verifiers
 - Fallback query pattern: if Sprint 12 columns missing, falls back to `select('role')` only
