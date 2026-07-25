@@ -20,6 +20,8 @@ import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ClanLogo } from '@/components/common/clan-logo';
 import { useClanSettings } from '@/hooks/use-clan-settings';
+import { CLAN_NAME } from '@/lib/clan-config';
+import type { LoginMethod } from '@/types';
 
 // ─── Main login page wrapper ───────────────────────────────────────────────────
 
