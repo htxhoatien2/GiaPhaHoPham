@@ -339,12 +339,16 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                     <FormControl>
                       <Input 
                         type="number" 
-                        min={1} 
-                        max={10} 
+                        min={0} 
                         placeholder="Ví dụ: 1"
-                        {...field} 
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
                         value={field.value ?? ''} 
-                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val !== '' && !isNaN(parseInt(val, 10)) ? parseInt(val, 10) : undefined);
+                        }}
                         className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />
                     </FormControl>
@@ -362,12 +366,16 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                     <FormControl>
                       <Input 
                         type="number" 
-                        min={1} 
-                        max={10} 
+                        min={0} 
                         placeholder="Ví dụ: 1"
-                        {...field} 
+                        name={field.name}
+                        ref={field.ref}
+                        onBlur={field.onBlur}
                         value={field.value ?? ''} 
-                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          field.onChange(val !== '' && !isNaN(parseInt(val, 10)) ? parseInt(val, 10) : undefined);
+                        }}
                         className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />
                     </FormControl>

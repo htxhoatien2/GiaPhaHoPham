@@ -60,11 +60,20 @@ export async function getPersonByHandle(handle: string): Promise<Person | null> 
   return data;
 }
 
+// Helper: convert empty strings, undefined, or NaN to null for PostgreSQL integer/date/url columns
+function sanitizePersonInput<T extends Record<string, any>>(input: T): T {
+  return Object.fromEntries(
+    Object.entries(input).map(([k, v]) => {
+      if (v === '' || v === undefined || (typeof v === 'number' && isNaN(v))) {
+        return [k, null];
+      }
+      return [k, v];
+    })
+  ) as T;
+}
+
 export async function createPerson(input: CreatePersonInput): Promise<Person> {
-  // Convert empty strings to null so PostgreSQL typed columns (DATE, URL) don't reject them
-  const sanitized = Object.fromEntries(
-    Object.entries(input).map(([k, v]) => [k, v === '' ? null : v])
-  ) as CreatePersonInput;
+  const sanitized = sanitizePersonInput(input);
 
   const { data, error } = await supabase
     .from('people')
@@ -84,10 +93,7 @@ export async function createPerson(input: CreatePersonInput): Promise<Person> {
 }
 
 export async function updatePerson(id: string, input: UpdatePersonInput): Promise<Person> {
-  // Convert empty strings to null so PostgreSQL typed columns (DATE, URL) don't reject them
-  const sanitized = Object.fromEntries(
-    Object.entries(input).map(([k, v]) => [k, v === '' ? null : v])
-  ) as UpdatePersonInput;
+  const sanitized = sanitizePersonInput(input);
 
   const { data, error } = await supabase
     .from('people')

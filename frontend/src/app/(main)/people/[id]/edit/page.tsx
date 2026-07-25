@@ -42,6 +42,7 @@ export default function EditPersonPage({ params }: PageProps) {
       toast.success('Đã cập nhật thành công');
       router.push(`/people/${id}`);
     } catch (err: unknown) {
+      console.error('[EditPersonPage] Error updating person:', err);
       const msg = err instanceof Error ? err.message : 'Lỗi khi cập nhật';
       toast.error(msg);
     }

@@ -11,10 +11,14 @@ import { z } from 'zod';
 const CURRENT_YEAR = new Date().getFullYear();
 const MIN_YEAR = 1600;
 
-// Helper: optional numeric field (empty string → undefined)
+// Helper: optional numeric field (empty string or NaN → undefined)
 const numericString = z.preprocess(
-  (val) => (val === '' || val === null || val === undefined ? undefined : Number(val)),
-  z.number().optional()
+  (val) => {
+    if (val === '' || val === null || val === undefined) return undefined;
+    const num = Number(val);
+    return isNaN(num) ? undefined : num;
+  },
+  z.number().min(0, 'Giá trị không được là số âm').optional()
 );
 
 const requiredNumericString = z.preprocess(
