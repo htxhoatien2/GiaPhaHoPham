@@ -29,6 +29,7 @@ export default function PeoplePage() {
 
   const [search, setSearch] = useState('');
   const [generationFilter, setGenerationFilter] = useState<string>('all');
+  const [phaiFilter, setPhaiFilter] = useState<string>('all');
   const [chiFilter, setChiFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
@@ -37,26 +38,34 @@ export default function PeoplePage() {
     return [...new Set(people.map(p => p.generation))].sort((a, b) => a - b);
   }, [people]);
 
+  const phaiValues = useMemo(() => {
+    if (!people) return [];
+    return [...new Set(people.filter(p => p.phai != null).map(p => p.phai!))].sort((a, b) => a - b);
+  }, [people]);
+
   const chiValues = useMemo(() => {
     if (!people) return [];
-    return [...new Set(people.filter(p => p.chi).map(p => p.chi!))].sort((a, b) => a - b);
+    return [...new Set(people.filter(p => p.chi != null).map(p => p.chi!))].sort((a, b) => a - b);
   }, [people]);
 
   const fuzzyResults = useFuzzySearch(people, search);
 
   const filteredPeople = useMemo(() => {
     return fuzzyResults.filter(person => {
-      if (generationFilter !== 'all' && person.generation !== parseInt(generationFilter)) {
+      if (generationFilter !== 'all' && person.generation !== parseInt(generationFilter, 10)) {
         return false;
       }
-      if (chiFilter !== 'all' && person.chi !== parseInt(chiFilter)) {
+      if (phaiFilter !== 'all' && person.phai !== parseInt(phaiFilter, 10)) {
+        return false;
+      }
+      if (chiFilter !== 'all' && person.chi !== parseInt(chiFilter, 10)) {
         return false;
       }
       if (statusFilter === 'living' && !person.is_living) return false;
       if (statusFilter === 'deceased' && person.is_living) return false;
       return true;
     });
-  }, [fuzzyResults, generationFilter, chiFilter, statusFilter]);
+  }, [fuzzyResults, generationFilter, phaiFilter, chiFilter, statusFilter]);
 
   const groupedByGeneration = useMemo(() => {
     const groups: Record<number, typeof filteredPeople> = {};
@@ -73,11 +82,12 @@ export default function PeoplePage() {
     return { groups, sortedGens };
   }, [filteredPeople]);
 
-  const hasFilters = search || generationFilter !== 'all' || chiFilter !== 'all' || statusFilter !== 'all';
+  const hasFilters = search || generationFilter !== 'all' || phaiFilter !== 'all' || chiFilter !== 'all' || statusFilter !== 'all';
 
   const clearFilters = () => {
     setSearch('');
     setGenerationFilter('all');
+    setPhaiFilter('all');
     setChiFilter('all');
     setStatusFilter('all');
   };
@@ -159,7 +169,7 @@ export default function PeoplePage() {
           </div>
 
           {/* Filter dropdowns */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label className="text-[11px] font-semibold text-muted-foreground uppercase mb-1 block">Lọc theo Đời</label>
               <Select value={generationFilter} onValueChange={setGenerationFilter}>
@@ -178,7 +188,24 @@ export default function PeoplePage() {
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-muted-foreground uppercase mb-1 block">Lọc theo Chi / Nhánh</label>
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase mb-1 block">Lọc theo Phái tộc</label>
+              <Select value={phaiFilter} onValueChange={setPhaiFilter}>
+                <SelectTrigger className="text-xs">
+                  <SelectValue placeholder="Tất cả phái" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-xs">Tất cả phái tộc</SelectItem>
+                  {phaiValues.map(phai => (
+                    <SelectItem key={phai} value={phai.toString()} className="text-xs">
+                      Phái {phai}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-semibold text-muted-foreground uppercase mb-1 block">Lọc theo Chi tộc</label>
               <Select value={chiFilter} onValueChange={setChiFilter}>
                 <SelectTrigger className="text-xs">
                   <SelectValue placeholder="Tất cả chi" />

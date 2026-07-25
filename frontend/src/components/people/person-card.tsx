@@ -52,12 +52,12 @@ export function PersonCard({ person, showDetails = true }: PersonCardProps) {
                 <Badge variant="outline" className="text-xs">
                   Đời {person.generation}
                 </Badge>
-                {person.phai && (
+                {person.phai != null && (
                   <Badge variant="outline" className="text-xs">
                     Phái {person.phai}
                   </Badge>
                 )}
-                {person.chi && (
+                {person.chi != null && (
                   <Badge variant="outline" className="text-xs">
                     Chi {person.chi}
                   </Badge>
