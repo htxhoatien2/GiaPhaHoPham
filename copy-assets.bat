@@ -1,7 +1,6 @@
 @echo off
-chcp 65001 > nul
 echo ===================================================
-echo   Đang sao chép Logo & Banner vào frontend/public...
+echo   Sao chep Logo & Banner vao frontend/public...
 echo ===================================================
 echo.
 
@@ -18,7 +17,7 @@ if exist "C:\Users\pctua\.gemini\antigravity-ide\brain\ab8529bd-557b-467b-b432-2
   copy "C:\Users\pctua\.gemini\antigravity-ide\brain\ab8529bd-557b-467b-b432-2f7f658c5d42\media__1784816156457.jpg" "frontend\public\banner.jpg" /Y > nul
 )
 
-node copy-logo.mjs > nul 2>&1
-node update-banner.mjs > nul 2>&1
+if exist copy-logo.mjs node copy-logo.mjs > nul 2>&1
+if exist update-banner.mjs node update-banner.mjs > nul 2>&1
 
-echo Đã cập nhật Logo và Banner.
+echo Da cap nhat Logo va Banner thanh cong.
