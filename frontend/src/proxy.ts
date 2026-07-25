@@ -142,25 +142,31 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next({ request: { headers: request.headers } });
   }
 
-  // Rate limiting — secondary layer for auth page enumeration protection.
+
+
+  // Rate limiting — secondary layer for auth page enumeration & submission protection.
   // Primary defense: GoTrue rate limits in supabase/config.toml [auth.rate_limit].
   if (pathname in RATE_LIMITS) {
-    const ip = _getClientIp(request);
-    const { allowed, retryAfterSec } = _checkRateLimit(ip, pathname);
-    if (!allowed) {
-      mwLog('WARN', 'rate_limit_exceeded', { pathname, ip, retryAfterSec });
-      return new NextResponse(
-        JSON.stringify({ error: 'Quá nhiều yêu cầu. Vui lòng thử lại sau.', retryAfter: retryAfterSec }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'Retry-After': String(retryAfterSec),
-            'X-RateLimit-Limit': String(RATE_LIMITS[pathname]?.max ?? 0),
-            'X-RateLimit-Remaining': '0',
-          },
-        }
-      );
+    // For /register-member, only rate-limit POST submissions (anti-spam), not GET page loads.
+    const isRegisterMemberGet = pathname === '/register-member' && request.method !== 'POST';
+    if (!isRegisterMemberGet) {
+      const ip = _getClientIp(request);
+      const { allowed, retryAfterSec } = _checkRateLimit(ip, pathname);
+      if (!allowed) {
+        mwLog('WARN', 'rate_limit_exceeded', { pathname, ip, retryAfterSec });
+        return new NextResponse(
+          JSON.stringify({ error: 'Quá nhiều yêu cầu. Vui lòng thử lại sau.', retryAfter: retryAfterSec }),
+          {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': String(retryAfterSec),
+              'X-RateLimit-Limit': String(RATE_LIMITS[pathname]?.max ?? 0),
+              'X-RateLimit-Remaining': '0',
+            },
+          }
+        );
+      }
     }
   }
 

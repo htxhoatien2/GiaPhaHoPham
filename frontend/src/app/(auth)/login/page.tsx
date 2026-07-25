@@ -19,6 +19,7 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import { ClanLogo } from '@/components/common/clan-logo';
+import { useClanSettings } from '@/hooks/use-clan-settings';
 
 // ─── Main login page wrapper ───────────────────────────────────────────────────
 
