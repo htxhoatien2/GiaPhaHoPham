@@ -70,6 +70,7 @@ import { useAuth } from '@/components/auth/auth-provider';
 import { useElderly } from '@/contexts/elderly-context';
 import { CLAN_NAME, CLAN_FULL_NAME } from '@/lib/clan-config';
 import { useClanSettings } from '@/hooks/use-clan-settings';
+import { getInitials } from '@/lib/format-utils';
 
 function deriveInitial(name: string): string {
   const parts = name.trim().split(' ');
