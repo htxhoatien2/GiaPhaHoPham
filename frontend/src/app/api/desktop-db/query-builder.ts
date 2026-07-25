@@ -279,7 +279,22 @@ function executeUpdate(db: Database, payload: QueryPayload): QueryResult {
   const { clause, params } = buildWhere(payload.filters, payload.table);
 
   const sql = `UPDATE "${payload.table}" SET ${setClauses.join(', ')} ${clause}`;
-  db.run(sql, [...setValues, ...params]);
+  try {
+    db.run(sql, [...setValues, ...params]);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : '';
+    const match = msg.match(/no column named (\w+)/i) || msg.match(/has no column named (\w+)/i);
+    if (match && match[1]) {
+      try {
+        db.run(`ALTER TABLE "${payload.table}" ADD COLUMN "${match[1]}" INTEGER;`);
+        db.run(sql, [...setValues, ...params]);
+      } catch {
+        throw err;
+      }
+    } else {
+      throw err;
+    }
+  }
 
   // Return updated rows if .select() was chained
   if (payload.columns) {

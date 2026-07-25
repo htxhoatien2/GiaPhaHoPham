@@ -111,6 +111,10 @@ function applyMigrations(database: Database): void {
     )
   `);
 
+  // Self-healing: Ensure critical columns exist on people table in SQLite
+  try { database.run('ALTER TABLE people ADD COLUMN chi INTEGER;'); } catch {}
+  try { database.run('ALTER TABLE people ADD COLUMN phai INTEGER;'); } catch {}
+
   // CTO B-2: Resolve migrations dir from env (set by Electron server.ts)
   // - Dev: path.join(__dirname, '..', 'desktop', 'migrations') via MIGRATIONS_DIR
   // - Production: path.join(process.resourcesPath, 'migrations') via MIGRATIONS_DIR
