@@ -78,6 +78,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
       taboo_name: person.taboo_name || '',
       gender: person.gender,
       generation: person.generation,
+      phai: person.phai || undefined,
       chi: person.chi || undefined,
       birth_date: person.birth_date || '',
       birth_year: person.birth_year || undefined,
@@ -280,7 +281,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
               />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-2">
               <FormField
                 control={form.control}
                 name="gender"
@@ -331,6 +332,29 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
 
               <FormField
                 control={form.control}
+                name="phai"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-bold text-slate-700">Phái tộc</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min={1} 
+                        max={10} 
+                        placeholder="Ví dụ: 1"
+                        {...field} 
+                        value={field.value ?? ''} 
+                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}
+                        className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
                 name="chi"
                 render={({ field }) => (
                   <FormItem>
@@ -340,6 +364,7 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                         type="number" 
                         min={1} 
                         max={10} 
+                        placeholder="Ví dụ: 1"
                         {...field} 
                         value={field.value ?? ''} 
                         onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : undefined)}

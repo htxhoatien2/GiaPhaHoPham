@@ -15,6 +15,7 @@ export interface Person {
   taboo_name?: string;  // Tên húy (taboo name)
   gender: 1 | 2; // 1=Male, 2=Female
   generation: number;
+  phai?: number;
   chi?: number;
   
   // Birth

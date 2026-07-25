@@ -66,6 +66,7 @@ export const personSchema = z
       (val) => Number(val),
       z.number().min(1, 'Đời phải từ 1 trở lên').max(20, 'Đời tối đa là 20')
     ),
+    phai: numericString,
     chi: numericString,
 
     // Birth
@@ -138,6 +139,7 @@ export const defaultPersonValues: PersonFormData = {
   taboo_name: '',
   gender: 1,
   generation: 1,
+  phai: undefined,
   chi: undefined,
   birth_date: '',
   birth_year: undefined,

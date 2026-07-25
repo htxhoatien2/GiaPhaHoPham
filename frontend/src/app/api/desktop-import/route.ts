@@ -44,7 +44,7 @@ const IMPORT_TABLES = [
 const TABLE_COLUMNS: Record<string, Set<string>> = {
   people: new Set([
     'id', 'handle', 'display_name', 'first_name', 'middle_name', 'surname',
-    'pen_name', 'taboo_name', 'gender', 'generation', 'chi',
+    'pen_name', 'taboo_name', 'gender', 'generation', 'phai', 'chi',
     'birth_date', 'birth_year', 'birth_place',
     'death_date', 'death_year', 'death_place', 'death_lunar',
     'is_living', 'is_patrilineal',
