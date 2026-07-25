@@ -9,6 +9,7 @@
 import Link from 'next/link';
 import { ClanLogo } from '@/components/common/clan-logo';
 import { CLAN_NAME } from '@/lib/clan-config';
+import { AppFooter } from '@/components/layout/app-footer';
 
 export default function LandingLayout({
   children,
@@ -16,7 +17,7 @@ export default function LandingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-white text-gray-900 antialiased">
+    <div className="min-h-screen bg-white text-gray-900 antialiased flex flex-col">
       {/* Top nav with public page links */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100 shadow-xs">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -47,9 +48,10 @@ export default function LandingLayout({
       </nav>
 
       {/* Page content with nav offset */}
-      <main className="pt-16">
+      <main className="pt-16 flex-1">
         {children}
       </main>
+      <AppFooter />
     </div>
   );
 }

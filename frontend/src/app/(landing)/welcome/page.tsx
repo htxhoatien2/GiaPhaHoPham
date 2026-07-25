@@ -21,6 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { CLAN_NAME, CLAN_FULL_NAME } from '@/lib/clan-config';
 import { ClanLogo } from '@/components/common/clan-logo';
 import { ClanBanner } from '@/components/common/clan-banner';
+import { AppFooter } from '@/components/layout/app-footer';
 
 
 
@@ -470,20 +471,7 @@ export default function WelcomePage() {
 
 
       {/* ───── 10. Footer ───── */}
-      <footer className="border-t bg-white py-10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🌳</span>
-              <span className="font-semibold text-gray-700">{CLAN_NAME}</span>
-              <span className="text-gray-400">Gia Phả Điện Tử</span>
-            </div>
-          </div>
-          <p className="text-center text-xs text-gray-400 mt-6">
-            &copy; 2026 {CLAN_NAME} &middot; Hệ thống Quản lý Gia Phả Điện Tử
-          </p>
-        </div>
-      </footer>
+      <AppFooter variant="detailed" />
     </div>
   );
 }
