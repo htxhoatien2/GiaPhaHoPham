@@ -36,8 +36,11 @@ export default function LandingLayout({
             <Link href="/register-member" className="hidden sm:inline-flex text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
               Ghi danh
             </Link>
-            <Link href="/login" className="inline-flex text-xs font-semibold px-3 py-1.5 rounded-xl bg-amber-800 text-white hover:bg-amber-900 transition-all shadow-xs">
+            <Link href="/login" className="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-xl bg-amber-800 text-white hover:bg-amber-900 transition-all shadow-xs">
               Đăng nhập
+            </Link>
+            <Link href="/register" className="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-xl border border-amber-800 text-amber-900 hover:bg-amber-50 transition-all shadow-xs">
+              Đăng ký
             </Link>
           </div>
         </div>

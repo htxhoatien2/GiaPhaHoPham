@@ -9,6 +9,7 @@
 
 import React, { useState } from 'react';
 import { ClanBannerSvg } from './clan-banner-svg';
+import { CLAN_BANNER_BASE64 } from './clan-banner-base64';
 
 interface ClanBannerProps {
   className?: string;
@@ -32,13 +33,15 @@ export function ClanBanner({
       ? 'aspect-[21/9] sm:aspect-[2.5/1]'
       : '';
 
+  const bannerSrc = CLAN_BANNER_BASE64 || '/api/clan-banner?v=2026';
+
   return (
     <div
       className={`relative w-full overflow-hidden rounded-2xl border border-amber-500/30 shadow-xl bg-gradient-to-r from-amber-950 via-red-950 to-slate-950 ${aspectClass} ${className}`}
     >
       {!imageError ? (
         <img
-          src="/clan-banner.jpg"
+          src={bannerSrc}
           alt="Banner Tộc Phạm Văn An Trạch"
           className="h-full w-full object-cover object-center transition-all duration-500 hover:scale-101"
           onError={() => setImageError(true)}

@@ -14,6 +14,7 @@ import { QueryProvider } from "@/components/providers/query-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { CLAN_NAME, CLAN_FULL_NAME } from "@/lib/clan-config";
+import "@/lib/clan-assets-sync";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
@@ -28,9 +29,15 @@ export const metadata: Metadata = {
   description: `Phần mềm quản lý gia phả điện tử cho ${CLAN_FULL_NAME}. Lưu trữ thông tin dòng họ, cây gia phả, lịch giỗ chạp.`,
   keywords: ['gia phả', 'gia phả điện tử', CLAN_NAME, 'dòng họ', 'cây gia phả', 'phả hệ'],
   authors: [{ name: CLAN_FULL_NAME }],
+  icons: {
+    icon: '/api/clan-logo',
+    shortcut: '/api/clan-logo',
+    apple: '/api/clan-logo',
+  },
   openGraph: {
     title: `Gia Phả Điện Tử - ${CLAN_FULL_NAME}`,
     description: 'Gìn giữ tinh hoa - Tiếp bước cha ông',
+    images: [{ url: '/api/clan-banner', width: 1200, height: 630, alt: CLAN_FULL_NAME }],
     type: 'website',
     locale: 'vi_VN',
   },

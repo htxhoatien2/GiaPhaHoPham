@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
 import { CLAN_NAME as ENV_CLAN_NAME, CLAN_FULL_NAME as ENV_CLAN_FULL_NAME } from '@/lib/clan-config';
 import { ClanLogoSvg } from './clan-logo-svg';
+import { CLAN_LOGO_BASE64 } from './clan-logo-base64';
 
 interface ClanLogoProps {
   name?: string;
@@ -40,6 +41,8 @@ export function ClanLogo({
   const [imageError, setImageError] = useState(false);
   const sz = SIZE_MAP[size];
 
+  const logoSrc = CLAN_LOGO_BASE64 || '/api/clan-logo?v=2026';
+
   const logoGraphic = (
     <div
       className={`relative flex ${sz.box} shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-700/5 to-amber-900/10 dark:from-amber-500/20 dark:to-amber-950/40 border border-amber-500/30 p-0.5 shadow-sm hover:shadow-amber-500/20 group-hover:scale-105 group-hover:border-amber-400 transition-all duration-300 ${className}`}
@@ -47,7 +50,7 @@ export function ClanLogo({
       {!imageError ? (
         /* Render Official Image Logo */
         <img
-          src="/clan-logo.png"
+          src={logoSrc}
           alt={`Logo ${fullName}`}
           className="h-full w-full object-contain rounded-xl drop-shadow-xs"
           onError={() => setImageError(true)}

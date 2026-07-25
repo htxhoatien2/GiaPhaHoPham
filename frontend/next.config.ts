@@ -1,4 +1,8 @@
 import type { NextConfig } from "next";
+import { syncClanAssets } from "./src/lib/clan-assets-sync";
+
+// Auto-sync official logo and banner image files
+syncClanAssets();
 
 // Standalone output required for Electron desktop builds AND Docker production.
 // Web deploys (Vercel) leave this undefined = default SSR behavior.

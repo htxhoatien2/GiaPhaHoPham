@@ -212,23 +212,6 @@ export default function WelcomePage() {
           <div className="mt-12 max-w-4xl mx-auto">
             <ClanBanner className="ring-2 ring-amber-400/40 shadow-2xl rounded-2xl overflow-hidden" />
           </div>
-
-          <div className="mt-6">
-            <div className="flex items-center gap-3">
-              <Button variant="link" className="text-emerald-200 hover:text-white" asChild>
-                <Link href="/login">
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Đăng nhập
-                </Link>
-              </Button>
-              <span className="text-emerald-400">|</span>
-              <Button variant="link" className="text-emerald-200 hover:text-white" asChild>
-                <Link href="/register">
-                  Đăng ký
-                </Link>
-              </Button>
-            </div>
-          </div>
         </div>
       </section>
 
