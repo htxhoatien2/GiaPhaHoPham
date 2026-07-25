@@ -22,6 +22,7 @@ import { ClanLogo } from '@/components/common/clan-logo';
 import { useClanSettings } from '@/hooks/use-clan-settings';
 import { CLAN_NAME } from '@/lib/clan-config';
 import type { LoginMethod } from '@/types';
+import { ShieldCheck, Loader2, ArrowLeft, Mail, KeyRound } from 'lucide-react';
 
 // ─── Main login page wrapper ───────────────────────────────────────────────────
 
