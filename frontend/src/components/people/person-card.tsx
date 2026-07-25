@@ -53,12 +53,12 @@ export function PersonCard({ person, showDetails = true }: PersonCardProps) {
                   Đời {person.generation}
                 </Badge>
                 {person.phai != null && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-900 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300">
                     Phái {person.phai}
                   </Badge>
                 )}
                 {person.chi != null && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-900 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300">
                     Chi {person.chi}
                   </Badge>
                 )}

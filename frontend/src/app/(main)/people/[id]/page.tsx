@@ -132,8 +132,8 @@ export default function PersonDetailPage({ params }: PageProps) {
                 <h1 className="text-2xl font-bold">{person.display_name}</h1>
                 <div className="flex gap-2">
                   <Badge variant="outline">Đời {person.generation}</Badge>
-                  {person.phai != null && <Badge variant="outline">Phái {person.phai}</Badge>}
-                  {person.chi != null && <Badge variant="outline">Chi {person.chi}</Badge>}
+                  {person.phai != null && <Badge variant="outline" className="bg-amber-50 text-amber-900 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300">Phái {person.phai}</Badge>}
+                  {person.chi != null && <Badge variant="outline" className="bg-emerald-50 text-emerald-900 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300">Chi {person.chi}</Badge>}
                   <Badge className={person.is_living ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}>
                     {person.is_living ? 'Còn sống' : 'Đã mất'}
                   </Badge>

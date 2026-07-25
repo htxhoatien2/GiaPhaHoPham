@@ -335,12 +335,12 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="phai"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-bold text-slate-700">Phái tộc</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Phái tộc (Phái)</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
                         min={0} 
-                        placeholder="Ví dụ: 1"
+                        placeholder="Số Phái (VD: 1, 2...)"
                         name={field.name}
                         ref={field.ref}
                         onBlur={field.onBlur}
@@ -352,6 +352,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                         className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />
                     </FormControl>
+                    <FormDescription className="text-[11px] text-amber-700 dark:text-amber-400">
+                      Nguyên tắc phả hệ: Tộc &rarr; Phái &rarr; Chi
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -362,12 +365,12 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 name="chi"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-bold text-slate-700">Chi tộc</FormLabel>
+                    <FormLabel className="font-bold text-slate-700">Chi tộc (Chi)</FormLabel>
                     <FormControl>
                       <Input 
                         type="number" 
                         min={0} 
-                        placeholder="Ví dụ: 1"
+                        placeholder="Số Chi (VD: 1, 2...)"
                         name={field.name}
                         ref={field.ref}
                         onBlur={field.onBlur}
@@ -379,6 +382,9 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                         className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />
                     </FormControl>
+                    <FormDescription className="text-[11px] text-emerald-700 dark:text-emerald-400">
+                      Nhánh chi trực thuộc Phái tộc
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
