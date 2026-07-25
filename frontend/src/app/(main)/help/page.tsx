@@ -5,6 +5,7 @@
  * @version 2.0.0
  * @updated 2026-03-25
  */
+'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
