@@ -319,8 +319,8 @@ function LoginForm() {
   const { signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const { data: cs } = useClanSettings();
-  const clanName = cs?.clan_name ?? CLAN_NAME;
-  const parts = clanName.trim().split(' ');
+  const clanName = cs?.clan_name ?? CLAN_NAME ?? '';
+  const parts = (clanName || '').trim().split(' ');
   const clanInitial = parts.length > 1 ? (parts[parts.length - 1][0] ?? '?') : (parts[0][0] ?? '?');
 
   // Determine enabled methods (default: both)

@@ -20,7 +20,8 @@ export function getRelativeTime(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('vi-VN');
 }
 
-export function getInitials(name: string): string {
+export function getInitials(name?: string | null): string {
+  if (!name || typeof name !== 'string') return '?';
   const parts = name.trim().split(' ');
   return parts.length > 1
     ? (parts[parts.length - 1][0] ?? '?').toUpperCase()

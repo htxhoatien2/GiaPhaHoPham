@@ -72,12 +72,14 @@ import { CLAN_NAME, CLAN_FULL_NAME } from '@/lib/clan-config';
 import { useClanSettings } from '@/hooks/use-clan-settings';
 import { getInitials } from '@/lib/format-utils';
 
-function deriveInitial(name: string): string {
+function deriveInitial(name?: string | null): string {
+  if (!name || typeof name !== 'string') return '?';
   const parts = name.trim().split(' ');
   return parts.length > 1 ? (parts[parts.length - 1][0] ?? '?') : (parts[0][0] ?? '?');
 }
 
-function deriveSubtitle(fullName: string, shortName: string): string {
+function deriveSubtitle(fullName?: string | null, shortName?: string | null): string {
+  if (!fullName || !shortName) return '';
   return fullName.startsWith(shortName) ? fullName.slice(shortName.length).trim() : '';
 }
 

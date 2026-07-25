@@ -53,12 +53,14 @@ import type { UpdateClanSettingsInput, CouncilMember, CeremonyScheduleItem, Logi
 const isDesktop = process.env.NEXT_PUBLIC_DESKTOP_MODE === 'true';
 const APP_VERSION = 'v3.0.0';
 
-function deriveInitial(name: string): string {
+function deriveInitial(name?: string | null): string {
+  if (!name || typeof name !== 'string') return '?';
   const parts = name.trim().split(' ');
   return parts.length > 1 ? (parts[parts.length - 1][0] ?? '?') : (parts[0][0] ?? '?');
 }
 
-function deriveSubtitle(fullName: string, shortName: string): string {
+function deriveSubtitle(fullName?: string | null, shortName?: string | null): string {
+  if (!fullName || !shortName) return '';
   return fullName.startsWith(shortName) ? fullName.slice(shortName.length).trim() : '';
 }
 
