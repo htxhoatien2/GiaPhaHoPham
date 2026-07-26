@@ -154,7 +154,13 @@ export function useDeleteUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (userId: string) => deleteUserAccount(userId),
+    mutationFn: async (userId: string) => {
+      const res = await deleteUserAccount(userId);
+      if (!res.success) {
+        throw new Error(res.error || 'Xóa tài khoản thất bại');
+      }
+      return res;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: profileKeys.all });
     },
