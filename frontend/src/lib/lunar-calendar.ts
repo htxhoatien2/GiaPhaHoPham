@@ -267,3 +267,55 @@ export function getLunarDatesInSolarMonth(
 
   return results.sort((a, b) => a.solarDay - b.solarDay);
 }
+
+/**
+ * Automatically calculate the solar date for a lunar date string (e.g. "02/03" or "2/3") in a target year (defaults to current year).
+ * Example: "02/03" -> { day: 18, month: 4, year: 2026, formatted: "18/04/2026" }
+ */
+export function getSolarFromLunarString(
+  lunarStr: string | null | undefined,
+  targetYear: number = new Date().getFullYear()
+): { day: number; month: number; year: number; formatted: string } | null {
+  if (!lunarStr || typeof lunarStr !== 'string') return null;
+
+  // Clean string: strip "ÂL", "AL", spaces
+  const cleaned = lunarStr.replace(/(ÂL|AL)/gi, '').trim();
+  const parsed = parseLunarString(cleaned);
+  if (!parsed) return null;
+
+  try {
+    const solar = lunarToSolar(parsed.day, parsed.month, targetYear);
+    if (!solar || !solar.day || !solar.month) return null;
+
+    const dayPad = String(solar.day).padStart(2, '0');
+    const monthPad = String(solar.month).padStart(2, '0');
+    return {
+      day: solar.day,
+      month: solar.month,
+      year: solar.year,
+      formatted: `${dayPad}/${monthPad}/${solar.year}`,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Format a lunar date string with automatically calculated current year solar date
+ * Example: "02/03 ÂL" -> "02/03 ÂL (Năm 2026: 18/04/2026 DL)"
+ */
+export function formatLunarWithSolarCurrentYear(
+  lunarStr: string | null | undefined,
+  targetYear: number = new Date().getFullYear()
+): string {
+  if (!lunarStr) return '';
+  const solar = getSolarFromLunarString(lunarStr, targetYear);
+  const cleanLunar = lunarStr.trim();
+  const hasAL = /ÂL|AL/i.test(cleanLunar);
+  const formattedLunar = hasAL ? cleanLunar : `${cleanLunar} ÂL`;
+
+  if (solar) {
+    return `${formattedLunar} (Năm ${targetYear}: ${solar.formatted} DL)`;
+  }
+  return formattedLunar;
+}

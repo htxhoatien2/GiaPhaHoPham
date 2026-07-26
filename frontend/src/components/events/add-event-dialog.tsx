@@ -11,7 +11,7 @@
 import { useState } from 'react';
 import { useCreateEvent } from '@/hooks/use-events';
 import { useSearchPeople } from '@/hooks/use-people';
-import { parseLunarString } from '@/lib/lunar-calendar';
+import { parseLunarString, getSolarFromLunarString } from '@/lib/lunar-calendar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,7 +27,7 @@ import { DialogFooter } from '@/components/ui/dialog';
 import { EVENT_TYPE_LABELS } from './event-constants';
 import type { EventType, Person } from '@/types';
 import { toast } from 'sonner';
-import { Search, X } from 'lucide-react';
+import { Search, X, Sparkles } from 'lucide-react';
 
 interface AddEventDialogProps {
   onClose: () => void;
@@ -210,10 +210,17 @@ export function AddEventDialog({ onClose }: AddEventDialogProps) {
             id="lunar"
             value={eventLunar}
             onChange={e => validateLunar(e.target.value)}
-            placeholder="15/7"
+            placeholder="VD: 02/03"
             className={lunarError ? 'border-destructive' : ''}
           />
-          {lunarError && <p className="text-xs text-destructive">{lunarError}</p>}
+          {lunarError ? (
+            <p className="text-xs text-destructive">{lunarError}</p>
+          ) : eventLunar && getSolarFromLunarString(eventLunar) ? (
+            <div className="mt-1 flex items-center gap-1.5 text-xs text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
+              <Sparkles className="h-3.5 w-3.5 text-emerald-500" />
+              <span>Dương lịch năm {new Date().getFullYear()}: <strong>{getSolarFromLunarString(eventLunar)?.formatted} DL</strong></span>
+            </div>
+          ) : null}
         </div>
         <div className="space-y-2">
           <Label htmlFor="date">Ngày dương lịch</Label>

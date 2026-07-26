@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { useEvents, useDeleteEvent } from '@/hooks/use-events';
 import { usePeople } from '@/hooks/use-people';
 import { useAuth } from '@/components/auth/auth-provider';
-import { parseLunarString, getNextLunarOccurrence, formatLunarDate, solarToLunar } from '@/lib/lunar-calendar';
+import { parseLunarString, getNextLunarOccurrence, formatLunarDate, solarToLunar, formatLunarWithSolarCurrentYear } from '@/lib/lunar-calendar';
 import { CalendarGrid } from '@/components/events/calendar-grid';
 import { AddEventDialog } from '@/components/events/add-event-dialog';
 import { EVENT_TYPE_LABELS, MONTHS_VI } from '@/components/events/event-constants';
@@ -376,11 +376,13 @@ export default function EventsPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-medium">{event.title}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {event.event_lunar && <span>{event.event_lunar} (ÂL)</span>}
-                            {event.event_date && (
+                            {event.event_lunar && (
+                              <span className="text-amber-800 dark:text-amber-300 font-semibold">
+                                {formatLunarWithSolarCurrentYear(event.event_lunar)}
+                              </span>
+                            )}
+                            {event.event_date && !event.event_lunar && (
                               <span>
-                                {event.event_lunar && ' · '}
                                 {new Date(event.event_date).toLocaleDateString('vi-VN')}
                               </span>
                             )}

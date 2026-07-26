@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Landmark, ImageIcon, Calendar, MapPin, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import type { CeremonyScheduleItem } from '@/types';
+import { getSolarFromLunarString } from '@/lib/lunar-calendar';
 
 export function AncestralHallContent() {
   const { data: cs, isLoading } = useClanSettings();
@@ -111,25 +112,31 @@ export function AncestralHallContent() {
           Lịch Tế Lễ Hàng Năm
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {ceremonies.map((c, i) => (
-            <Card key={i} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/40 transition-all">
-              <CardHeader className="pb-1 pt-4 px-5">
-                <CardTitle className="text-sm font-bold text-amber-300 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-amber-400" />
-                  {c.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="px-5 pb-4">
-                <p className="text-xs text-slate-400 font-medium">
-                  {c.lunar_date && <span className="text-amber-400 font-semibold">Âm lịch: {c.lunar_date} &middot; </span>}
-                  Dương lịch: {c.solar_date}
-                </p>
-                {c.description && (
-                  <p className="text-xs text-slate-300 mt-2 leading-relaxed">{c.description}</p>
-                )}
-              </CardContent>
-            </Card>
-          ))}
+          {ceremonies.map((c, i) => {
+            const currentYear = new Date().getFullYear();
+            const calcSolar = getSolarFromLunarString(c.lunar_date, currentYear);
+            const solarDisplay = calcSolar ? `${calcSolar.formatted} DL` : (c.solar_date || 'Đang cập nhật');
+
+            return (
+              <Card key={i} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/40 transition-all">
+                <CardHeader className="pb-1 pt-4 px-5">
+                  <CardTitle className="text-sm font-bold text-amber-300 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400" />
+                    {c.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-5 pb-4">
+                  <p className="text-xs text-slate-400 font-medium">
+                    {c.lunar_date && <span className="text-amber-400 font-semibold">Âm lịch: {c.lunar_date} ÂL &middot; </span>}
+                    <span className="text-emerald-300 font-bold">Dương lịch ({currentYear}): {solarDisplay}</span>
+                  </p>
+                  {c.description && (
+                    <p className="text-xs text-slate-300 mt-2 leading-relaxed">{c.description}</p>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
