@@ -15,9 +15,23 @@ export interface GenerationStat {
 }
 
 export interface ChiStat {
-  chi: number;
+  chi: number | string;
   count: number;
   label: string;
+  percentage: number;
+  maleCount: number;
+  femaleCount: number;
+  livingCount: number;
+}
+
+export interface PhaiStat {
+  phai: number | string;
+  count: number;
+  label: string;
+  percentage: number;
+  maleCount: number;
+  femaleCount: number;
+  livingCount: number;
 }
 
 export interface GenderStat {
@@ -35,12 +49,14 @@ export interface DetailedStats {
   totalFamilies: number;
   totalGenerations: number;
   totalChi: number;
+  totalPhai: number;
   livingCount: number;
   deceasedCount: number;
   avgChildrenPerFamily: number;
   childlessRate: number;
   generationStats: GenerationStat[];
   chiStats: ChiStat[];
+  phaiStats: PhaiStat[];
   genderStats: GenderStat[];
   livingStats: LivingStat[];
 }
@@ -67,18 +83,51 @@ export function calculateDetailedStats(data: TreeData): DetailedStats {
   }));
 
   // Chi stats
-  const chiMap = new Map<number, number>();
+  const chiMap = new Map<string, { count: number; maleCount: number; femaleCount: number; livingCount: number }>();
   for (const p of people) {
-    if (p.chi != null) {
-      chiMap.set(p.chi, (chiMap.get(p.chi) || 0) + 1);
-    }
+    const key = p.chi != null ? `Chi ${p.chi}` : 'Chưa phân chi';
+    const curr = chiMap.get(key) || { count: 0, maleCount: 0, femaleCount: 0, livingCount: 0 };
+    curr.count += 1;
+    if (p.gender === 1) curr.maleCount += 1;
+    if (p.gender === 2) curr.femaleCount += 1;
+    if (p.is_living) curr.livingCount += 1;
+    chiMap.set(key, curr);
   }
-  const chiKeys = [...chiMap.keys()].sort((a, b) => a - b);
-  const chiStats: ChiStat[] = chiKeys.map(chi => ({
-    chi,
-    count: chiMap.get(chi) || 0,
-    label: `Chi ${chi}`,
-  }));
+
+  const chiStats: ChiStat[] = [...chiMap.entries()].map(([label, val]) => ({
+    chi: label,
+    count: val.count,
+    label,
+    percentage: totalPeople > 0 ? Math.round((val.count / totalPeople) * 1000) / 10 : 0,
+    maleCount: val.maleCount,
+    femaleCount: val.femaleCount,
+    livingCount: val.livingCount,
+  })).sort((a, b) => b.count - a.count);
+
+  // Phai stats
+  const phaiMap = new Map<string, { count: number; maleCount: number; femaleCount: number; livingCount: number }>();
+  for (const p of people) {
+    const key = p.phai != null ? `Phái ${p.phai}` : 'Chưa phân phái';
+    const curr = phaiMap.get(key) || { count: 0, maleCount: 0, femaleCount: 0, livingCount: 0 };
+    curr.count += 1;
+    if (p.gender === 1) curr.maleCount += 1;
+    if (p.gender === 2) curr.femaleCount += 1;
+    if (p.is_living) curr.livingCount += 1;
+    phaiMap.set(key, curr);
+  }
+
+  const phaiStats: PhaiStat[] = [...phaiMap.entries()].map(([label, val]) => ({
+    phai: label,
+    count: val.count,
+    label,
+    percentage: totalPeople > 0 ? Math.round((val.count / totalPeople) * 1000) / 10 : 0,
+    maleCount: val.maleCount,
+    femaleCount: val.femaleCount,
+    livingCount: val.livingCount,
+  })).sort((a, b) => b.count - a.count);
+
+  const totalChi = chiStats.filter(c => c.label !== 'Chưa phân chi').length;
+  const totalPhai = phaiStats.filter(p => p.label !== 'Chưa phân phái').length;
 
   // Gender stats
   const maleCount = people.filter(p => p.gender === 1).length;
@@ -121,13 +170,15 @@ export function calculateDetailedStats(data: TreeData): DetailedStats {
     totalPeople,
     totalFamilies,
     totalGenerations: generations.length,
-    totalChi: chiKeys.length,
+    totalChi,
+    totalPhai,
     livingCount,
     deceasedCount,
     avgChildrenPerFamily,
     childlessRate,
     generationStats,
     chiStats,
+    phaiStats,
     genderStats,
     livingStats,
   };

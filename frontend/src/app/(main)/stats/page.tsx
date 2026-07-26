@@ -14,7 +14,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTreeData } from '@/hooks/use-families';
 import { calculateDetailedStats } from '@/lib/stats-calculator';
-import { BarChart3, Users, Heart, Layers, Baby, Sparkles, PieChart } from 'lucide-react';
+import { BarChart3, Users, Heart, Layers, Baby, Sparkles, PieChart, GitBranch } from 'lucide-react';
 
 const RechartsCharts = dynamic(() => import('./stats-charts'), {
   ssr: false,
@@ -68,67 +68,83 @@ export default function StatsPage() {
       </div>
 
       {/* Summary KPI cards */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
         {/* Card 1 */}
         <Card className="border-blue-200/60 dark:border-blue-900/40 bg-gradient-to-br from-blue-50/50 to-card dark:from-blue-950/20 shadow-xs hover:shadow-md transition-shadow">
-          <CardContent className="p-5 space-y-2">
+          <CardContent className="p-4 space-y-2">
             <div className="flex items-center justify-between text-blue-600 dark:text-blue-400">
               <span className="text-xs font-bold uppercase tracking-wider">Tổng thành viên</span>
               <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
-                <Users className="h-5 w-5" />
+                <Users className="h-4 w-4" />
               </div>
             </div>
-            <p className="text-3xl font-black text-foreground">{stats.totalPeople}</p>
-            <p className="text-[11px] text-muted-foreground flex items-center gap-1.5 pt-1 border-t">
-              <Sparkles className="h-3 w-3 text-blue-500" /> Dữ liệu đã xác thực
+            <p className="text-2xl font-black text-foreground">{stats.totalPeople}</p>
+            <p className="text-[11px] text-muted-foreground flex items-center gap-1 pt-1 border-t">
+              <Sparkles className="h-3 w-3 text-blue-500" /> Dữ liệu chuẩn
             </p>
           </CardContent>
         </Card>
 
         {/* Card 2 */}
-        <Card className="border-amber-200/60 dark:border-amber-900/40 bg-gradient-to-br from-amber-50/50 to-card dark:from-amber-950/20 shadow-xs hover:shadow-md transition-shadow">
-          <CardContent className="p-5 space-y-2">
-            <div className="flex items-center justify-between text-amber-600 dark:text-amber-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Số đời phả hệ</span>
-              <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50">
-                <Layers className="h-5 w-5" />
+        <Card className="border-indigo-200/60 dark:border-indigo-900/40 bg-gradient-to-br from-indigo-50/50 to-card dark:from-indigo-950/20 shadow-xs hover:shadow-md transition-shadow">
+          <CardContent className="p-4 space-y-2">
+            <div className="flex items-center justify-between text-indigo-600 dark:text-indigo-400">
+              <span className="text-xs font-bold uppercase tracking-wider">Chi &amp; Phái tộc</span>
+              <div className="p-2 rounded-lg bg-indigo-100 dark:bg-indigo-900/50">
+                <GitBranch className="h-4 w-4" />
               </div>
             </div>
-            <p className="text-3xl font-black text-foreground">{stats.totalGenerations} <span className="text-base font-normal text-muted-foreground">thế hệ</span></p>
+            <p className="text-2xl font-black text-foreground">{stats.totalChi} <span className="text-xs font-normal text-muted-foreground">Chi</span> / {stats.totalPhai} <span className="text-xs font-normal text-muted-foreground">Phái</span></p>
             <p className="text-[11px] text-muted-foreground pt-1 border-t">
-              Từ Thủy Tổ đến thế hệ mới nhất
+              Phân nhánh dòng họ
             </p>
           </CardContent>
         </Card>
 
         {/* Card 3 */}
-        <Card className="border-emerald-200/60 dark:border-emerald-900/40 bg-gradient-to-br from-emerald-50/50 to-card dark:from-emerald-950/20 shadow-xs hover:shadow-md transition-shadow">
-          <CardContent className="p-5 space-y-2">
-            <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Gia đình</span>
-              <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
-                <Heart className="h-5 w-5" />
+        <Card className="border-amber-200/60 dark:border-amber-900/40 bg-gradient-to-br from-amber-50/50 to-card dark:from-amber-950/20 shadow-xs hover:shadow-md transition-shadow">
+          <CardContent className="p-4 space-y-2">
+            <div className="flex items-center justify-between text-amber-600 dark:text-amber-400">
+              <span className="text-xs font-bold uppercase tracking-wider">Số đời phả hệ</span>
+              <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/50">
+                <Layers className="h-4 w-4" />
               </div>
             </div>
-            <p className="text-3xl font-black text-foreground">{stats.totalFamilies} <span className="text-base font-normal text-muted-foreground">hộ</span></p>
+            <p className="text-2xl font-black text-foreground">{stats.totalGenerations} <span className="text-xs font-normal text-muted-foreground">thế hệ</span></p>
             <p className="text-[11px] text-muted-foreground pt-1 border-t">
-              Các hộ gia đình trong gia phả
+              Từ Thủy Tổ đến nay
             </p>
           </CardContent>
         </Card>
 
         {/* Card 4 */}
-        <Card className="border-purple-200/60 dark:border-purple-900/40 bg-gradient-to-br from-purple-50/50 to-card dark:from-purple-950/20 shadow-xs hover:shadow-md transition-shadow">
-          <CardContent className="p-5 space-y-2">
-            <div className="flex items-center justify-between text-purple-600 dark:text-purple-400">
-              <span className="text-xs font-bold uppercase tracking-wider">TB con / gia đình</span>
-              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/50">
-                <Baby className="h-5 w-5" />
+        <Card className="border-emerald-200/60 dark:border-emerald-900/40 bg-gradient-to-br from-emerald-50/50 to-card dark:from-emerald-950/20 shadow-xs hover:shadow-md transition-shadow">
+          <CardContent className="p-4 space-y-2">
+            <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400">
+              <span className="text-xs font-bold uppercase tracking-wider">Hộ gia đình</span>
+              <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
+                <Heart className="h-4 w-4" />
               </div>
             </div>
-            <p className="text-3xl font-black text-foreground">{stats.avgChildrenPerFamily}</p>
+            <p className="text-2xl font-black text-foreground">{stats.totalFamilies} <span className="text-xs font-normal text-muted-foreground">hộ</span></p>
             <p className="text-[11px] text-muted-foreground pt-1 border-t">
-              Tỷ lệ tuyệt tự: <span className="font-semibold text-purple-700 dark:text-purple-300">{stats.childlessRate}%</span>
+              Hộ gia đình gia phả
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Card 5 */}
+        <Card className="border-purple-200/60 dark:border-purple-900/40 bg-gradient-to-br from-purple-50/50 to-card dark:from-purple-950/20 shadow-xs hover:shadow-md transition-shadow">
+          <CardContent className="p-4 space-y-2">
+            <div className="flex items-center justify-between text-purple-600 dark:text-purple-400">
+              <span className="text-xs font-bold uppercase tracking-wider">TB con / hộ</span>
+              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/50">
+                <Baby className="h-4 w-4" />
+              </div>
+            </div>
+            <p className="text-2xl font-black text-foreground">{stats.avgChildrenPerFamily}</p>
+            <p className="text-[11px] text-muted-foreground pt-1 border-t">
+              Tuyệt tự: <span className="font-semibold text-purple-700 dark:text-purple-300">{stats.childlessRate}%</span>
             </p>
           </CardContent>
         </Card>
