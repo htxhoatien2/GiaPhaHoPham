@@ -80,9 +80,32 @@ function getEventDedupeKey(title: string, lunarDate?: string, solarDate?: string
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/^(cung|le|ngay|gio)\s+/gi, '')
+    .replace(/^(cung|le|ngay|gio)\s+/gi, '')
     .trim();
-  const lunarKey = lunarDate ? lunarDate.replace(/(ÂL|AL)/gi, '').trim() : '';
-  const solarKey = solarDate ? solarDate.slice(0, 10) : '';
+
+  let lunarKey = '';
+  if (lunarDate) {
+    const parsed = parseLunarString(lunarDate);
+    if (parsed) {
+      lunarKey = `${parsed.day}/${parsed.month}`;
+    } else {
+      lunarKey = lunarDate.replace(/(ÂL|AL)/gi, '').trim();
+    }
+  }
+
+  let solarKey = '';
+  if (solarDate) {
+    solarKey = solarDate.slice(0, 10);
+  } else if (lunarDate) {
+    const calcSolar = getSolarFromLunarString(lunarDate);
+    if (calcSolar) {
+      const yyyy = calcSolar.year;
+      const mm = String(calcSolar.month).padStart(2, '0');
+      const dd = String(calcSolar.day).padStart(2, '0');
+      solarKey = `${yyyy}-${mm}-${dd}`;
+    }
+  }
+
   return `${normTitle}_${lunarKey}_${solarKey}`;
 }
 
