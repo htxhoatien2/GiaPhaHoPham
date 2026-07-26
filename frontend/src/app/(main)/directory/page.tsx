@@ -249,7 +249,7 @@ export default function DirectoryPage() {
                 <TableHeader className="bg-muted/40">
                   <TableRow>
                     <TableHead className="font-bold text-xs">Họ &amp; Tên thành viên</TableHead>
-                    <TableHead className="font-bold text-xs">Đời / Chi</TableHead>
+                    <TableHead className="font-bold text-xs">Đời / Phái / Chi</TableHead>
                     <TableHead className="font-bold text-xs">Số điện thoại</TableHead>
                     <TableHead className="font-bold text-xs">Email</TableHead>
                     <TableHead className="font-bold text-xs">Địa chỉ sinh sống</TableHead>
@@ -268,7 +268,7 @@ export default function DirectoryPage() {
                         </TableCell>
                         <TableCell className="text-xs">
                           <Badge variant="outline" className="text-[10px]">
-                            Đời {person.generation} {person.chi ? `· Chi ${person.chi}` : ''}
+                            Đời {person.generation}{person.phai != null ? ` · Phái ${person.phai}` : ''}{person.chi != null ? ` · Chi ${person.chi}` : ''}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-xs">

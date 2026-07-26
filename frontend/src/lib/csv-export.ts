@@ -9,7 +9,7 @@
 import type { TreeData } from './supabase-data';
 
 const CSV_HEADERS = [
-  'Họ tên', 'Giới tính', 'Đời', 'Chi', 'Năm sinh', 'Nơi sinh',
+  'Họ tên', 'Giới tính', 'Đời', 'Phái', 'Chi', 'Năm sinh', 'Nơi sinh',
   'Năm mất', 'Còn sống', 'Nghề nghiệp', 'Tên cha', 'Tên mẹ',
 ];
 
@@ -52,6 +52,7 @@ export function generateCsv(data: TreeData): string {
       person.display_name,
       person.gender === 1 ? 'Nam' : person.gender === 2 ? 'Nữ' : '',
       person.generation,
+      person.phai ?? '',
       person.chi ?? '',
       person.birth_year ?? '',
       person.birth_place ?? '',
