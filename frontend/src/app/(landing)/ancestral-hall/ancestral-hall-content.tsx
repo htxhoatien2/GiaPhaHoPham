@@ -21,8 +21,20 @@ export function AncestralHallContent() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const images = (cs?.ancestral_hall_images ?? []) as string[];
-  const coords = cs?.ancestral_hall_coordinates as { lat: number; lng: number } | null;
-  const ceremonies = (cs?.ceremony_schedule ?? []) as CeremonyScheduleItem[];
+  const coords = (cs?.ancestral_hall_coordinates as { lat: number; lng: number } | null) || { lat: 15.9613, lng: 108.1889 };
+
+  const defaultCeremonies: CeremonyScheduleItem[] = [
+    { title: 'Lễ Giỗ Tổ Niên Tự Tộc Phạm Văn', lunar_date: '15/1', solar_date: 'Rằm tháng Giêng', description: 'Lễ giỗ tổ niên tự hàng năm tại Từ Đường Tộc, quy tụ đông đảo con cháu các Phái Chi về dâng hương.' },
+    { title: 'Lễ Tế Thu & Khuyến Học Dòng Họ', lunar_date: '15/8', solar_date: 'Rằm tháng Tám', description: 'Tế thu dòng họ và tổ chức lễ phát thưởng Quỹ khuyến học cho con cháu đạt thành tích xuất sắc.' }
+  ];
+
+  const ceremonies = (cs?.ceremony_schedule && Array.isArray(cs.ceremony_schedule) && cs.ceremony_schedule.length > 0)
+    ? (cs.ceremony_schedule as CeremonyScheduleItem[])
+    : defaultCeremonies;
+
+  const ancestralHistory = cs?.ancestral_hall_history || 'Nhà thờ Tộc Phạm Văn An Trạch là nơi phụng sự thờ tự Tiên tổ, quy tụ con cháu hàng năm vào các dịp giỗ tổ và lễ Tết truyền thống. Nơi đây gìn giữ gia phong, ghi nhớ công ơn đức trạch cha ông.';
+
+  const ancestralAddress = cs?.ancestral_hall_address || 'An Trạch, Hòa Tiến, Hòa Vang, Đà Nẵng';
 
   if (isLoading) {
     return (
@@ -52,7 +64,7 @@ export function AncestralHallContent() {
       {/* Image gallery */}
       {images.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-4 border-amber-500 pl-3 flex items-center gap-2">
             <ImageIcon className="h-5 w-5 text-emerald-400" />
             Hình Ảnh Từ Đường
           </h2>
@@ -87,77 +99,71 @@ export function AncestralHallContent() {
       )}
 
       {/* Ancestral hall history */}
-      {cs?.ancestral_hall_history && (
-        <section className="space-y-4">
-          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-emerald-400" />
-            Lịch Sử Từ Đường
-          </h2>
-          <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
-            <CardContent className="py-6 text-sm leading-relaxed text-slate-300">
-              <p className="whitespace-pre-line">{cs.ancestral_hall_history}</p>
-            </CardContent>
-          </Card>
-        </section>
-      )}
+      <section className="space-y-4">
+        <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-4 border-amber-500 pl-3 flex items-center gap-2">
+          <BookOpen className="h-5 w-5 text-emerald-400" />
+          Lịch Sử Từ Đường
+        </h2>
+        <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
+          <CardContent className="py-6 text-sm leading-relaxed text-slate-300">
+            <p className="whitespace-pre-line">{ancestralHistory}</p>
+          </CardContent>
+        </Card>
+      </section>
 
       {/* Annual ceremony schedule */}
-      {ceremonies.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-emerald-400" />
-            Lịch Tế Lễ Hàng Năm
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {ceremonies.map((c, i) => (
-              <Card key={i} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/40 transition-all">
-                <CardHeader className="pb-1 pt-4 px-5">
-                  <CardTitle className="text-sm font-bold text-amber-300 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-400" />
-                    {c.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="px-5 pb-4">
-                  <p className="text-xs text-slate-400 font-medium">
-                    {c.lunar_date && <span className="text-amber-400 font-semibold">Âm lịch: {c.lunar_date} &middot; </span>}
-                    Dương lịch: {c.solar_date}
-                  </p>
-                  {c.description && (
-                    <p className="text-xs text-slate-300 mt-2 leading-relaxed">{c.description}</p>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
+      <section className="space-y-4">
+        <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-4 border-amber-500 pl-3 flex items-center gap-2">
+          <Calendar className="h-5 w-5 text-emerald-400" />
+          Lịch Tế Lễ Hàng Năm
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {ceremonies.map((c, i) => (
+            <Card key={i} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/40 transition-all">
+              <CardHeader className="pb-1 pt-4 px-5">
+                <CardTitle className="text-sm font-bold text-amber-300 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-400" />
+                  {c.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="px-5 pb-4">
+                <p className="text-xs text-slate-400 font-medium">
+                  {c.lunar_date && <span className="text-amber-400 font-semibold">Âm lịch: {c.lunar_date} &middot; </span>}
+                  Dương lịch: {c.solar_date}
+                </p>
+                {c.description && (
+                  <p className="text-xs text-slate-300 mt-2 leading-relaxed">{c.description}</p>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
 
       {/* Location */}
-      {cs?.ancestral_hall_address && (
-        <section className="space-y-4">
-          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-emerald-400" />
-            Vị Trí Tọa Độ
-          </h2>
-          <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
-            <CardContent className="py-5 space-y-4">
-              <p className="text-sm font-medium text-amber-200">{cs.ancestral_hall_address}</p>
-              {coords && (
-                <div className="rounded-2xl overflow-hidden border border-slate-800 h-72 shadow-inner">
-                  <iframe
-                    title="Bản đồ nhà thờ họ"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    loading="lazy"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${coords.lng - 0.01},${coords.lat - 0.01},${coords.lng + 0.01},${coords.lat + 0.01}&layer=mapnik&marker=${coords.lat},${coords.lng}`}
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </section>
-      )}
+      <section className="space-y-4">
+        <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-4 border-amber-500 pl-3 flex items-center gap-2">
+          <MapPin className="h-5 w-5 text-emerald-400" />
+          Địa Chỉ & Tọa Độ Từ Đường
+        </h2>
+        <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
+          <CardContent className="py-5 space-y-4">
+            <p className="text-sm font-medium text-amber-200">{ancestralAddress}</p>
+            {coords && (
+              <div className="rounded-2xl overflow-hidden border border-slate-800 h-72 shadow-inner">
+                <iframe
+                  title="Bản đồ nhà thờ họ"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  loading="lazy"
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${coords.lng - 0.01},${coords.lat - 0.01},${coords.lng + 0.01},${coords.lat + 0.01}&layer=mapnik&marker=${coords.lat},${coords.lng}`}
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </section>
 
       {/* Navigation */}
       <div className="flex flex-wrap gap-4 justify-center pt-6 border-t border-slate-800/80 text-xs">
