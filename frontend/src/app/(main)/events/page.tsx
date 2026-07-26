@@ -342,12 +342,13 @@ export default function EventsPage() {
           <CardContent className="pt-4">
             <div className="space-y-2.5">
               {allUpcoming.slice(0, 5).map(({ event, person, nextDate, daysUntil, lunarDisplay, isAuto }) => {
-                const typeInfo = EVENT_TYPE_LABELS[event.event_type];
-                const TypeIcon = typeInfo.icon;
+                const typeInfo = EVENT_TYPE_LABELS[event.event_type] || EVENT_TYPE_LABELS.other;
+                const TypeIcon = typeInfo?.icon || EVENT_TYPE_LABELS.other.icon;
+                const colorClass = typeInfo?.color || EVENT_TYPE_LABELS.other.color;
                 return (
                   <div key={event.id} className="flex items-center justify-between gap-3 bg-white border border-slate-200/80 hover:border-amber-300 rounded-xl p-3 shadow-2xs transition-all">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold shadow-2xs ${typeInfo.color}`}>
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold shadow-2xs ${colorClass}`}>
                         <TypeIcon className="h-5 w-5" />
                       </div>
                       <div className="min-w-0">
@@ -459,15 +460,17 @@ export default function EventsPage() {
               ) : (
                 <div className="space-y-3">
                   {filteredEvents.map(event => {
-                    const typeInfo = EVENT_TYPE_LABELS[event.event_type];
-                    const TypeIcon = typeInfo.icon;
+                    const typeInfo = EVENT_TYPE_LABELS[event.event_type] || EVENT_TYPE_LABELS.other;
+                    const TypeIcon = typeInfo?.icon || EVENT_TYPE_LABELS.other.icon;
+                    const colorClass = typeInfo?.color || EVENT_TYPE_LABELS.other.color;
+                    const labelText = typeInfo?.label || 'Khác';
                     const person = event.person_id ? people?.find(p => p.id === event.person_id) : undefined;
                     return (
                       <div
                         key={event.id}
                         className="flex items-center gap-3 rounded-lg border p-3"
                       >
-                        <div className={`flex h-10 w-10 items-center justify-center rounded-lg shrink-0 ${typeInfo.color}`}>
+                        <div className={`flex h-10 w-10 items-center justify-center rounded-lg shrink-0 ${colorClass}`}>
                           <TypeIcon className="h-5 w-5" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -495,7 +498,7 @@ export default function EventsPage() {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
-                          <Badge variant="outline">{typeInfo.label}</Badge>
+                          <Badge variant="outline">{labelText}</Badge>
                           {event.recurring && (
                             <Badge variant="secondary" className="text-xs">Hàng năm</Badge>
                           )}

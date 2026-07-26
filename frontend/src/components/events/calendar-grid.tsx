@@ -107,11 +107,12 @@ export function CalendarGrid({ month, year, events, people }: CalendarGridProps)
                 </span>
               </div>
               {dayEvts.map(({ event }) => {
-                const typeInfo = EVENT_TYPE_LABELS[event.event_type];
+                const typeInfo = EVENT_TYPE_LABELS[event.event_type] || EVENT_TYPE_LABELS.other;
+                const colorClass = typeInfo?.color || 'text-gray-600 bg-gray-50';
                 return (
                   <div
                     key={event.id}
-                    className={`text-[10px] px-1 py-0.5 rounded mb-0.5 truncate ${typeInfo.color}`}
+                    className={`text-[10px] px-1 py-0.5 rounded mb-0.5 truncate font-medium ${colorClass}`}
                     title={event.title}
                   >
                     {event.title}
