@@ -357,13 +357,19 @@ export default function EventsPage() {
                           {isAuto && <span className="text-[11px] text-slate-400 font-normal">(tự động)</span>}
                         </div>
                         <div className="text-xs text-slate-500 font-medium mt-0.5 flex flex-wrap items-center gap-1.5">
-                          <span className="text-emerald-900 font-semibold">{nextDate.toLocaleDateString('vi-VN')}</span>
+                          <span className="text-emerald-900 dark:text-emerald-300 font-bold">{nextDate.toLocaleDateString('vi-VN')}</span>
                           <span className="text-slate-300">•</span>
-                          <span className="text-amber-900 font-medium">{lunarDisplay}</span>
+                          <span className="text-amber-900 dark:text-amber-300 font-semibold">{lunarDisplay}</span>
+                          {event.location && (
+                            <>
+                              <span className="text-slate-300">•</span>
+                              <span className="text-slate-700 dark:text-slate-300 font-medium">{event.location}</span>
+                            </>
+                          )}
                           {person && (
                             <>
                               <span className="text-slate-300">•</span>
-                              <Link href={`/people/${person.id}`} className="text-emerald-800 hover:underline font-semibold">
+                              <Link href={`/people/${person.id}`} className="text-emerald-800 dark:text-emerald-400 hover:underline font-semibold">
                                 {person.display_name}
                               </Link>
                             </>
