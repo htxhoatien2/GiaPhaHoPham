@@ -376,6 +376,7 @@ export default function EventsPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-medium">{event.title}</div>
+                          <div className="text-sm text-muted-foreground">
                             {event.event_lunar && (
                               <span className="text-amber-800 dark:text-amber-300 font-semibold">
                                 {formatLunarWithSolarCurrentYear(event.event_lunar)}
