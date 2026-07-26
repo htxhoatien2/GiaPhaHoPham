@@ -17,7 +17,7 @@ import { useTreeData } from '@/hooks/use-families';
 import { generateGedcom, validateGedcom, downloadGedcom } from '@/lib/gedcom-export';
 import { generateCsv, downloadCsv } from '@/lib/csv-export';
 import { generateMarkdown, downloadMarkdown } from '@/lib/markdown-export';
-import { Download, FileText, Loader2, CheckCircle, AlertCircle, Users, GitBranchPlus, Table, FileCode } from 'lucide-react';
+import { Download, FileText, Loader2, CheckCircle, AlertCircle, Users, GitBranchPlus, Table, FileCode, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 
@@ -73,10 +73,44 @@ export default function AdminExportPage() {
   const familyCount = treeData?.families.length || 0;
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Xuất dữ liệu</h1>
-        <p className="text-muted-foreground">Xuất gia phả ra nhiều định dạng để chia sẻ hoặc sao lưu</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <Download className="h-56 w-56 text-blue-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <Download className="h-6 w-6 text-blue-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Trung Tâm Xuất Dữ Liệu Gia Phả</h1>
+                <p className="text-xs sm:text-sm text-blue-100/90">
+                  Xuất file GEDCOM 7.0, Excel (CSV) và Markdown phục vụ lưu trữ &amp; chia sẻ
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
+                {peopleCount} Thành viên
+              </Badge>
+              <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
+                {familyCount} Gia đình
+              </Badge>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Card>

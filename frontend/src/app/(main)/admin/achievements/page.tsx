@@ -199,29 +199,55 @@ export default function AdminAchievementsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Quản lý Vinh danh</h1>
-          <p className="text-muted-foreground">Thêm, sửa, xóa thành tích thành viên</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-orange-600 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <Trophy className="h-56 w-56 text-amber-200" />
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) setEditingItem(undefined); }}>
-          <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" />Thêm thành tích</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{editingItem ? 'Sửa thành tích' : 'Thêm thành tích mới'}</DialogTitle>
-            </DialogHeader>
-            <AchievementForm
-              key={editingItem?.id || 'new'}
-              achievement={editingItem}
-              people={people || []}
-              onSubmit={editingItem ? handleUpdate : handleCreate}
-              isPending={createMutation.isPending || updateMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <Trophy className="h-6 w-6 text-amber-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Quản Lý Vinh Danh &amp; Thành Tích</h1>
+                <p className="text-xs sm:text-sm text-amber-100/90">
+                  Tuyên dương thành tích học tập, sự nghiệp và cống hiến cho con cháu dòng họ
+                </p>
+              </div>
+            </div>
+
+            <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) setEditingItem(undefined); }}>
+              <DialogTrigger asChild>
+                <Button className="bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold rounded-xl shadow-md">
+                  <Plus className="h-4 w-4 mr-2" />Thêm vinh danh
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>{editingItem ? 'Sửa thành tích' : 'Thêm thành tích mới'}</DialogTitle>
+                </DialogHeader>
+                <AchievementForm
+                  key={editingItem?.id || 'new'}
+                  achievement={editingItem}
+                  people={people || []}
+                  onSubmit={editingItem ? handleUpdate : handleCreate}
+                  isPending={createMutation.isPending || updateMutation.isPending}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
       </div>
 
       <Input

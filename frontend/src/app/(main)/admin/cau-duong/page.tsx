@@ -34,7 +34,7 @@ import {
 } from '@/components/ui/dialog';
 import {
   RotateCcw, Plus, Pencil, Zap, UserCheck, CalendarClock, CheckCircle2, Lock,
-  ArrowUp, ArrowDown, ListRestart,
+  ArrowUp, ArrowDown, ListRestart, ArrowLeft,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -601,53 +601,71 @@ export default function AdminCauDuongPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <RotateCcw className="h-6 w-6 text-primary" />
-            Quản lý Cầu đương
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Cấu hình nhóm xoay vòng và phân công chủ lễ
-          </p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-800 via-indigo-800 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <RotateCcw className="h-56 w-56 text-blue-200" />
         </div>
-        <div className="flex items-center gap-3">
-          <Select value={selectedYear.toString()} onValueChange={v => setSelectedYear(Number(v))}>
-            <SelectTrigger className="w-32">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {YEAR_OPTIONS.map(y => (
-                <SelectItem key={y} value={y.toString()}>Năm {y}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <RotateCcw className="h-6 w-6 text-blue-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Quản Lý Lịch Cầu Đương</h1>
+                <p className="text-xs sm:text-sm text-blue-100/90">
+                  Phân công chủ lễ cúng giỗ xoay vòng cho các hộ nam giới trong tộc
+                </p>
+              </div>
+            </div>
 
-          <Dialog
-            open={poolDialogOpen}
-            onOpenChange={open => { setPoolDialogOpen(open); if (!open) setEditingPool(undefined); }}
-          >
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                {firstPool ? 'Sửa nhóm' : 'Tạo nhóm'}
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{editingPool ? 'Sửa nhóm Cầu đương' : 'Tạo nhóm Cầu đương'}</DialogTitle>
-              </DialogHeader>
-              <PoolForm
-                key={editingPool?.id || 'new'}
-                pool={editingPool}
-                people={people || []}
-                onSubmit={editingPool ? handleUpdatePool : handleCreatePool}
-                isPending={createPoolMutation.isPending || updatePoolMutation.isPending}
-              />
-            </DialogContent>
-          </Dialog>
+            <div className="flex items-center gap-3">
+              <Select value={selectedYear.toString()} onValueChange={v => setSelectedYear(Number(v))}>
+                <SelectTrigger className="w-32 bg-white/10 text-white border-white/20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {YEAR_OPTIONS.map(y => (
+                    <SelectItem key={y} value={y.toString()}>Năm {y}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Dialog
+                open={poolDialogOpen}
+                onOpenChange={open => { setPoolDialogOpen(open); if (!open) setEditingPool(undefined); }}
+              >
+                <DialogTrigger asChild>
+                  <Button className="bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl shadow-md">
+                    <Plus className="h-4 w-4 mr-2" />
+                    {firstPool ? 'Sửa nhóm' : 'Tạo nhóm'}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{editingPool ? 'Sửa nhóm Cầu đương' : 'Tạo nhóm Cầu đương'}</DialogTitle>
+                  </DialogHeader>
+                  <PoolForm
+                    key={editingPool?.id || 'new'}
+                    pool={editingPool}
+                    people={people || []}
+                    onSubmit={editingPool ? handleUpdatePool : handleCreatePool}
+                    isPending={createPoolMutation.isPending || updatePoolMutation.isPending}
+                  />
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
         </div>
       </div>
 

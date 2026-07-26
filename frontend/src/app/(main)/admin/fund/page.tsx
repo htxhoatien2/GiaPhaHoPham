@@ -30,7 +30,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Plus, Trash2, CheckCircle, Wallet } from 'lucide-react';
+import { Plus, Trash2, CheckCircle, Wallet, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { formatVND } from '@/lib/format';
@@ -162,12 +162,40 @@ export default function AdminFundPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Quản lý Quỹ & Học bổng</h1>
-        <p className="text-muted-foreground">
-          Số dư: <span className="font-semibold text-emerald-600">{formatVND(balance?.balance || 0)}</span>
-        </p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-700 via-teal-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <Wallet className="h-56 w-56 text-emerald-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <Wallet className="h-6 w-6 text-emerald-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Quản Lý Quỹ Dòng Họ &amp; Khuyến Học</h1>
+                <p className="text-xs sm:text-sm text-emerald-100/90">
+                  Quản lý thu chi quỹ tộc, đóng góp và xét duyệt học bổng khen thưởng con cháu
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white/15 backdrop-blur border border-white/20 rounded-2xl px-5 py-3 text-right">
+              <span className="text-[11px] text-emerald-100 uppercase tracking-wider block">Tổng số dư quỹ</span>
+              <span className="text-2xl font-black text-white">{formatVND(balance?.balance || 0)}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Tabs defaultValue="transactions">

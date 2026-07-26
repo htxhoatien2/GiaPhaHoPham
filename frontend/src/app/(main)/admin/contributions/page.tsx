@@ -131,22 +131,44 @@ export default function AdminContributionsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <Button variant="ghost" asChild className="mb-4 -ml-2">
-          <Link href="/admin">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Quản trị
-          </Link>
-        </Button>
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50">
-            <ClipboardList className="h-5 w-5 text-purple-600" />
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-700 via-indigo-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <ClipboardList className="h-56 w-56 text-purple-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold">Duyệt đề xuất chỉnh sửa</h1>
-            <p className="text-muted-foreground">
-              {pendingCount > 0 ? `${pendingCount} đề xuất đang chờ duyệt` : 'Không có đề xuất chờ duyệt'}
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <ClipboardList className="h-6 w-6 text-purple-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Duyệt Đề Xuất Chỉnh Sửa Phả Hệ</h1>
+                <p className="text-xs sm:text-sm text-purple-100/90">
+                  Xem xét, phê duyệt hoặc từ chối thông tin đóng góp từ thành viên dòng họ
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
+                {contributions?.length || 0} Đề xuất
+              </Badge>
+              {pendingCount > 0 && (
+                <Badge className="bg-amber-500 text-amber-950 font-bold text-xs px-3 py-1 animate-pulse">
+                  {pendingCount} Chờ duyệt
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </div>

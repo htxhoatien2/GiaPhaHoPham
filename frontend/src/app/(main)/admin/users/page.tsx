@@ -511,40 +511,64 @@ export default function UsersPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/admin">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Quản trị
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <UserCog className="h-6 w-6" />
-              Quản lý người dùng
-            </h1>
-            <p className="text-muted-foreground">Phân quyền, gắn tài khoản vào cây gia phả</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-7xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <UserCog className="h-56 w-56 text-blue-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <UserCog className="h-6 w-6 text-blue-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Quản Lý Người Dùng &amp; Phân Quyền</h1>
+                <p className="text-xs sm:text-sm text-blue-100/90">
+                  Phân quyền Admin, Editor, Viewer và gắn tài khoản vào thành viên phả hệ
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
+                <Users className="h-3.5 w-3.5 mr-1 text-blue-300" />
+                {profiles?.length || 0} Tài khoản
+              </Badge>
+              {unverifiedCount > 0 && (
+                <Badge className="bg-amber-500 text-amber-950 font-bold text-xs px-3 py-1 animate-pulse">
+                  <Clock className="h-3.5 w-3.5 mr-1" />
+                  {unverifiedCount} Chờ xác nhận
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Role Legend */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <Shield className="h-4 w-4" />
-            Cấp độ phân quyền
+      <Card className="border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <CardHeader className="pb-3 bg-slate-50/50 dark:bg-slate-900/40 border-b">
+          <CardTitle className="text-sm font-bold flex items-center gap-2">
+            <Shield className="h-4 w-4 text-blue-600" />
+            Cấp độ phân quyền tài khoản hệ thống
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {(Object.entries(roleLabels) as [UserRole, typeof roleLabels[UserRole]][]).map(([role, info]) => (
-              <div key={role} className="flex items-start gap-3 p-3 rounded-lg border">
-                <Badge className={info.color}>{info.label}</Badge>
-                <span className="text-sm text-muted-foreground">{info.description}</span>
+              <div key={role} className="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-card hover:border-blue-300 transition-colors">
+                <Badge className={`${info.color} px-2.5 py-1 text-xs font-bold shrink-0`}>{info.label}</Badge>
+                <span className="text-xs text-muted-foreground leading-relaxed">{info.description}</span>
               </div>
             ))}
           </div>
@@ -552,31 +576,36 @@ export default function UsersPage() {
       </Card>
 
       {/* Users Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Danh sách người dùng
-          </CardTitle>
-          <CardDescription>
-            {isLoading ? 'Đang tải...' : `${profiles?.length || 0} người dùng đã đăng ký`}
-            {unverifiedCount > 0 && !isLoading && (
-              <span className="ml-2 text-amber-600">({unverifiedCount} chờ xác nhận)</span>
+      <Card className="border-slate-200/80 dark:border-slate-800 shadow-sm">
+        <CardHeader className="bg-slate-50/50 dark:bg-slate-900/40 border-b">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Users className="h-4.5 w-4.5 text-blue-600" />
+                Danh sách người dùng hệ thống
+              </CardTitle>
+              <CardDescription className="text-xs mt-0.5">
+                {isLoading ? 'Đang tải dữ liệu...' : `Quản lý ${profiles?.length || 0} tài khoản thành viên`}
+                {unverifiedCount > 0 && !isLoading && (
+                  <span className="ml-2 text-amber-600 font-semibold">({unverifiedCount} tài khoản mới chờ xác nhận)</span>
+                )}
+              </CardDescription>
+            </div>
+
+            {unverifiedCount > 0 && (
+              <Button
+                variant={showUnverifiedOnly ? 'default' : 'outline'}
+                size="sm"
+                className="w-fit rounded-xl font-medium"
+                onClick={() => setShowUnverifiedOnly(!showUnverifiedOnly)}
+              >
+                <Clock className="h-3.5 w-3.5 mr-1.5" />
+                {showUnverifiedOnly ? 'Hiện tất cả người dùng' : `Lọc chờ xác nhận (${unverifiedCount})`}
+              </Button>
             )}
-          </CardDescription>
-          {unverifiedCount > 0 && (
-            <Button
-              variant={showUnverifiedOnly ? 'default' : 'outline'}
-              size="sm"
-              className="w-fit"
-              onClick={() => setShowUnverifiedOnly(!showUnverifiedOnly)}
-            >
-              <Clock className="h-3.5 w-3.5 mr-1.5" />
-              {showUnverifiedOnly ? 'Hiện tất cả' : `Chờ xác nhận (${unverifiedCount})`}
-            </Button>
-          )}
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-4">
           {isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (

@@ -82,10 +82,35 @@ export default function AdminImportPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Nhập dữ liệu GEDCOM</h1>
-        <p className="text-muted-foreground">Import file .ged (GEDCOM 7.0 hoặc 5.5.1) vào hệ thống</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-700 via-teal-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <Upload className="h-56 w-56 text-emerald-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <Upload className="h-6 w-6 text-emerald-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Trung Tâm Nhập Dữ Liệu GEDCOM</h1>
+                <p className="text-xs sm:text-sm text-emerald-100/90">
+                  Phân tích, kiểm tra và xem trước file .ged từ FamilySearch, MyHeritage, Gramps
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Step indicator */}

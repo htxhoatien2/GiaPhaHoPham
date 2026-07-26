@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { ClipboardList, Check, X, Trash2, Loader2, Search } from 'lucide-react';
+import { ClipboardList, Check, X, Trash2, Loader2, Search, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { getRelativeTime } from '@/lib/format-utils';
 import Link from 'next/link';
@@ -101,13 +101,41 @@ export default function AdminRegistrationsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <ClipboardList className="h-6 w-6" />
-          Đơn đăng ký thành viên
-        </h1>
-        <p className="text-muted-foreground">Xét duyệt đơn ghi danh từ con cháu sống xa</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <ClipboardList className="h-56 w-56 text-blue-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <ClipboardList className="h-6 w-6 text-blue-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Duyệt Đơn Đăng Ký Thành Viên</h1>
+                <p className="text-xs sm:text-sm text-blue-100/90">
+                  Xét duyệt đơn đăng ký tham gia gia phả của con cháu sống xa tổ quốc
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
+                {(registrations || []).length} Đơn ghi danh
+              </Badge>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}

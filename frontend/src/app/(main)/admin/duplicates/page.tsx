@@ -16,7 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/components/auth/auth-provider';
 import { useDuplicates } from '@/hooks/use-duplicates';
-import { Users, ExternalLink, X, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Users, ExternalLink, X, AlertTriangle, CheckCircle, ArrowLeft } from 'lucide-react';
 import type { DuplicatePair } from '@/types';
 
 const DISMISSED_KEY = 'ancestortree_dismissed_duplicates';
@@ -110,10 +110,44 @@ export default function AdminDuplicatesPage() {
   const mediumCount = visiblePairs.filter(p => p.level === 'MEDIUM').length;
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Phát hiện trùng lặp</h1>
-        <p className="text-muted-foreground">Phát hiện thành viên có thể bị nhập trùng</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-700 via-orange-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <Users className="h-56 w-56 text-amber-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <Users className="h-6 w-6 text-amber-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Phát Hiện &amp; Rà Soát Trùng Lặp</h1>
+                <p className="text-xs sm:text-sm text-amber-100/90">
+                  Thuật toán đối soát thông minh quét trùng lặp theo tên, năm sinh, đời và quan hệ gia đình
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge className="bg-red-500 text-white text-xs px-3 py-1 font-bold">
+                {highCount} Nghi ngờ cao
+              </Badge>
+              <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
+                {mediumCount} Nghi ngờ vừa
+              </Badge>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Summary */}

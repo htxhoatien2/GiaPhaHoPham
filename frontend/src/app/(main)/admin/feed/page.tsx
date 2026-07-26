@@ -24,7 +24,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Eye, EyeOff, Trash2, Search, Shield, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Trash2, Search, Shield, Loader2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
 import { usePosts, useDeletePost, useHidePost } from '@/hooks/use-feed';
 import { useProfiles } from '@/hooks/use-profiles';
@@ -108,13 +108,46 @@ export default function AdminFeedPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Shield className="h-6 w-6" />
-          Quản lý bài viết
-        </h1>
-        <p className="text-muted-foreground">Duyệt, ẩn/hiện và xóa bài viết trong Góc giao lưu</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <Shield className="h-56 w-56 text-blue-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <Shield className="h-6 w-6 text-blue-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Quản Lý Bài Viết &amp; Góc Giao Lưu</h1>
+                <p className="text-xs sm:text-sm text-blue-100/90">
+                  Duyệt tin tức, kiểm duyệt thông tin và quản lý bài viết từ thành viên
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
+                {(posts || []).length} Bài viết
+              </Badge>
+              {hiddenCount > 0 && (
+                <Badge className="bg-amber-500 text-amber-950 font-bold text-xs px-3 py-1">
+                  {hiddenCount} Đã ẩn
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Filter + Search */}

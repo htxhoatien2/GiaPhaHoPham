@@ -25,7 +25,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Plus, Pencil, Trash2, Archive, Upload } from 'lucide-react';
+import { Plus, Pencil, Trash2, Archive, Upload, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/auth/auth-provider';
 import Link from 'next/link';
@@ -261,29 +261,55 @@ export default function AdminDocumentsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Quản lý Kho tài liệu</h1>
-          <p className="text-muted-foreground">Tải lên, sửa, xóa tài liệu dòng họ</p>
+    <div className="container mx-auto p-4 space-y-6 max-w-6xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-800 via-emerald-800 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <Archive className="h-56 w-56 text-teal-200" />
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) setEditingItem(undefined); }}>
-          <DialogTrigger asChild>
-            <Button><Plus className="h-4 w-4 mr-2" /><Upload className="h-4 w-4 mr-2" />Tải lên</Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>{editingItem ? 'Sửa tài liệu' : 'Tải lên tài liệu mới'}</DialogTitle>
-            </DialogHeader>
-            <DocumentForm
-              key={editingItem?.id || 'new'}
-              document={editingItem}
-              people={people || []}
-              onSubmit={editingItem ? handleUpdate : handleCreate}
-              isPending={createMutation.isPending || updateMutation.isPending || uploadMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <Archive className="h-6 w-6 text-teal-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Quản Lý Kho Tư Liệu &amp; Di Sản</h1>
+                <p className="text-xs sm:text-sm text-teal-100/90">
+                  Số hóa, phân loại ảnh lịch sử, sắc phong, bản đồ và video tư liệu dòng họ
+                </p>
+              </div>
+            </div>
+
+            <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); if (!open) setEditingItem(undefined); }}>
+              <DialogTrigger asChild>
+                <Button className="bg-teal-500 hover:bg-teal-600 text-white font-bold rounded-xl shadow-md">
+                  <Upload className="h-4 w-4 mr-2" />Tải lên tư liệu
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>{editingItem ? 'Sửa tài liệu' : 'Tải lên tài liệu mới'}</DialogTitle>
+                </DialogHeader>
+                <DocumentForm
+                  key={editingItem?.id || 'new'}
+                  document={editingItem}
+                  people={people || []}
+                  onSubmit={editingItem ? handleUpdate : handleCreate}
+                  isPending={createMutation.isPending || updateMutation.isPending || uploadMutation.isPending}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
+        </div>
       </div>
 
       <Input

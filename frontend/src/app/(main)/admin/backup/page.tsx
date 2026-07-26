@@ -19,7 +19,9 @@ import {
   Clock,
   Info,
   RefreshCw,
+  ArrowLeft,
 } from 'lucide-react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
@@ -141,16 +143,35 @@ export default function BackupPage() {
   };
 
   return (
-    <div className="container max-w-2xl py-8 space-y-6">
-      {/* ── Header ── */}
-      <div>
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <DatabaseBackup className="w-6 h-6" />
-          Sao lưu &amp; Khôi phục
-        </h1>
-        <p className="text-muted-foreground mt-1 text-sm">
-          Xuất toàn bộ dữ liệu gia phả ra một file ZIP duy nhất và khôi phục khi cần thiết.
-        </p>
+    <div className="container mx-auto p-4 space-y-6 max-w-4xl pb-24">
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 p-6 sm:p-8 text-white shadow-xl">
+        <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
+          <DatabaseBackup className="h-56 w-56 text-emerald-200" />
+        </div>
+        <div className="relative z-10 space-y-3">
+          <div className="flex items-center gap-3">
+            <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/10 hover:text-white -ml-2">
+              <Link href="/admin">
+                <ArrowLeft className="h-4 w-4 mr-1.5" />
+                Bảng quản trị
+              </Link>
+            </Button>
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10 backdrop-blur border border-white/20">
+                <DatabaseBackup className="h-6 w-6 text-emerald-200" />
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Sao Lưu &amp; Khôi Phục Hệ Thống</h1>
+                <p className="text-xs sm:text-sm text-emerald-100/90">
+                  Xuất toàn bộ dữ liệu gia phả ra file ZIP duy nhất và khôi phục khi cần thiết
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ── Due notification ── */}
