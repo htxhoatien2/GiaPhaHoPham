@@ -13,7 +13,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personSchema, type PersonFormData, defaultPersonValues } from '@/lib/validations/person';
 import { solarToLunar, getSolarFromLunarString } from '@/lib/lunar-calendar';
-import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
