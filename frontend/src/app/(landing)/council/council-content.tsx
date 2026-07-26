@@ -11,7 +11,7 @@
 import { useClanSettings } from '@/hooks/use-clan-settings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, BookOpen, Target } from 'lucide-react';
+import { Users, BookOpen, Target, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import type { CouncilMember } from '@/types';
 
