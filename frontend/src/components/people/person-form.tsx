@@ -554,16 +554,13 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                             onChange={e => {
                               const val = e.target.value;
                               field.onChange(val);
-                              // Auto populate death_date (YYYY-MM-DD) for current active year if empty
+                              // Auto populate death_date (YYYY-MM-DD) for current active year into the solar date input box
                               const calcSolar = getSolarFromLunarString(val);
                               if (calcSolar) {
                                 const yyyy = calcSolar.year;
                                 const mm = String(calcSolar.month).padStart(2, '0');
                                 const dd = String(calcSolar.day).padStart(2, '0');
-                                const currentDeathDate = form.getValues('death_date');
-                                if (!currentDeathDate) {
-                                  form.setValue('death_date', `${yyyy}-${mm}-${dd}`);
-                                }
+                                form.setValue('death_date', `${yyyy}-${mm}-${dd}`);
                               }
                             }}
                             className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500"

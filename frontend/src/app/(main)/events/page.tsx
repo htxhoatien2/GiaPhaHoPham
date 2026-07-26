@@ -12,6 +12,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useEvents, useDeleteEvent } from '@/hooks/use-events';
 import { usePeople } from '@/hooks/use-people';
+import { useClanSettings } from '@/hooks/use-clan-settings';
 import { useAuth } from '@/components/auth/auth-provider';
 import { parseLunarString, getNextLunarOccurrence, formatLunarDate, solarToLunar, formatLunarWithSolarCurrentYear } from '@/lib/lunar-calendar';
 import { CalendarGrid } from '@/components/events/calendar-grid';
@@ -76,6 +77,7 @@ interface UpcomingEvent {
 export default function EventsPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: people, isLoading: peopleLoading } = usePeople();
+  const { data: clanSettings, isLoading: clanLoading } = useClanSettings();
   const { isEditor } = useAuth();
   const deleteEvent = useDeleteEvent();
 
@@ -84,7 +86,43 @@ export default function EventsPage() {
   const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth() + 1);
   const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
 
-  const isLoading = eventsLoading || peopleLoading;
+  const isLoading = eventsLoading || peopleLoading || clanLoading;
+
+  // Auto-generate ceremony events from clan_settings.ceremony_schedule (Giỗ chạp 02/03 ÂL, Tế Thu 01/08 ÂL)
+  const clanCeremonyEvents = useMemo<UpcomingEvent[]>(() => {
+    if (!clanSettings?.ceremony_schedule) return [];
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const results: UpcomingEvent[] = [];
+
+    for (const [idx, c] of clanSettings.ceremony_schedule.entries()) {
+      if (!c.lunar_date) continue;
+      const parsed = parseLunarString(c.lunar_date);
+      if (!parsed) continue;
+
+      const nextDate = getNextLunarOccurrence(parsed.day, parsed.month, now);
+      const daysUntil = Math.ceil((nextDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysUntil > 60) continue;
+
+      results.push({
+        event: {
+          id: `clan-ceremony-${idx}`,
+          title: c.title || 'Lễ Tế Tộc',
+          event_type: 'le_tet',
+          event_lunar: c.lunar_date,
+          location: c.description || 'Tại Nhà thờ Tộc Phạm Văn An Trạch',
+          recurring: true,
+          created_at: new Date().toISOString(),
+        },
+        nextDate,
+        daysUntil,
+        lunarDisplay: formatLunarDate(parsed.day, parsed.month),
+        isAuto: true,
+      });
+    }
+
+    return results;
+  }, [clanSettings]);
 
   // Compute upcoming events (next 60 days)
   const upcomingEvents = useMemo<UpcomingEvent[]>(() => {
@@ -122,7 +160,7 @@ export default function EventsPage() {
     return results.sort((a, b) => a.daysUntil - b.daysUntil);
   }, [events, people]);
 
-  // Auto-generate giỗ events from deceased people with death_lunar (fix m2: mark as isAuto)
+  // Auto-generate giỗ events from deceased people with death_lunar
   const autoGioEvents = useMemo<UpcomingEvent[]>(() => {
     if (!people || !events) return [];
 
@@ -163,16 +201,30 @@ export default function EventsPage() {
   }, [people, events]);
 
   const allUpcoming = useMemo(() => {
-    const merged = [...upcomingEvents, ...autoGioEvents];
+    const merged = [...clanCeremonyEvents, ...upcomingEvents, ...autoGioEvents];
     return merged.sort((a, b) => a.daysUntil - b.daysUntil);
-  }, [upcomingEvents, autoGioEvents]);
+  }, [clanCeremonyEvents, upcomingEvents, autoGioEvents]);
+
+  // Merged events array for Calendar Grid and List view
+  const allEventsCombined = useMemo(() => {
+    const dbEvts = events || [];
+    const clanEvts = (clanSettings?.ceremony_schedule || []).map((c, i) => ({
+      id: `clan-ceremony-${i}`,
+      title: c.title || 'Lễ Tế Tộc',
+      event_type: 'le_tet' as const,
+      event_lunar: c.lunar_date,
+      location: c.description || 'Tại Nhà thờ Tộc Phạm Văn An Trạch',
+      recurring: true,
+      created_at: new Date().toISOString(),
+    }));
+    return [...clanEvts, ...dbEvts];
+  }, [events, clanSettings]);
 
   // Filtered events for list view
   const filteredEvents = useMemo(() => {
-    if (!events) return [];
-    if (typeFilter === 'all') return events;
-    return events.filter(e => e.event_type === typeFilter);
-  }, [events, typeFilter]);
+    if (typeFilter === 'all') return allEventsCombined;
+    return allEventsCombined.filter(e => e.event_type === typeFilter);
+  }, [allEventsCombined, typeFilter]);
 
   const navigateMonth = (dir: number) => {
     let m = calendarMonth + dir;
@@ -321,7 +373,7 @@ export default function EventsPage() {
                 <CalendarGrid
                   month={calendarMonth}
                   year={calendarYear}
-                  events={events || []}
+                  events={allEventsCombined}
                   people={people || []}
                 />
               )}
