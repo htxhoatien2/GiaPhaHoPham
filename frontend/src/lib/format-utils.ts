@@ -20,6 +20,17 @@ export function getRelativeTime(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('vi-VN');
 }
 
+export function getFullDateTime(dateStr: string): string {
+  try {
+    const date = new Date(dateStr);
+    const time = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const day = date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return `${time} — ${day}`;
+  } catch {
+    return dateStr;
+  }
+}
+
 export function getInitials(name?: string | null): string {
   if (!name || typeof name !== 'string') return '?';
   const parts = name.trim().split(' ');

@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bell, CheckCheck, Loader2, Trash2, ArrowRight, Sparkles, Inbox } from 'lucide-react';
+import { Bell, CheckCheck, Loader2, Trash2, ArrowRight, Sparkles, Inbox, Clock, UserCheck, Edit3 } from 'lucide-react';
 import {
   useNotifications,
   useUnreadCount,
@@ -21,7 +21,7 @@ import {
   useMarkAllAsRead,
   useDeleteNotification,
 } from '@/hooks/use-notifications';
-import { getRelativeTime } from '@/lib/format-utils';
+import { getRelativeTime, getFullDateTime } from '@/lib/format-utils';
 import { NOTIFICATION_TYPE_ICONS, NOTIFICATION_TYPE_LABELS } from '@/types';
 import { toast } from 'sonner';
 
@@ -76,7 +76,7 @@ export default function NotificationsPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-2xl space-y-6 pb-24">
+    <div className="container mx-auto px-4 py-6 max-w-3xl space-y-6 pb-24">
       {/* Top Banner Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-amber-700 to-amber-900 p-6 text-white shadow-xl">
         <div className="absolute -right-6 -bottom-6 opacity-10 pointer-events-none">
@@ -98,7 +98,7 @@ export default function NotificationsPage() {
                   )}
                 </div>
                 <p className="text-xs text-amber-100/90 mt-0.5">
-                  Cập nhật tin tức thành viên, gia phả và các tương tác Góc giao lưu
+                  Theo dõi thời gian thực các chỉnh sửa thành viên, gia phả và tương tác dòng họ
                 </p>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default function NotificationsPage() {
               : 'bg-background text-muted-foreground border-border hover:bg-accent'
           }`}
         >
-          <span>👤 Thành viên</span>
+          <span>👤 Chỉnh sửa Thành viên</span>
           <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
             {membersCount}
           </Badge>
@@ -207,6 +207,7 @@ export default function NotificationsPage() {
             const isUnread = !n.is_read;
             const icon = NOTIFICATION_TYPE_ICONS[n.type] || '🔔';
             const label = NOTIFICATION_TYPE_LABELS[n.type] || n.type;
+            const isMemberAction = memberTypes.includes(n.type);
 
             return (
               <Card
@@ -230,7 +231,7 @@ export default function NotificationsPage() {
                     </div>
 
                     {/* Notification content */}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 space-y-1.5">
                       <div className="flex items-center gap-2">
                         <h2 className={`text-sm tracking-tight ${isUnread ? 'font-bold text-foreground' : 'font-medium text-foreground/80'}`}>
                           {n.title}
@@ -241,21 +242,26 @@ export default function NotificationsPage() {
                       </div>
 
                       {n.body && (
-                        <p className={`text-xs mt-1 leading-relaxed ${isUnread ? 'text-foreground/90 font-normal' : 'text-muted-foreground'}`}>
+                        <p className={`text-xs leading-relaxed ${isUnread ? 'text-foreground font-normal' : 'text-muted-foreground'}`}>
                           {n.body}
                         </p>
                       )}
 
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="text-[10px] text-muted-foreground">
-                          {getRelativeTime(n.created_at)}
-                        </span>
-                        <Badge variant="outline" className="text-[9px] px-1.5 py-0 font-normal">
+                      {/* Display exact time & Member edit metadata */}
+                      <div className="flex flex-wrap items-center gap-2 text-[11px] pt-1">
+                        <div className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 font-medium">
+                          <Clock className="h-3 w-3 text-amber-500" />
+                          <span>Thời gian: <strong>{getFullDateTime(n.created_at)}</strong> ({getRelativeTime(n.created_at)})</span>
+                        </div>
+
+                        <Badge variant="outline" className="text-[10px] px-2 py-0.5 font-semibold">
+                          {isMemberAction && <Edit3 className="h-3 w-3 mr-1 text-emerald-500" />}
                           {label}
                         </Badge>
+
                         {n.link && (
-                          <span className="text-[10px] text-amber-600 dark:text-amber-400 font-medium inline-flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            Xem chi tiết <ArrowRight className="h-3 w-3" />
+                          <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold inline-flex items-center gap-0.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                            Xem thông tin <ArrowRight className="h-3 w-3" />
                           </span>
                         )}
                       </div>

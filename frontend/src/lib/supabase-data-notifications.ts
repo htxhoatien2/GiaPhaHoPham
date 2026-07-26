@@ -140,28 +140,29 @@ export async function createNotification(input: CreateNotificationInput): Promis
 export async function notifyMemberUpdate(
   action: 'create' | 'update' | 'delete',
   personName: string,
-  personId: string
+  personId: string,
+  editorName?: string
 ): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser();
+  const editor = editorName || user?.user_metadata?.full_name || user?.email || 'Ban quản trị';
+  const timeStr = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' — ' + new Date().toLocaleDateString('vi-VN');
   
   let type: Notification['type'] = 'member_updated';
-  let title = 'Cập nhật thành viên';
-  let body = `Thông tin thành viên ${personName} đã được cập nhật.`;
+  let title = `Cập nhật thành viên: ${personName}`;
+  let body = `Thông tin thành viên ${personName} được ${editor} chỉnh sửa vào lúc ${timeStr}.`;
   let link = `/people/${personId}`;
 
   if (action === 'create') {
     type = 'new_member';
-    title = 'Thành viên mới';
-    body = `Thành viên mới ${personName} đã được thêm vào gia phả.`;
+    title = `Thành viên mới: ${personName}`;
+    body = `Thành viên ${personName} vừa được ${editor} thêm vào gia phả vào lúc ${timeStr}.`;
   } else if (action === 'delete') {
     type = 'member_deleted';
-    title = 'Xóa thành viên';
-    body = `Thành viên ${personName} đã được xóa khỏi gia phả.`;
+    title = `Xóa thành viên: ${personName}`;
+    body = `Thành viên ${personName} vừa bị ${editor} xóa khỏi hệ thống vào lúc ${timeStr}.`;
     link = '/people';
   }
 
-  // DB triggers auto-broadcast on PostgreSQL/SQLite.
-  // This helper can be called if explicit client-side notification dispatch is required.
   if (user) {
     try {
       await createNotification({
