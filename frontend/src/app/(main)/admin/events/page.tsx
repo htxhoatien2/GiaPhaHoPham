@@ -27,7 +27,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Plus, Pencil, Trash2, Calendar, Search, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, Calendar, Search, X, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/auth/auth-provider';
 import Link from 'next/link';
