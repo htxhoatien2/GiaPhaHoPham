@@ -338,16 +338,17 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                     <FormLabel className="font-bold text-slate-700">Phái tộc (Phái)</FormLabel>
                     <FormControl>
                       <Input 
-                        type="number" 
-                        min={0} 
+                        type="text" 
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         placeholder="Số Phái (VD: 1, 2...)"
                         name={field.name}
                         ref={field.ref}
                         onBlur={field.onBlur}
-                        value={field.value ?? ''} 
+                        value={field.value !== undefined && field.value !== null ? field.value : ''} 
                         onChange={(e) => {
-                          const val = e.target.value;
-                          field.onChange(val !== '' && !isNaN(parseInt(val, 10)) ? parseInt(val, 10) : undefined);
+                          const val = e.target.value.replace(/\D/g, '');
+                          field.onChange(val !== '' ? parseInt(val, 10) : undefined);
                         }}
                         className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />
@@ -368,16 +369,17 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                     <FormLabel className="font-bold text-slate-700">Chi tộc (Chi)</FormLabel>
                     <FormControl>
                       <Input 
-                        type="number" 
-                        min={0} 
+                        type="text" 
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         placeholder="Số Chi (VD: 1, 2...)"
                         name={field.name}
                         ref={field.ref}
                         onBlur={field.onBlur}
-                        value={field.value ?? ''} 
+                        value={field.value !== undefined && field.value !== null ? field.value : ''} 
                         onChange={(e) => {
-                          const val = e.target.value;
-                          field.onChange(val !== '' && !isNaN(parseInt(val, 10)) ? parseInt(val, 10) : undefined);
+                          const val = e.target.value.replace(/\D/g, '');
+                          field.onChange(val !== '' ? parseInt(val, 10) : undefined);
                         }}
                         className="rounded-xl border-slate-200 text-sm focus-visible:ring-emerald-500"
                       />

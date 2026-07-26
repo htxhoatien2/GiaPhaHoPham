@@ -15,6 +15,13 @@ const MIN_YEAR = 1600;
 const numericString = z.preprocess(
   (val) => {
     if (val === '' || val === null || val === undefined) return undefined;
+    if (typeof val === 'number') return isNaN(val) ? undefined : val;
+    if (typeof val === 'string') {
+      const cleaned = val.replace(/\D/g, '');
+      if (!cleaned) return undefined;
+      const num = parseInt(cleaned, 10);
+      return isNaN(num) ? undefined : num;
+    }
     const num = Number(val);
     return isNaN(num) ? undefined : num;
   },
