@@ -1,7 +1,7 @@
 -- ============================================================
--- Migration: Fix Foreign Key Constraints for User Deletion
+-- Migration: Fix Foreign Key Constraints & RLS for User Deletion
 -- Ensures that deleting a user or profile automatically sets 
--- referencing columns to NULL rather than violating FK constraints.
+-- referencing columns to NULL and permits admins to delete profiles.
 -- ============================================================
 
 -- 1. fund_transactions (created_by -> profiles.id)
@@ -35,3 +35,14 @@ ALTER TABLE IF EXISTS member_registrations
 ALTER TABLE IF EXISTS member_registrations
   ADD CONSTRAINT member_registrations_reviewed_by_fkey
   FOREIGN KEY (reviewed_by) REFERENCES auth.users(id) ON DELETE SET NULL;
+
+-- 5. Add RLS policy allowing admins to delete profile rows
+DROP POLICY IF EXISTS "Admins can delete any profile" ON profiles;
+CREATE POLICY "Admins can delete any profile" ON profiles
+    FOR DELETE USING (
+        EXISTS (
+            SELECT 1 FROM profiles p
+            WHERE p.user_id = auth.uid() 
+            AND p.role = 'admin'
+        )
+    );
