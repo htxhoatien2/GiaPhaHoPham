@@ -205,20 +205,64 @@ export default function EventsPage() {
     return merged.sort((a, b) => a.daysUntil - b.daysUntil);
   }, [clanCeremonyEvents, upcomingEvents, autoGioEvents]);
 
-  // Merged events array for Calendar Grid and List view
+  // Merged events array for Calendar Grid and List view (Synchronizes Clan Ceremonies + Family Member Death Anniversaries + DB Events)
   const allEventsCombined = useMemo(() => {
     const dbEvts = events || [];
-    const clanEvts = (clanSettings?.ceremony_schedule || []).map((c, i) => ({
-      id: `clan-ceremony-${i}`,
-      title: c.title || 'Lễ Tế Tộc',
-      event_type: 'le_tet' as const,
-      event_lunar: c.lunar_date,
-      location: c.description || 'Tại Nhà thờ Tộc Phạm Văn An Trạch',
-      recurring: true,
-      created_at: new Date().toISOString(),
-    }));
-    return [...clanEvts, ...dbEvts];
-  }, [events, clanSettings]);
+    
+    // 1. All clan ceremonies from Admin Settings (clan_settings.ceremony_schedule)
+    const clanEvts = (clanSettings?.ceremony_schedule || []).map((c, i) => {
+      let eventDate: string | undefined = undefined;
+      if (c.lunar_date) {
+        const solar = getSolarFromLunarString(c.lunar_date);
+        if (solar) {
+          const yyyy = solar.year;
+          const mm = String(solar.month).padStart(2, '0');
+          const dd = String(solar.day).padStart(2, '0');
+          eventDate = `${yyyy}-${mm}-${dd}`;
+        }
+      }
+      return {
+        id: `clan-ceremony-${i}`,
+        title: c.title || 'Lễ Tế Tộc',
+        event_type: 'le_tet' as const,
+        event_lunar: c.lunar_date,
+        event_date: eventDate,
+        location: c.description || 'Tại Nhà thờ Tộc Phạm Văn An Trạch',
+        recurring: true,
+        created_at: new Date().toISOString(),
+      };
+    });
+
+    // 2. All auto-generated death anniversaries for deceased clan members
+    const existingPersonIds = new Set(dbEvts.filter(e => e.person_id).map(e => e.person_id));
+    const autoGioEvts = (people || [])
+      .filter(p => !p.is_living && p.death_lunar && !existingPersonIds.has(p.id))
+      .map(p => {
+        let eventDate: string | undefined = undefined;
+        if (p.death_lunar) {
+          const solar = getSolarFromLunarString(p.death_lunar);
+          if (solar) {
+            const yyyy = solar.year;
+            const mm = String(solar.month).padStart(2, '0');
+            const dd = String(solar.day).padStart(2, '0');
+            eventDate = `${yyyy}-${mm}-${dd}`;
+          }
+        }
+        return {
+          id: `gio-auto-${p.id}`,
+          title: `Giỗ ${p.display_name}`,
+          event_type: 'gio' as const,
+          event_lunar: p.death_lunar,
+          event_date: eventDate,
+          person_id: p.id,
+          location: 'Tại Gia tộc / Nhà thờ Tộc',
+          recurring: true,
+          created_at: new Date().toISOString(),
+        };
+      });
+
+    return [...clanEvts, ...autoGioEvts, ...dbEvts];
+  }, [events, clanSettings, people]);
 
   // Filtered events for list view
   const filteredEvents = useMemo(() => {
@@ -455,7 +499,7 @@ export default function EventsPage() {
                           {event.recurring && (
                             <Badge variant="secondary" className="text-xs">Hàng năm</Badge>
                           )}
-                          {isEditor && (
+                          {isEditor && !event.id.startsWith('clan-ceremony-') && !event.id.startsWith('gio-auto-') && (
                             <AlertDialog>
                               <AlertDialogTrigger asChild>
                                 <Button
