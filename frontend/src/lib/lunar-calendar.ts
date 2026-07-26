@@ -193,10 +193,15 @@ export function lunarToSolar(lunarDay: number, lunarMonth: number, lunarYear: nu
  * Parse a lunar date string like "15/7" to day and month
  */
 export function parseLunarString(lunarStr: string): { day: number; month: number } | null {
-  const parts = lunarStr.split('/');
-  if (parts.length !== 2) return null;
-  const day = parseInt(parts[0], 10);
-  const month = parseInt(parts[1], 10);
+  if (!lunarStr || typeof lunarStr !== 'string') return null;
+
+  // Extract the first DD/MM pattern using regex (supports 02/03, 02/03 AL, 2/3, 02-03, etc.)
+  const match = lunarStr.match(/(\d{1,2})\s*[\/\.-]\s*(\d{1,2})/);
+  if (!match) return null;
+
+  const day = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10);
+
   if (isNaN(day) || isNaN(month) || day < 1 || day > 30 || month < 1 || month > 12) {
     return null;
   }

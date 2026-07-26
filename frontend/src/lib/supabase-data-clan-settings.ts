@@ -72,8 +72,8 @@ export async function getClanSettings(): Promise<ClanSettings | null> {
       ancestral_hall_address: 'An Trạch, Hòa Tiến, Hòa Vang, Đà Nẵng',
       ancestral_hall_history: 'Nhà thờ Tộc Phạm Văn là nơi phụng sự thờ tự Tiên tổ, quy tụ con cháu hàng năm vào các dịp giỗ tổ và lễ Tết truyền thống.',
       ceremony_schedule: [
-        { title: 'Lễ Giỗ Tổ Tộc Phạm Văn', lunar_date: '15/1', solar_date: 'Rằm tháng Giêng', description: 'Lễ giỗ tổ niên tự hàng năm tại Từ Đường Tộc.' },
-        { title: 'Lễ Tế Thu & Khuyến Học', lunar_date: '15/8', solar_date: 'Rằm tháng Tám', description: 'Tế thu dòng họ và tuyên dương khen thưởng con cháu đạt thành tích xuất sắc.' }
+        { title: 'Giỗ chạp', lunar_date: '02/03', solar_date: '18/04/2026 DL', description: 'Tổ chức giỗ chạp truyền thống tại Nhà thờ Tộc Phạm Văn An Trạch' },
+        { title: 'Tế Thu', lunar_date: '01/08', solar_date: '11/09/2026 DL', description: 'Lễ tế thu & Cầu an cho toàn thể con cháu tại Nhà thờ Tộc' }
       ],
       login_config: { methods: ['email_password', 'email_otp'], otp_expiry_minutes: 15 },
       updated_at: new Date().toISOString(),

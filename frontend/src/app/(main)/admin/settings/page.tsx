@@ -11,6 +11,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useClanSettings, useUpdateClanSettings } from '@/hooks/use-clan-settings';
+import { getSolarFromLunarString } from '@/lib/lunar-calendar';
 import { useAuth } from '@/components/auth/auth-provider';
 import { ClanLogo } from '@/components/common/clan-logo';
 import { ClanBanner } from '@/components/common/clan-banner';
@@ -723,14 +724,21 @@ export default function AdminSettingsPage() {
                                 className="mt-1 text-sm"
                               />
                             </div>
+
                             <div>
                               <Label className="text-[11px] font-medium text-muted-foreground">Ngày Âm lịch</Label>
                               <Input
-                                placeholder="VD: 16/3 ÂL"
+                                placeholder="VD: 02/03 AL"
                                 value={c.lunar_date ?? ''}
                                 onChange={e => {
+                                  const val = e.target.value;
+                                  const calcSolar = getSolarFromLunarString(val);
                                   const updated = [...ceremonies];
-                                  updated[i] = { ...updated[i], lunar_date: e.target.value || undefined };
+                                  updated[i] = {
+                                    ...updated[i],
+                                    lunar_date: val || undefined,
+                                    solar_date: calcSolar ? `${calcSolar.formatted} DL` : updated[i].solar_date,
+                                  };
                                   setCeremonies(updated);
                                 }}
                                 className="mt-1 text-sm"
@@ -739,15 +747,20 @@ export default function AdminSettingsPage() {
                             <div>
                               <Label className="text-[11px] font-medium text-muted-foreground">Ngày Dương lịch</Label>
                               <Input
-                                placeholder="VD: 25/04 DL"
+                                placeholder="VD: 18/04/2026 DL"
                                 value={c.solar_date ?? ''}
                                 onChange={e => {
                                   const updated = [...ceremonies];
                                   updated[i] = { ...updated[i], solar_date: e.target.value || undefined };
                                   setCeremonies(updated);
                                 }}
-                                className="mt-1 text-sm"
+                                className="mt-1 text-sm font-semibold text-emerald-800 dark:text-emerald-300"
                               />
+                              {c.lunar_date && getSolarFromLunarString(c.lunar_date) && (
+                                <p className="text-[10px] text-emerald-600 font-semibold mt-1">
+                                  ✨ Tự động quy đổi ({new Date().getFullYear()}): {getSolarFromLunarString(c.lunar_date)?.formatted} DL
+                                </p>
+                              )}
                             </div>
                             <div>
                               <Label className="text-[11px] font-medium text-muted-foreground">Ghi chú thêm</Label>
