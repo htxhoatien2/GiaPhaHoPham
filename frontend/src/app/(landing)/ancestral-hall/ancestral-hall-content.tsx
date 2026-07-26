@@ -34,33 +34,37 @@ export function AncestralHallContent() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-12">
+    <div className="max-w-5xl mx-auto px-4 py-12 space-y-12 text-slate-100">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 flex items-center justify-center gap-3">
-          <Landmark className="h-8 w-8" />
-          Nhà thờ họ
+      <div className="text-center space-y-4">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-semibold">
+          <Landmark className="h-4 w-4 text-emerald-400" />
+          Di Sản & Từ Đường Dòng Họ
+        </div>
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight flex items-center justify-center gap-3">
+          Nhà Thờ Tộc Phạm Văn
         </h1>
-        <p className="text-lg text-gray-600">
-          {cs?.clan_full_name ?? 'Gia Phả Điện Tử'}
+        <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+          {cs?.clan_full_name ?? 'Gia Phả Điện Tử Tộc Phạm Văn An Trạch'}
         </p>
       </div>
 
       {/* Image gallery */}
       {images.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <ImageIcon className="h-5 w-5" />
-            Hình ảnh
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+            <ImageIcon className="h-5 w-5 text-emerald-400" />
+            Hình Ảnh Từ Đường
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {images.map((url, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedImage(url)}
-                className="aspect-[4/3] rounded-lg overflow-hidden border hover:opacity-90 transition-opacity"
+                className="aspect-[4/3] rounded-2xl overflow-hidden border border-slate-800 hover:border-amber-500/50 hover:opacity-95 transition-all shadow-lg group relative"
               >
-                <img src={url} alt={`Nhà thờ họ ${i + 1}`} className="w-full h-full object-cover" />
+                <img src={url} alt={`Nhà thờ họ ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
               </button>
             ))}
           </div>
@@ -70,13 +74,13 @@ export function AncestralHallContent() {
       {/* Lightbox */}
       {selectedImage && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4"
           onClick={() => setSelectedImage(null)}
         >
           <img
             src={selectedImage}
             alt="Nhà thờ họ"
-            className="max-w-full max-h-[85vh] rounded-lg"
+            className="max-w-full max-h-[85vh] rounded-2xl border border-amber-500/40 shadow-2xl"
             onClick={e => e.stopPropagation()}
           />
         </div>
@@ -84,39 +88,42 @@ export function AncestralHallContent() {
 
       {/* Ancestral hall history */}
       {cs?.ancestral_hall_history && (
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <BookOpen className="h-5 w-5" />
-            Lịch sử nhà thờ
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-emerald-400" />
+            Lịch Sử Từ Đường
           </h2>
-          <Card>
-            <CardContent className="py-6">
-              <p className="whitespace-pre-line text-gray-700">{cs.ancestral_hall_history}</p>
+          <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
+            <CardContent className="py-6 text-sm leading-relaxed text-slate-300">
+              <p className="whitespace-pre-line">{cs.ancestral_hall_history}</p>
             </CardContent>
           </Card>
         </section>
       )}
 
-      {/* Annual ceremony schedule — from clan_settings (no RLS issue) */}
+      {/* Annual ceremony schedule */}
       {ceremonies.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Lịch tế lễ hàng năm
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-emerald-400" />
+            Lịch Tế Lễ Hàng Năm
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {ceremonies.map((c, i) => (
-              <Card key={i}>
-                <CardHeader className="pb-1 pt-3 px-4">
-                  <CardTitle className="text-sm font-semibold">{c.title}</CardTitle>
+              <Card key={i} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/40 transition-all">
+                <CardHeader className="pb-1 pt-4 px-5">
+                  <CardTitle className="text-sm font-bold text-amber-300 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400" />
+                    {c.title}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="px-4 pb-3">
-                  <p className="text-xs text-gray-500">
-                    {c.lunar_date && <span>AL: {c.lunar_date} · </span>}
-                    {c.solar_date}
+                <CardContent className="px-5 pb-4">
+                  <p className="text-xs text-slate-400 font-medium">
+                    {c.lunar_date && <span className="text-amber-400 font-semibold">Âm lịch: {c.lunar_date} &middot; </span>}
+                    Dương lịch: {c.solar_date}
                   </p>
                   {c.description && (
-                    <p className="text-xs text-gray-600 mt-1 line-clamp-2">{c.description}</p>
+                    <p className="text-xs text-slate-300 mt-2 leading-relaxed">{c.description}</p>
                   )}
                 </CardContent>
               </Card>
@@ -125,18 +132,18 @@ export function AncestralHallContent() {
         </section>
       )}
 
-      {/* Location — OpenStreetMap (no API key needed) */}
+      {/* Location */}
       {cs?.ancestral_hall_address && (
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Vị trí
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-emerald-400" />
+            Vị Trí Tọa Độ
           </h2>
-          <Card>
-            <CardContent className="py-4">
-              <p className="text-gray-700">{cs.ancestral_hall_address}</p>
+          <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
+            <CardContent className="py-5 space-y-4">
+              <p className="text-sm font-medium text-amber-200">{cs.ancestral_hall_address}</p>
               {coords && (
-                <div className="mt-3 rounded-lg overflow-hidden border h-64">
+                <div className="rounded-2xl overflow-hidden border border-slate-800 h-72 shadow-inner">
                   <iframe
                     title="Bản đồ nhà thờ họ"
                     width="100%"
@@ -152,29 +159,18 @@ export function AncestralHallContent() {
         </section>
       )}
 
-      {/* No data fallback */}
-      {images.length === 0 && !cs?.ancestral_hall_history && !cs?.ancestral_hall_address && ceremonies.length === 0 && (
-        <Card>
-          <CardContent className="py-12 text-center text-gray-500">
-            <Landmark className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-            <p>Thông tin nhà thờ họ chưa được cập nhật.</p>
-            <p className="text-sm mt-1">Vui lòng liên hệ ban quản trị.</p>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Navigation */}
-      <div className="flex flex-wrap gap-3 justify-center pt-4">
-        <Link href="/welcome" className="text-sm text-primary hover:underline">
+      <div className="flex flex-wrap gap-4 justify-center pt-6 border-t border-slate-800/80 text-xs">
+        <Link href="/welcome" className="text-slate-400 hover:text-amber-300 transition-colors font-medium">
           Trang chủ
         </Link>
-        <span className="text-gray-300">|</span>
-        <Link href="/council" className="text-sm text-primary hover:underline">
+        <span className="text-slate-700">&middot;</span>
+        <Link href="/council" className="text-slate-400 hover:text-amber-300 transition-colors font-medium">
           Hội đồng gia tộc
         </Link>
-        <span className="text-gray-300">|</span>
-        <Link href="/register-member" className="text-sm text-primary hover:underline">
-          Đăng ký thành viên
+        <span className="text-slate-700">&middot;</span>
+        <Link href="/register-member" className="text-slate-400 hover:text-amber-300 transition-colors font-medium">
+          Ghi danh trực tuyến
         </Link>
       </div>
     </div>

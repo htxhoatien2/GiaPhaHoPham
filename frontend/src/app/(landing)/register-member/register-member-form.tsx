@@ -33,6 +33,7 @@ export function RegisterMemberForm() {
   const [email, setEmail] = useState('');
   const [parentName, setParentName] = useState('');
   const [generation, setGeneration] = useState('');
+  const [phai, setPhai] = useState('');
   const [chi, setChi] = useState('');
   const [relationship, setRelationship] = useState('');
   const [notes, setNotes] = useState('');
@@ -55,7 +56,7 @@ export function RegisterMemberForm() {
         generation: generation ? parseInt(generation) : undefined,
         chi: chi ? parseInt(chi) : undefined,
         relationship: relationship.trim() || undefined,
-        notes: notes.trim() || undefined,
+        notes: notes.trim() ? `${notes.trim()}${phai ? ` | Phái: ${phai}` : ''}` : phai ? `Phái: ${phai}` : undefined,
         honeypot,
       });
       setSubmitted(true);
@@ -66,20 +67,20 @@ export function RegisterMemberForm() {
 
   if (submitted) {
     return (
-      <div className="max-w-lg mx-auto px-4 py-16 text-center space-y-6">
-        <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
-        <h1 className="text-2xl font-bold text-gray-900">Ghi danh thành công!</h1>
-        <p className="text-gray-600">
-          Thông tin của bạn đã được gửi đến ban quản trị {cs?.clan_name ?? 'dòng họ'}.
-          Sau khi được xét duyệt, bạn sẽ được thêm vào gia phả.
+      <div className="max-w-lg mx-auto px-4 py-16 text-center space-y-6 text-slate-100">
+        <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto" />
+        <h1 className="text-3xl font-extrabold text-white">Ghi Danh Thành Công!</h1>
+        <p className="text-slate-300 leading-relaxed">
+          Thông tin của bạn đã được gửi đến Ban quản trị {cs?.clan_name ?? 'Tộc Phạm Văn'}.
+          Sau khi đối chiếu và xét duyệt, bạn sẽ được đưa vào Cây Gia Phả.
         </p>
-        <div className="flex gap-3 justify-center">
-          <Link href="/welcome" className="text-sm text-primary hover:underline">
+        <div className="flex gap-4 justify-center pt-4 text-xs font-medium text-slate-400">
+          <Link href="/welcome" className="hover:text-amber-300 transition-colors">
             Về trang chủ
           </Link>
-          <span className="text-gray-300">|</span>
-          <Link href="/council" className="text-sm text-primary hover:underline">
-            Xem hội đồng gia tộc
+          <span>&middot;</span>
+          <Link href="/council" className="hover:text-amber-300 transition-colors">
+            Xem Hội đồng gia tộc
           </Link>
         </div>
       </div>
@@ -87,26 +88,28 @@ export function RegisterMemberForm() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
+    <div className="max-w-3xl mx-auto px-4 py-12 space-y-8 text-slate-100">
       <div className="text-center space-y-3">
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center justify-center gap-2">
-          <UserPlus className="h-7 w-7" />
-          Đăng ký thành viên
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-semibold">
+          <UserPlus className="h-4 w-4 text-cyan-400" />
+          Ghi Danh Thành Viên Trực Tuyến
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-white">
+          Đăng Ký Gia Nhập Nhập Phả
         </h1>
-        <p className="text-gray-600">
-          Dành cho con cháu {cs?.clan_name ?? 'dòng họ'} sống xa muốn ghi danh vào gia phả
+        <p className="text-slate-400 max-w-lg mx-auto text-sm">
+          Dành cho con cháu {cs?.clan_name ?? 'Tộc Phạm Văn'} sống xa muốn ghi danh vào Cây gia phả điện tử
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Thông tin ghi danh</CardTitle>
-          <CardDescription>
-            Điền thông tin bên dưới. Ban quản trị sẽ xét duyệt và liên hệ lại.
-            Trường có dấu (*) là bắt buộc.
+      <Card className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-2xl">
+        <CardHeader className="border-b border-slate-800/80 pb-4">
+          <CardTitle className="text-base text-amber-300 font-bold uppercase tracking-wider">Thông Tin Ghi Danh Cá Nhân</CardTitle>
+          <CardDescription className="text-slate-400 text-xs">
+            Vui lòng điền đầy đủ thông tin bên dưới. Ban quản trị sẽ đối chiếu và duyệt đơn. Trường có dấu (*) là bắt buộc.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Honeypot — hidden from real users */}
             <div className="absolute -left-[9999px]" aria-hidden="true">
@@ -124,22 +127,22 @@ export function RegisterMemberForm() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label>Họ và tên *</Label>
+                <Label className="text-xs font-bold text-slate-300">Họ và tên *</Label>
                 <Input
                   value={fullName}
                   onChange={e => setFullName(e.target.value)}
-                  placeholder="Nguyễn Văn A"
+                  placeholder="Phạm Văn A"
                   required
-                  className="mt-1"
+                  className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
                 />
               </div>
               <div>
-                <Label>Giới tính *</Label>
+                <Label className="text-xs font-bold text-slate-300">Giới tính *</Label>
                 <Select value={gender} onValueChange={setGender} required>
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm">
                     <SelectValue placeholder="Chọn giới tính" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-900 border-slate-800 text-white">
                     <SelectItem value="1">Nam</SelectItem>
                     <SelectItem value="2">Nữ</SelectItem>
                   </SelectContent>
@@ -149,131 +152,135 @@ export function RegisterMemberForm() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label>Năm sinh</Label>
+                <Label className="text-xs font-bold text-slate-300">Năm sinh</Label>
                 <Input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   value={birthYear}
-                  onChange={e => setBirthYear(e.target.value)}
+                  onChange={e => setBirthYear(e.target.value.replace(/\D/g, ''))}
                   placeholder="1990"
-                  min={1900}
-                  max={2030}
-                  className="mt-1"
+                  className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
                 />
               </div>
               <div>
-                <Label>Nơi sinh / Quê quán</Label>
+                <Label className="text-xs font-bold text-slate-300">Nơi sinh / Quê quán</Label>
                 <Input
                   value={birthPlace}
                   onChange={e => setBirthPlace(e.target.value)}
-                  placeholder="Hà Nội"
-                  className="mt-1"
+                  placeholder="An Trạch, Đà Nẵng..."
+                  className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label>Điện thoại</Label>
+                <Label className="text-xs font-bold text-slate-300">Số điện thoại</Label>
                 <Input
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   placeholder="0912 345 678"
-                  className="mt-1"
+                  className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
                 />
               </div>
               <div>
-                <Label>Email</Label>
+                <Label className="text-xs font-bold text-slate-300">Địa chỉ Email</Label>
                 <Input
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder="email@example.com"
-                  className="mt-1"
+                  className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <Label>Tên cha/mẹ (để đối chiếu)</Label>
+              <Label className="text-xs font-bold text-slate-300">Tên cha / mẹ (để đối chiếu)</Label>
               <Input
                 value={parentName}
                 onChange={e => setParentName(e.target.value)}
-                placeholder="Con ông Đặng Văn B"
-                className="mt-1"
+                placeholder="Con ông Phạm Văn B, cháu cụ Phạm Văn C..."
+                className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
               />
             </div>
 
+            {/* Hierarchy: Đời -> Phái -> Chi */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <Label>Đời (tự khai)</Label>
+                <Label className="text-xs font-bold text-slate-300">Đời thứ (tự khai)</Label>
                 <Input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
                   value={generation}
-                  onChange={e => setGeneration(e.target.value)}
-                  placeholder="5"
-                  min={1}
-                  max={30}
-                  className="mt-1"
+                  onChange={e => setGeneration(e.target.value.replace(/\D/g, ''))}
+                  placeholder="Ví dụ: 5"
+                  className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
                 />
               </div>
               <div>
-                <Label>Chi (tự khai)</Label>
+                <Label className="text-xs font-bold text-amber-300">Phái tộc (tự khai)</Label>
                 <Input
-                  type="number"
+                  type="text"
+                  inputMode="numeric"
+                  value={phai}
+                  onChange={e => setPhai(e.target.value.replace(/\D/g, ''))}
+                  placeholder="Ví dụ: 1"
+                  className="mt-1.5 bg-slate-900 border-amber-500/40 text-white rounded-xl text-sm"
+                />
+              </div>
+              <div>
+                <Label className="text-xs font-bold text-emerald-300">Chi tộc (tự khai)</Label>
+                <Input
+                  type="text"
+                  inputMode="numeric"
                   value={chi}
-                  onChange={e => setChi(e.target.value)}
-                  placeholder="1"
-                  min={1}
-                  max={20}
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label>Quan hệ</Label>
-                <Input
-                  value={relationship}
-                  onChange={e => setRelationship(e.target.value)}
-                  placeholder="Cháu ông X"
-                  className="mt-1"
+                  onChange={e => setChi(e.target.value.replace(/\D/g, ''))}
+                  placeholder="Ví dụ: 2"
+                  className="mt-1.5 bg-slate-900 border-emerald-500/40 text-white rounded-xl text-sm"
                 />
               </div>
             </div>
 
             <div>
-              <Label>Ghi chú</Label>
+              <Label className="text-xs font-bold text-slate-300">Ghi chú & Quan hệ gia đình</Label>
               <Textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 rows={3}
-                placeholder="Thông tin bổ sung..."
-                className="mt-1"
+                placeholder="Cung cấp thêm thông tin gia đình, nhánh chi hoặc câu hỏi..."
+                className="mt-1.5 bg-slate-900 border-slate-800 text-white rounded-xl text-sm"
               />
             </div>
 
             {submitMutation.isError && (
-              <p className="text-sm text-red-500">
-                Lỗi khi gửi đơn. Vui lòng thử lại.
+              <p className="text-xs text-red-400 font-semibold bg-red-950/60 p-3 rounded-xl border border-red-800/60">
+                Lỗi khi gửi đơn. Vui lòng kiểm tra kết nối và thử lại.
               </p>
             )}
 
-            <Button type="submit" className="w-full" disabled={submitMutation.isPending || !fullName.trim() || !gender}>
+            <Button type="submit" className="w-full bg-gradient-to-r from-emerald-800 to-emerald-900 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold py-3 rounded-xl shadow-lg border border-emerald-600/40 transition-all" disabled={submitMutation.isPending || !fullName.trim() || !gender}>
               {submitMutation.isPending ? (
-                <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Đang gửi...</>
+                <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Đang gửi đơn ghi danh...</>
               ) : (
-                <><UserPlus className="h-4 w-4 mr-2" />Gửi đơn ghi danh</>
+                <><UserPlus className="h-4 w-4 mr-2" />Gửi Đơn Ghi Danh Trực Tuyến</>
               )}
             </Button>
           </form>
         </CardContent>
       </Card>
 
-      <div className="flex flex-wrap gap-3 justify-center">
-        <Link href="/welcome" className="text-sm text-primary hover:underline">
+      <div className="flex flex-wrap gap-4 justify-center text-xs font-medium text-slate-400">
+        <Link href="/welcome" className="hover:text-amber-300 transition-colors">
           Trang chủ
         </Link>
-        <span className="text-gray-300">|</span>
-        <Link href="/council" className="text-sm text-primary hover:underline">
+        <span>&middot;</span>
+        <Link href="/council" className="hover:text-amber-300 transition-colors">
           Hội đồng gia tộc
+        </Link>
+        <span>&middot;</span>
+        <Link href="/ancestral-hall" className="hover:text-amber-300 transition-colors">
+          Nhà thờ Tộc
         </Link>
       </div>
     </div>

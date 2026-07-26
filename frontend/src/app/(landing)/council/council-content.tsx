@@ -32,34 +32,38 @@ export function CouncilContent() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-12">
+    <div className="max-w-5xl mx-auto px-4 py-12 space-y-12 text-slate-100">
       {/* Header */}
-      <div className="text-center space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-          Hội đồng gia tộc
+      <div className="text-center space-y-4">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold">
+          <ShieldCheck className="h-4 w-4 text-amber-400" />
+          Ban Quản Trị & Điều Hành
+        </div>
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          Hội Đồng Gia Tộc
         </h1>
-        <p className="text-lg text-gray-600">
-          {cs?.clan_full_name ?? 'Gia Phả Điện Tử'}
+        <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+          {cs?.clan_full_name ?? 'Tộc Phạm Văn An Trạch — Gia Phả Điện Tử'}
         </p>
       </div>
 
       {/* Council members */}
       {councilMembers.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Ban quản trị
+        <section className="space-y-5">
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+            <Users className="h-5 w-5 text-emerald-400" />
+            Thành Viên Ban Quản Trị
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {councilMembers.map((m, i) => (
-              <Card key={i}>
-                <CardContent className="flex items-center gap-4 py-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-lg shrink-0">
+              <Card key={i} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/40 transition-all">
+                <CardContent className="flex items-center gap-4 py-5">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/30 text-amber-300 font-extrabold text-xl shrink-0 border border-amber-500/30 shadow-inner">
                     {m.name?.charAt(m.name.lastIndexOf(' ') + 1) || '?'}
                   </div>
                   <div>
-                    <p className="font-semibold">{m.name}</p>
-                    <p className="text-sm text-gray-500">{m.title}</p>
+                    <p className="font-bold text-white text-base">{m.name}</p>
+                    <p className="text-xs text-amber-400 font-medium mt-0.5">{m.title}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -70,13 +74,13 @@ export function CouncilContent() {
 
       {/* History */}
       {cs?.clan_history && (
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <BookOpen className="h-5 w-5" />
-            Lịch sử dòng họ
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-emerald-400" />
+            Lịch Sử Dòng Họ
           </h2>
-          <Card>
-            <CardContent className="py-6 prose prose-gray max-w-none">
+          <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
+            <CardContent className="py-6 text-sm leading-relaxed text-slate-300">
               <p className="whitespace-pre-line">{cs.clan_history}</p>
             </CardContent>
           </Card>
@@ -85,13 +89,13 @@ export function CouncilContent() {
 
       {/* Mission */}
       {cs?.clan_mission && (
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold flex items-center gap-2">
-            <Target className="h-5 w-5" />
-            Sứ mệnh & Tầm nhìn
+        <section className="space-y-4">
+          <h2 className="text-lg font-bold uppercase tracking-wider text-amber-400 border-l-3 border-amber-500 pl-3 flex items-center gap-2">
+            <Target className="h-5 w-5 text-emerald-400" />
+            Sứ Mệnh & Tầm Nhìn
           </h2>
-          <Card>
-            <CardContent className="py-6 prose prose-gray max-w-none">
+          <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
+            <CardContent className="py-6 text-sm leading-relaxed text-slate-300">
               <p className="whitespace-pre-line">{cs.clan_mission}</p>
             </CardContent>
           </Card>
@@ -101,27 +105,27 @@ export function CouncilContent() {
       {/* Clan info */}
       {(cs?.clan_patriarch || cs?.clan_origin || cs?.clan_founding_year) && (
         <section>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Thông tin chung</CardTitle>
+          <Card className="bg-slate-950/80 border-slate-800 text-slate-200 shadow-xl">
+            <CardHeader className="border-b border-slate-800 pb-3">
+              <CardTitle className="text-sm font-bold uppercase tracking-wider text-amber-400">Thông Tin Tổng Quan</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-3 pt-4">
               {cs.clan_patriarch && (
-                <div className="flex justify-between py-1.5 border-b">
-                  <span className="text-sm text-gray-500">Thủy tổ</span>
-                  <span className="text-sm font-medium">{cs.clan_patriarch}</span>
+                <div className="flex justify-between py-2 border-b border-slate-800/60">
+                  <span className="text-xs text-slate-400">Thủy tổ</span>
+                  <span className="text-xs font-semibold text-white">{cs.clan_patriarch}</span>
                 </div>
               )}
               {cs.clan_founding_year && (
-                <div className="flex justify-between py-1.5 border-b">
-                  <span className="text-sm text-gray-500">Năm thành lập</span>
-                  <span className="text-sm font-medium">{cs.clan_founding_year}</span>
+                <div className="flex justify-between py-2 border-b border-slate-800/60">
+                  <span className="text-xs text-slate-400">Năm thành lập</span>
+                  <span className="text-xs font-semibold text-white">{cs.clan_founding_year}</span>
                 </div>
               )}
               {cs.clan_origin && (
-                <div className="flex justify-between py-1.5">
-                  <span className="text-sm text-gray-500">Quê gốc</span>
-                  <span className="text-sm font-medium">{cs.clan_origin}</span>
+                <div className="flex justify-between py-2">
+                  <span className="text-xs text-slate-400">Quê gốc</span>
+                  <span className="text-xs font-semibold text-white">{cs.clan_origin}</span>
                 </div>
               )}
             </CardContent>
@@ -129,28 +133,18 @@ export function CouncilContent() {
         </section>
       )}
 
-      {/* No data fallback */}
-      {councilMembers.length === 0 && !cs?.clan_history && !cs?.clan_mission && (
-        <Card>
-          <CardContent className="py-12 text-center text-gray-500">
-            <p>Thông tin hội đồng gia tộc chưa được cập nhật.</p>
-            <p className="text-sm mt-1">Vui lòng liên hệ ban quản trị.</p>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Navigation links */}
-      <div className="flex flex-wrap gap-3 justify-center pt-4">
-        <Link href="/welcome" className="text-sm text-primary hover:underline">
+      <div className="flex flex-wrap gap-4 justify-center pt-6 border-t border-slate-800/80 text-xs">
+        <Link href="/welcome" className="text-slate-400 hover:text-amber-300 transition-colors font-medium">
           Trang chủ
         </Link>
-        <span className="text-gray-300">|</span>
-        <Link href="/ancestral-hall" className="text-sm text-primary hover:underline">
-          Nhà thờ họ
+        <span className="text-slate-700">&middot;</span>
+        <Link href="/ancestral-hall" className="text-slate-400 hover:text-amber-300 transition-colors font-medium">
+          Nhà thờ Tộc
         </Link>
-        <span className="text-gray-300">|</span>
-        <Link href="/register-member" className="text-sm text-primary hover:underline">
-          Đăng ký thành viên
+        <span className="text-slate-700">&middot;</span>
+        <Link href="/register-member" className="text-slate-400 hover:text-amber-300 transition-colors font-medium">
+          Ghi danh trực tuyến
         </Link>
       </div>
     </div>
