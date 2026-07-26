@@ -14,7 +14,7 @@ import { useEvents, useDeleteEvent } from '@/hooks/use-events';
 import { usePeople } from '@/hooks/use-people';
 import { useClanSettings } from '@/hooks/use-clan-settings';
 import { useAuth } from '@/components/auth/auth-provider';
-import { parseLunarString, getNextLunarOccurrence, formatLunarDate, solarToLunar, formatLunarWithSolarCurrentYear } from '@/lib/lunar-calendar';
+import { parseLunarString, getNextLunarOccurrence, formatLunarDate, solarToLunar, formatLunarWithSolarCurrentYear, getSolarFromLunarString } from '@/lib/lunar-calendar';
 import { CalendarGrid } from '@/components/events/calendar-grid';
 import { AddEventDialog } from '@/components/events/add-event-dialog';
 import { EVENT_TYPE_LABELS, MONTHS_VI } from '@/components/events/event-constants';
