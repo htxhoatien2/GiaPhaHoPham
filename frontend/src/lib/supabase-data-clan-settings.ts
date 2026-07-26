@@ -51,6 +51,8 @@ export async function getClanSettings(): Promise<ClanSettings | null> {
     console.warn('DB fetch error for clan_settings:', err);
   }
 
+  const localBackup = getLocalBackup();
+
   if (!dbData && !localBackup) {
     return {
       id: '00000000-0000-0000-0000-000000000001',
