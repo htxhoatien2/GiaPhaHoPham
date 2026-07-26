@@ -46,12 +46,19 @@ export default function RegisterPage() {
       await signUp(email, password, fullName);
       setRegistered(true);
     } catch (error: unknown) {
+      console.error('[Register] submit error:', error);
       let message = 'Đăng ký thất bại';
-      if (typeof error === 'string') {
+      if (error instanceof Error && error.message) {
+        message = error.message;
+      } else if (typeof error === 'string' && error.trim()) {
         message = error;
       } else if (error && typeof error === 'object') {
         const errObj = error as Record<string, unknown>;
-        message = (errObj.message as string) || (errObj.error_description as string) || String(error);
+        if (typeof errObj.message === 'string' && errObj.message) {
+          message = errObj.message;
+        } else if (typeof errObj.error_description === 'string' && errObj.error_description) {
+          message = errObj.error_description;
+        }
       }
       toast.error(message);
     } finally {

@@ -117,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       authLog('signIn:error', { message: error.message });
-      throw error;
+      throw new Error(error.message || 'Đăng nhập thất bại');
     }
     authLog('signIn:success');
   };
@@ -130,7 +130,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         data: { full_name: fullName },
       },
     });
-    if (error) throw error;
+    if (error) {
+      console.error('[Auth] signUp error:', error);
+      throw new Error(error.message || 'Đăng ký thất bại');
+    }
   };
 
   const signOut = async () => {
