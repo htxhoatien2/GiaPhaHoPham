@@ -31,16 +31,7 @@ export function CouncilContent() {
 
   const clanMission = cs?.clan_mission || 'Chuyển đổi số toàn diện công tác lưu trữ phả hệ, giúp con cháu xa quê dễ dàng tra cứu thế thứ, gắn kết tình thân và tiếp nối truyền thống tốt đẹp của dòng họ.';
 
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-        <Skeleton className="h-10 w-64 mx-auto" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-32" />)}
-        </div>
-      </div>
-    );
-  }
+
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 space-y-12 text-slate-100">

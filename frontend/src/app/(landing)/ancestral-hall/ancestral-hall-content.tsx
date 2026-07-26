@@ -36,14 +36,7 @@ export function AncestralHallContent() {
 
   const ancestralAddress = cs?.ancestral_hall_address || 'An Trạch, Hòa Tiến, Hòa Vang, Đà Nẵng';
 
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
-        <Skeleton className="h-10 w-48 mx-auto" />
-        <Skeleton className="h-64" />
-      </div>
-    );
-  }
+
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 space-y-12 text-slate-100">
