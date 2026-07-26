@@ -20,3 +20,6 @@ export const CLAN_INITIAL = parts.length > 1 ? parts[parts.length - 1][0] : part
 export const CLAN_SUBTITLE = CLAN_FULL_NAME.startsWith(CLAN_NAME)
   ? CLAN_FULL_NAME.slice(CLAN_NAME.length).trim()
   : 'An Trạch';
+
+// Clan YouTube Channel URL
+export const CLAN_YOUTUBE_URL = process.env.NEXT_PUBLIC_CLAN_YOUTUBE_URL || 'https://www.youtube.com/channel/UCj96neT_2OQJFgIlBA8fbzA';

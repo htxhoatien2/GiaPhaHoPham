@@ -10,9 +10,9 @@ import React from 'react';
 import Link from 'next/link';
 import { 
   GitBranch, Users, Landmark, BookOpen, 
-  Mail, Phone, MapPin, ArrowUp, ShieldCheck, Heart, Sparkles 
+  Mail, Phone, MapPin, ArrowUp, ShieldCheck, Heart, Sparkles, Youtube 
 } from 'lucide-react';
-import { CLAN_NAME, CLAN_FULL_NAME } from '@/lib/clan-config';
+import { CLAN_NAME, CLAN_FULL_NAME, CLAN_YOUTUBE_URL } from '@/lib/clan-config';
 import { ClanLogo } from '@/components/common/clan-logo';
 
 interface AppFooterProps {
@@ -38,6 +38,14 @@ export function AppFooter({ className = '', variant = 'full' }: AppFooterProps) 
             <span className="text-amber-700 dark:text-amber-400 font-semibold">Gia Phả Điện Tử</span>
           </div>
           <div className="flex items-center gap-4 text-slate-500 font-medium">
+            <a 
+              href={CLAN_YOUTUBE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-red-600 hover:text-red-700 font-semibold transition-colors"
+            >
+              <Youtube className="h-4 w-4" /> Kênh YouTube Tộc
+            </a>
             <span>&copy; {currentYear} {CLAN_NAME}</span>
             <button 
               onClick={scrollToTop} 
@@ -123,6 +131,17 @@ export function AppFooter({ className = '', variant = 'full' }: AppFooterProps) 
                 <Phone className="h-4 w-4 text-amber-400 shrink-0" />
                 <a href="tel:0916199945" className="hover:text-amber-300 transition-colors">
                   0916 199 945 (Phạm Công Tuân)
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5 pt-1">
+                <Youtube className="h-4 w-4 text-red-500 shrink-0" />
+                <a 
+                  href={CLAN_YOUTUBE_URL} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-red-300 transition-colors text-red-400 font-semibold"
+                >
+                  Kênh YouTube Tộc Phạm Văn
                 </a>
               </li>
             </ul>
