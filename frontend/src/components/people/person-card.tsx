@@ -49,19 +49,9 @@ export function PersonCard({ person, showDetails = true }: PersonCardProps) {
               </h3>
               
               <div className="flex flex-wrap gap-1.5 mt-1.5">
-                <Badge variant="outline" className="text-xs">
-                  Đời {person.generation}
+                <Badge variant="outline" className="text-xs bg-amber-50/80 text-amber-900 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 font-semibold">
+                  Đời {person.generation}{person.phai != null ? `, Phái ${person.phai}` : ''}{person.chi != null ? `, Chi ${person.chi}` : ''}
                 </Badge>
-                {person.phai != null && (
-                  <Badge variant="outline" className="text-xs bg-amber-50 text-amber-900 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300">
-                    Phái {person.phai}
-                  </Badge>
-                )}
-                {person.chi != null && (
-                  <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-900 border-emerald-300 dark:bg-emerald-950/40 dark:text-emerald-300">
-                    Chi {person.chi}
-                  </Badge>
-                )}
                 <Badge className={`text-xs ${statusColor}`}>
                   {person.is_living ? 'Còn sống' : 'Đã mất'}
                 </Badge>

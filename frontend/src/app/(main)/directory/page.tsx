@@ -267,8 +267,8 @@ export default function DirectoryPage() {
                           </Link>
                         </TableCell>
                         <TableCell className="text-xs">
-                          <Badge variant="outline" className="text-[10px]">
-                            Đời {person.generation}{person.phai != null ? ` · Phái ${person.phai}` : ''}{person.chi != null ? ` · Chi ${person.chi}` : ''}
+                          <Badge variant="outline" className="text-[10px] bg-amber-50/80 text-amber-900 border-amber-300 dark:bg-amber-950/40 dark:text-amber-300 font-medium">
+                            Đời {person.generation}{person.phai != null ? `, Phái ${person.phai}` : ''}{person.chi != null ? `, Chi ${person.chi}` : ''}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-xs">
