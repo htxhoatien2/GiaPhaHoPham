@@ -51,10 +51,31 @@ export async function getClanSettings(): Promise<ClanSettings | null> {
     console.warn('DB fetch error for clan_settings:', err);
   }
 
-  const localBackup = getLocalBackup();
-
   if (!dbData && !localBackup) {
-    return null;
+    return {
+      id: '00000000-0000-0000-0000-000000000001',
+      clan_name: 'Tộc Phạm Văn',
+      clan_full_name: 'Tộc Phạm Văn An Trạch',
+      clan_patriarch: 'Thủy Tổ Tộc Phạm Văn',
+      clan_founding_year: undefined,
+      clan_origin: 'An Trạch, Hòa Tiến, Hòa Vang, Đà Nẵng',
+      clan_description: 'Gia phả điện tử Tộc Phạm Văn An Trạch — Gìn giữ tinh hoa, tiếp bước cha ông.',
+      contact_email: 'pctuanit@gmail.com',
+      contact_phone: '0916 199 945',
+      council_members: [
+        { name: 'Phạm Công Tuân', title: 'Trưởng Ban Quản Trị Phả Hệ' }
+      ],
+      clan_history: 'Tộc Phạm Văn An Trạch có lịch sử phát triển lâu đời qua nhiều thế hệ. Con cháu trong dòng họ luôn gìn giữ truyền thống hiếu học, gia phong và luôn hướng về tổ tiên nguồn cội.',
+      clan_mission: 'Chuyển đổi số công tác lưu trữ phả hệ, giúp con cháu xa quê dễ dàng tra cứu thế thứ, gắn kết tình thân và tiếp nối truyền thống tốt đẹp của dòng họ.',
+      ancestral_hall_address: 'An Trạch, Hòa Tiến, Hòa Vang, Đà Nẵng',
+      ancestral_hall_history: 'Nhà thờ Tộc Phạm Văn là nơi phụng sự thờ tự Tiên tổ, quy tụ con cháu hàng năm vào các dịp giỗ tổ và lễ Tết truyền thống.',
+      ceremony_schedule: [
+        { title: 'Lễ Giỗ Tổ Tộc Phạm Văn', lunar_date: '15/1', solar_date: 'Rằm tháng Giêng', description: 'Lễ giỗ tổ niên tự hàng năm tại Từ Đường Tộc.' },
+        { title: 'Lễ Tế Thu & Khuyến Học', lunar_date: '15/8', solar_date: 'Rằm tháng Tám', description: 'Tế thu dòng họ và tuyên dương khen thưởng con cháu đạt thành tích xuất sắc.' }
+      ],
+      login_config: { methods: ['email_password', 'email_otp'], otp_expiry_minutes: 15 },
+      updated_at: new Date().toISOString(),
+    } as ClanSettings;
   }
 
   const merged: ClanSettings = {
