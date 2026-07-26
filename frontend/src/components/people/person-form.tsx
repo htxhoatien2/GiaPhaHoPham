@@ -12,7 +12,8 @@ import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { personSchema, type PersonFormData, defaultPersonValues } from '@/lib/validations/person';
-import { solarToLunar } from '@/lib/lunar-calendar';
+import { solarToLunar, getSolarFromLunarString } from '@/lib/lunar-calendar';
+import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -542,15 +543,43 @@ export function PersonForm({ person, defaultValues: extraDefaults, lockedGenerat
                 <FormField
                   control={form.control}
                   name="death_lunar"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold text-slate-700">Ngày giỗ (Âm)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ví dụ: 15/7 Bính Ngọ" {...field} className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  render={({ field }) => {
+                    const solar = getSolarFromLunarString(field.value);
+                    return (
+                      <FormItem>
+                        <FormLabel className="font-bold text-slate-700">Ngày giỗ (Âm)</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Ví dụ: 02/03"
+                            {...field}
+                            onChange={e => {
+                              const val = e.target.value;
+                              field.onChange(val);
+                              // Auto populate death_date (YYYY-MM-DD) for current active year if empty
+                              const calcSolar = getSolarFromLunarString(val);
+                              if (calcSolar) {
+                                const yyyy = calcSolar.year;
+                                const mm = String(calcSolar.month).padStart(2, '0');
+                                const dd = String(calcSolar.day).padStart(2, '0');
+                                const currentDeathDate = form.getValues('death_date');
+                                if (!currentDeathDate) {
+                                  form.setValue('death_date', `${yyyy}-${mm}-${dd}`);
+                                }
+                              }
+                            }}
+                            className="rounded-xl bg-white border-slate-200 text-sm focus-visible:ring-emerald-500"
+                          />
+                        </FormControl>
+                        {solar && (
+                          <div className="mt-1 flex items-center gap-1 text-[11px] text-emerald-700 dark:text-emerald-300 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                            <Sparkles className="h-3 w-3 text-emerald-500 shrink-0" />
+                            <span>Dương lịch năm {new Date().getFullYear()}: <strong>{solar.formatted} DL</strong></span>
+                          </div>
+                        )}
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
                 <FormField
                   control={form.control}

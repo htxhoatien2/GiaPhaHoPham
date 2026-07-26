@@ -55,20 +55,35 @@ export function AddEventDialog({ onClose }: AddEventDialogProps) {
 
   const validateLunar = (value: string) => {
     setEventLunar(value);
-    if (!value) { setLunarError(''); return; }
-    setLunarError(parseLunarString(value) ? '' : 'Sai định dạng. VD: 15/7 (ngày/tháng)');
+    if (!value) { 
+      setLunarError(''); 
+      return; 
+    }
+    const parsed = parseLunarString(value);
+    if (!parsed) {
+      setLunarError('Sai định dạng. VD: 02/03 (ngày/tháng)');
+    } else {
+      setLunarError('');
+      // Auto-fill eventDate (Ngày dương lịch YYYY-MM-DD) for current active year
+      const solar = getSolarFromLunarString(value);
+      if (solar) {
+        const yyyy = solar.year;
+        const mm = String(solar.month).padStart(2, '0');
+        const dd = String(solar.day).padStart(2, '0');
+        setEventDate(`${yyyy}-${mm}-${dd}`);
+      }
+    }
   };
 
   const handleSelectPerson = (person: Person) => {
     setSelectedPerson(person);
     setPersonQuery('');
     setPersonDropOpen(false);
-    // Auto-fill title + lunar date
+    // Auto-fill title + lunar date & solar date
     if (eventType === 'gio') {
       setTitle(`Giỗ ${person.display_name}`);
       if (person.death_lunar) {
-        setEventLunar(person.death_lunar);
-        setLunarError('');
+        validateLunar(person.death_lunar);
       }
     }
   };
