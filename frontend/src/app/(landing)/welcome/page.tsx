@@ -13,17 +13,15 @@ import {
   Lightbulb, MessageCircle, Code2, Heart,
   ChevronRight, Award, BookOpen, Utensils, Clock, Rocket,
   Mail, Phone, UserCheck, MessageSquare, Route, BarChart3,
-  Bell, Landmark, UserPlus, Search, FileDown,
+  Bell, Landmark, UserPlus, Search, FileDown, Youtube,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CLAN_NAME, CLAN_FULL_NAME } from '@/lib/clan-config';
+import { CLAN_NAME, CLAN_FULL_NAME, CLAN_YOUTUBE_URL } from '@/lib/clan-config';
 import { ClanLogo } from '@/components/common/clan-logo';
 import { ClanBanner } from '@/components/common/clan-banner';
 import { AppFooter } from '@/components/layout/app-footer';
-
-
 
 const GITHUB_REPO = 'https://github.com/htxhoatien2/GiaPhaHoPham';
 const GITHUB_RELEASES = `${GITHUB_REPO}/releases`;
@@ -35,14 +33,14 @@ export const metadata: Metadata = {
   description:
     'Phần mềm mã nguồn mở quản lý gia phả điện tử. Cây gia phả tương tác, lịch âm dương, quản lý dòng họ. Miễn phí, tự host, có bản Desktop offline.',
   alternates: {
-    canonical: 'https://gia-pha-ho-pham-frontend.vercel.app/welcome',
+    canonical: 'https://giaphaphamvan.vercel.app/welcome',
   },
   openGraph: {
     title: 'Phạm Văn Tộc — Gia Phả Điện Tử',
     description: 'Gìn giữ tinh hoa — Tiếp bước cha ông',
     type: 'website',
     locale: 'vi_VN',
-    url: 'https://gia-pha-ho-pham-frontend.vercel.app/welcome',
+    url: 'https://giaphaphamvan.vercel.app/welcome',
     images: [{ url: '/og-landing.png', width: 1200, height: 630, alt: 'AncestorTree' }],
   },
 };
@@ -201,10 +199,10 @@ export default function WelcomePage() {
                 Bắt đầu ngay
               </a>
             </Button>
-            <Button size="lg" className="bg-white/10 border border-white/30 text-white hover:bg-white/20" asChild>
-              <a href={GITHUB_REPO} target="_blank" rel="noopener noreferrer">
-                <Code2 className="mr-2 h-5 w-5" />
-                Mã nguồn GitHub
+            <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white border-0 font-semibold shadow-lg transition-all" asChild>
+              <a href={CLAN_YOUTUBE_URL} target="_blank" rel="noopener noreferrer">
+                <Youtube className="mr-2 h-5 w-5" />
+                Kênh YouTube Tộc Phạm Văn
               </a>
             </Button>
           </div>
