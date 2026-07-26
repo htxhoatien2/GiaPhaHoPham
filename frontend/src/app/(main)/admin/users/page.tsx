@@ -416,7 +416,7 @@ export default function UsersPage() {
       await deleteMutation.mutateAsync(deleteDialog.user.user_id);
       toast.success(`Đã xoá tài khoản ${deleteDialog.user.full_name || deleteDialog.user.email}`);
     } catch (err) {
-      toast.error('Lỗi khi xoá tài khoản');
+      toast.error(err instanceof Error ? `Lỗi khi xoá tài khoản: ${err.message}` : 'Lỗi khi xoá tài khoản');
       console.error(err);
     } finally {
       setDeleteDialog(null);
@@ -502,9 +502,12 @@ export default function UsersPage() {
       selectedProfiles.map((p) => deleteMutation.mutateAsync(p.user_id)),
     );
     const succeeded = results.filter((r) => r.status === 'fulfilled').length;
-    const failed = results.filter((r) => r.status === 'rejected').length;
+    const failedResults = results.filter((r): r is PromiseRejectedResult => r.status === 'rejected');
     if (succeeded > 0) toast.success(`Đã xoá ${succeeded} tài khoản`);
-    if (failed > 0) toast.error(`Lỗi khi xoá ${failed} tài khoản`);
+    if (failedResults.length > 0) {
+      const firstErrMsg = failedResults[0].reason?.message || 'Lỗi không xác định';
+      toast.error(`Lỗi khi xoá ${failedResults.length} tài khoản: ${firstErrMsg}`);
+    }
     setSelectedUsers(new Set());
     setBulkDeleteDialog(false);
     setBulkProcessing(false);
