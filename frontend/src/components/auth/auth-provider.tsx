@@ -132,7 +132,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     if (error) {
       console.error('[Auth] signUp error:', error);
-      throw new Error(error.message || 'Đăng ký thất bại');
+      const errObj = error as { message?: string; error_description?: string; msg?: string };
+      const rawMsg = errObj.message || errObj.error_description || errObj.msg;
+      const msg = (typeof rawMsg === 'string' && rawMsg.trim())
+        ? rawMsg
+        : 'Không thể kết nối đến máy chủ Supabase Auth. Vui lòng kiểm tra lại mạng hoặc cấu hình Vercel.';
+      throw new Error(msg);
     }
   };
 

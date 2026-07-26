@@ -15,11 +15,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Mail } from 'lucide-react';
-import { useAuth } from '@/components/auth/auth-provider';
 import { toast } from 'sonner';
+import { registerUserAction } from './actions';
 
 export default function RegisterPage() {
-  const { signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -35,32 +34,24 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length < 8) {
-      toast.error('Mật khẩu phải có ít nhất 8 ký tự');
+    if (password.length < 6) {
+      toast.error('Mật khẩu phải có ít nhất 6 ký tự');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      await signUp(email, password, fullName);
+      // Execute Server Action for server-to-server signup with admin fallback
+      const res = await registerUserAction({ email, password, fullName });
+      if (!res.success) {
+        toast.error(res.error || 'Đăng ký thất bại');
+        return;
+      }
       setRegistered(true);
     } catch (error: unknown) {
       console.error('[Register] submit error:', error);
-      let message = 'Đăng ký thất bại';
-      if (error instanceof Error && error.message) {
-        message = error.message;
-      } else if (typeof error === 'string' && error.trim()) {
-        message = error;
-      } else if (error && typeof error === 'object') {
-        const errObj = error as Record<string, unknown>;
-        if (typeof errObj.message === 'string' && errObj.message) {
-          message = errObj.message;
-        } else if (typeof errObj.error_description === 'string' && errObj.error_description) {
-          message = errObj.error_description;
-        }
-      }
-      toast.error(message);
+      toast.error(error instanceof Error ? error.message : 'Đăng ký thất bại');
     } finally {
       setIsLoading(false);
     }
