@@ -102,7 +102,7 @@ export default function EventsPage() {
 
       const nextDate = getNextLunarOccurrence(parsed.day, parsed.month, now);
       const daysUntil = Math.ceil((nextDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      if (daysUntil > 60) continue;
+      if (daysUntil > 365) continue;
 
       results.push({
         event: {
@@ -124,7 +124,7 @@ export default function EventsPage() {
     return results;
   }, [clanSettings]);
 
-  // Compute upcoming events (next 60 days)
+  // Compute upcoming events (next 365 days)
   const upcomingEvents = useMemo<UpcomingEvent[]>(() => {
     if (!events || !people) return [];
 
@@ -151,7 +151,7 @@ export default function EventsPage() {
       if (!nextDate) continue;
 
       const daysUntil = Math.ceil((nextDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      if (daysUntil > 60) continue;
+      if (daysUntil > 365) continue;
 
       const person = event.person_id ? people.find(p => p.id === event.person_id) : undefined;
       results.push({ event, person, nextDate, daysUntil, lunarDisplay, isAuto: false });
@@ -177,7 +177,7 @@ export default function EventsPage() {
 
       const nextDate = getNextLunarOccurrence(parsed.day, parsed.month, now);
       const daysUntil = Math.ceil((nextDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      if (daysUntil > 60) continue;
+      if (daysUntil > 365) continue;
 
       results.push({
         event: {
@@ -335,13 +335,13 @@ export default function EventsPage() {
             <CardTitle className="text-base font-bold text-amber-950 flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <AlertCircle className="h-4.5 w-4.5 text-amber-600" />
-                Sự Kiện Sắp Tới ({allUpcoming.length} sự kiện trong 60 ngày)
+                Lịch Cúng Lễ & Sự Kiện Sắp Tới ({allUpcoming.length} sự kiện)
               </span>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4">
             <div className="space-y-2.5">
-              {allUpcoming.slice(0, 5).map(({ event, person, nextDate, daysUntil, lunarDisplay, isAuto }) => {
+              {allUpcoming.slice(0, 10).map(({ event, person, nextDate, daysUntil, lunarDisplay, isAuto }) => {
                 const typeInfo = EVENT_TYPE_LABELS[event.event_type] || EVENT_TYPE_LABELS.other;
                 const TypeIcon = typeInfo?.icon || EVENT_TYPE_LABELS.other.icon;
                 const colorClass = typeInfo?.color || EVENT_TYPE_LABELS.other.color;
