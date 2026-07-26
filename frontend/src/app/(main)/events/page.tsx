@@ -74,6 +74,18 @@ interface UpcomingEvent {
   isAuto: boolean;
 }
 
+function getEventDedupeKey(title: string, lunarDate?: string, solarDate?: string): string {
+  const normTitle = (title || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/^(cung|le|ngay|gio)\s+/gi, '')
+    .trim();
+  const lunarKey = lunarDate ? lunarDate.replace(/(ÂL|AL)/gi, '').trim() : '';
+  const solarKey = solarDate ? solarDate.slice(0, 10) : '';
+  return `${normTitle}_${lunarKey}_${solarKey}`;
+}
+
 export default function EventsPage() {
   const { data: events, isLoading: eventsLoading } = useEvents();
   const { data: people, isLoading: peopleLoading } = usePeople();
@@ -202,7 +214,19 @@ export default function EventsPage() {
 
   const allUpcoming = useMemo(() => {
     const merged = [...clanCeremonyEvents, ...upcomingEvents, ...autoGioEvents];
-    return merged.sort((a, b) => a.daysUntil - b.daysUntil);
+    merged.sort((a, b) => a.daysUntil - b.daysUntil);
+
+    const seenKeys = new Set<string>();
+    const deduplicated: UpcomingEvent[] = [];
+
+    for (const item of merged) {
+      const key = getEventDedupeKey(item.event.title, item.event.event_lunar, item.event.event_date);
+      if (!seenKeys.has(key)) {
+        seenKeys.add(key);
+        deduplicated.push(item);
+      }
+    }
+    return deduplicated;
   }, [clanCeremonyEvents, upcomingEvents, autoGioEvents]);
 
   // Merged events array for Calendar Grid and List view (Synchronizes Clan Ceremonies + Family Member Death Anniversaries + DB Events)
@@ -261,7 +285,19 @@ export default function EventsPage() {
         };
       });
 
-    return [...clanEvts, ...autoGioEvts, ...dbEvts];
+    const merged = [...clanEvts, ...autoGioEvts, ...dbEvts];
+    const seenKeys = new Set<string>();
+    const deduplicated: Event[] = [];
+
+    for (const item of merged) {
+      const key = getEventDedupeKey(item.title, item.event_lunar, item.event_date);
+      if (!seenKeys.has(key)) {
+        seenKeys.add(key);
+        deduplicated.push(item);
+      }
+    }
+
+    return deduplicated;
   }, [events, clanSettings, people]);
 
   // Filtered events for list view
