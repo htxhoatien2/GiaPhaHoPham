@@ -13,7 +13,7 @@ import {
   Lightbulb, MessageCircle, Code2, Heart,
   ChevronRight, Award, BookOpen, Utensils, Clock, Rocket,
   Mail, Phone, UserCheck, MessageSquare, Route, BarChart3,
-  Bell, Landmark, UserPlus, Search, FileDown, Youtube,
+  Bell, Landmark, UserPlus, Search, FileDown, Youtube, Sparkles,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
