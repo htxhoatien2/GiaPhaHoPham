@@ -171,69 +171,82 @@ const techStack = [
 
 export default function WelcomePage() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col text-slate-100 bg-slate-900">
       {/* ───── 1. Hero ───── */}
-      <section className="relative bg-gradient-to-br from-emerald-800 to-emerald-950 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-emerald-400 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-20 w-96 h-96 bg-emerald-300 rounded-full blur-3xl" />
+      <section className="relative bg-gradient-to-br from-slate-950 via-emerald-950 to-slate-900 text-white overflow-hidden border-b border-amber-500/20">
+        <div className="absolute inset-0 opacity-20 pointer-events-none">
+          <div className="absolute top-10 left-1/4 w-96 h-96 bg-emerald-500/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 right-1/4 w-[30rem] h-[30rem] bg-amber-500/20 rounded-full blur-3xl" />
         </div>
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
           <div className="mb-6 flex justify-center">
-            <ClanLogo size="xl" showText={false} clickable={false} className="ring-4 ring-amber-400/50 shadow-2xl" />
+            <ClanLogo size="xl" showText={false} clickable={false} className="ring-4 ring-amber-400/60 shadow-2xl animate-pulse" />
           </div>
-          <Badge variant="secondary" className="mb-4 text-xs font-semibold px-3.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-400/30 rounded-full">
-            Hệ thống Gia Phả Điện Tử
-          </Badge>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight mb-4 text-white">
+          
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 text-xs font-bold uppercase tracking-wider shadow-sm">
+            <Sparkles className="h-4 w-4 text-amber-400" />
+            Hệ thống Quản lý Gia Phả Điện Tử
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-5 text-white drop-shadow-md">
             {CLAN_FULL_NAME}
           </h1>
 
-          <p className="text-base sm:text-lg text-emerald-100/90 max-w-2xl mx-auto mb-10">
-            Giải pháp số hóa phả hệ, kết nối dòng tộc và gìn giữ di sản cho các thế hệ mai sau.
+          <p className="text-base sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
+            Giải pháp chuyển đổi số toàn diện cho công tác lưu trữ phả hệ, kết nối dòng tộc và gìn giữ di sản cho các thế hệ mai sau.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" variant="secondary" asChild>
-              <a href="#quickstart">
-                <Rocket className="mr-2 h-5 w-5" />
-                Bắt đầu ngay
-              </a>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <Button size="lg" className="bg-gradient-to-r from-emerald-700 to-emerald-900 hover:from-emerald-600 hover:to-emerald-800 text-white font-bold px-6 py-3 rounded-2xl shadow-xl border border-emerald-500/40 text-sm transition-all" asChild>
+              <Link href="/tree">
+                <GitBranch className="mr-2 h-5 w-5 text-emerald-300" />
+                Cây Gia Phả Điện Tử
+              </Link>
             </Button>
-            <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white border-0 font-semibold shadow-lg transition-all" asChild>
+
+            <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-2xl shadow-xl border border-red-500/40 text-sm transition-all" asChild>
               <a href={CLAN_YOUTUBE_URL} target="_blank" rel="noopener noreferrer">
                 <Youtube className="mr-2 h-5 w-5" />
-                Kênh YouTube Tộc Phạm Văn
+                Kênh YouTube Tộc
               </a>
+            </Button>
+
+            <Button size="lg" className="bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 font-bold px-6 py-3 rounded-2xl shadow-xl text-sm transition-all" asChild>
+              <Link href="/register-member">
+                <UserPlus className="mr-2 h-5 w-5 text-cyan-400" />
+                Ghi Danh Online
+              </Link>
             </Button>
           </div>
 
           {/* Official Clan Banner Display */}
-          <div className="mt-12 max-w-4xl mx-auto">
+          <div className="mt-14 max-w-4xl mx-auto">
             <ClanBanner className="ring-2 ring-amber-400/40 shadow-2xl rounded-2xl overflow-hidden" />
           </div>
         </div>
       </section>
 
       {/* ───── 2. Features ───── */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Tính năng nổi bật</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">
-              Giải pháp toàn diện cho quản lý gia phả — từ cây phả hệ đến lễ nghi truyền thống.
+      <section className="py-20 bg-slate-900/90 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14 space-y-3">
+            <h2 className="text-3xl font-extrabold text-white">Tính Năng Nổi Bật</h2>
+            <p className="text-slate-400 max-w-xl mx-auto text-sm">
+              Giải pháp toàn diện cho quản lý gia phả — từ sơ đồ cây tương tác đến lễ nghi truyền thống.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {features.map((f) => (
-              <Card key={f.title} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+              <Card key={f.title} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/40 hover:-translate-y-1 transition-all duration-300">
                 <CardHeader className="pb-3">
-                  <div className={`w-10 h-10 rounded-lg ${f.bg} flex items-center justify-center mb-3`}>
+                  <div className={`w-10 h-10 rounded-xl ${f.bg} flex items-center justify-center mb-3 shadow-inner`}>
                     <f.icon className={`h-5 w-5 ${f.color}`} />
                   </div>
-                  <CardTitle className="text-base">{f.title}</CardTitle>
+                  <CardTitle className="text-base text-white font-bold">{f.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                  <p className="text-xs text-slate-400 leading-relaxed">{f.desc}</p>
                 </CardContent>
               </Card>
             ))}
@@ -242,29 +255,30 @@ export default function WelcomePage() {
       </section>
 
       {/* ───── 3. Screenshots ───── */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Giao diện ứng dụng</h2>
-            <p className="text-gray-500">Thiết kế hiện đại, hỗ trợ tiếng Việt, tương thích di động.</p>
+      <section className="py-20 bg-slate-950/80 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14 space-y-3">
+            <h2 className="text-3xl font-extrabold text-white">Giao Diện Ứng Dụng</h2>
+            <p className="text-slate-400 text-sm">Thiết kế hiện đại, mượt mà, hỗ trợ tiếng Việt & tối ưu cho mọi thiết bị.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { src: '/screenshots/tree-view.png', alt: 'Cây gia phả tương tác', label: 'Cây gia phả' },
-              { src: '/screenshots/people-list.png', alt: 'Quản lý thành viên', label: 'Danh sách thành viên' },
-              { src: '/screenshots/admin-panel.png', alt: 'Trang quản trị', label: 'Trang quản trị' },
-              { src: '/screenshots/mobile-view.png', alt: 'Giao diện di động', label: 'Di động' },
+              { src: '/screenshots/tree-view.png', alt: 'Cây gia phả tương tác', label: 'Sơ đồ Cây gia phả tương tác' },
+              { src: '/screenshots/people-list.png', alt: 'Quản lý thành viên', label: 'Danh sách & Bộ lọc Phái Chi' },
+              { src: '/screenshots/admin-panel.png', alt: 'Trang quản trị', label: 'Bảng Quản Trị Hệ Thống' },
+              { src: '/screenshots/mobile-view.png', alt: 'Giao diện di động', label: 'Giao Diện Tương Thích Di Động' },
             ].map((img) => (
-              <div key={img.src} className="group relative rounded-xl overflow-hidden border bg-gray-100 aspect-video flex items-center justify-center">
+              <div key={img.src} className="group relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-900 aspect-video flex items-center justify-center shadow-xl hover:border-amber-500/40 transition-all">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={img.src}
                   alt={img.alt}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="absolute bottom-3 left-4 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                <span className="absolute bottom-4 left-5 text-amber-300 text-sm font-bold opacity-90 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-amber-400" />
                   {img.label}
                 </span>
               </div>
@@ -274,94 +288,94 @@ export default function WelcomePage() {
       </section>
 
       {/* ───── 4. Hướng dẫn sử dụng ───── */}
-      <section id="guide" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Hướng dẫn sử dụng</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
-              Tổng quan các chức năng chính và cách sử dụng ứng dụng.
+      <section id="guide" className="py-20 bg-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14 space-y-3">
+            <h2 className="text-3xl font-extrabold text-white">Hướng Dẫn Vận Hành</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto text-sm">
+              Tổng quan các chức năng chính và hướng dẫn sử dụng nhanh hệ thống phả hệ.
             </p>
           </div>
 
           {/* Navigation overview */}
           <div className="mb-14">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Thanh điều hướng</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-w-4xl mx-auto">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-amber-400 mb-6 text-center">Các Chức Năng Chính</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
               {[
-                { name: 'Trang chủ', desc: 'Tổng quan, thống kê' },
-                { name: 'Cây phả hệ', desc: 'Sơ đồ cây gia phả' },
-                { name: 'Thành viên', desc: 'Quản lý thành viên' },
-                { name: 'Thư mục', desc: 'Danh bạ liên lạc' },
-                { name: 'Sự kiện', desc: 'Ngày giỗ, lễ tết' },
-                { name: 'Góc giao lưu', desc: 'Feed, bình luận, ảnh' },
-                { name: 'Tìm quan hệ', desc: 'Pathfinding 2 người' },
-                { name: 'Thống kê', desc: 'Biểu đồ, phân tích' },
-                { name: 'Thông báo', desc: 'Cập nhật realtime' },
+                { name: 'Trang chủ', desc: 'Tổng quan & Thống kê' },
+                { name: 'Cây phả hệ', desc: 'Sơ đồ gia phả tương tác' },
+                { name: 'Thành viên', desc: 'Quản lý Phái & Chi' },
+                { name: 'Danh bạ', desc: 'Lưu trữ thông tin liên lạc' },
+                { name: 'Sự kiện', desc: 'Tính ngày giỗ Âm lịch' },
+                { name: 'Góc giao lưu', desc: 'Bài viết & Kỷ niệm' },
+                { name: 'Tìm quan hệ', desc: 'Thuật toán BFS 2 người' },
+                { name: 'Thống kê', desc: 'Phân tích nhân khẩu học' },
+                { name: 'Thông báo', desc: 'Cập nhật thời gian thực' },
                 { name: 'Vinh danh', desc: 'Thành tích con cháu' },
-                { name: 'Quỹ khuyến học', desc: 'Thu chi, học bổng' },
-                { name: 'Hương ước', desc: 'Gia huấn, quy ước' },
-                { name: 'Cầu đương', desc: 'Phân công cúng lễ' },
-                { name: 'Kho tài liệu', desc: 'Ảnh, PDF, video' },
+                { name: 'Quỹ khuyến học', desc: 'Thu chi & Học bổng' },
+                { name: 'Hương ước', desc: 'Gia huấn dòng họ' },
+                { name: 'Cầu đương', desc: 'Phân công tế lễ' },
+                { name: 'Kho tài liệu', desc: 'Lưu trữ ảnh & PDF' },
                 { name: 'Xuất/Nhập', desc: 'GEDCOM, CSV, PDF' },
                 { name: 'Quản trị', desc: 'Cài đặt hệ thống' },
               ].map((item) => (
-                <div key={item.name} className="bg-white rounded-lg px-4 py-3 border shadow-sm">
-                  <p className="font-medium text-sm text-gray-900">{item.name}</p>
-                  <p className="text-xs text-gray-500">{item.desc}</p>
+                <div key={item.name} className="bg-slate-950/80 rounded-xl px-4 py-3 border border-slate-800 shadow-md hover:border-amber-500/30 transition-all">
+                  <p className="font-bold text-xs text-white">{item.name}</p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">{item.desc}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Key workflows */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-14">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-14">
             {[
               {
-                title: 'Thêm thành viên',
+                title: 'Thêm & Cập nhật thành viên',
                 steps: [
                   'Nhấn "Thêm thành viên" ở trang Thành viên',
-                  'Điền họ tên, giới tính, đời, năm sinh',
-                  'Chọn Cha/Mẹ để tự động tạo quan hệ',
-                  'Nhấn Lưu — thành viên xuất hiện trên cây',
+                  'Nhập họ tên, giới tính, Đời, Phái tộc và Chi tộc',
+                  'Chọn Cha/Mẹ để hệ thống tự động kết nối quan hệ',
+                  'Bấm Lưu — thành viên sẽ tự động xuất hiện trên Cây phả hệ',
                 ],
               },
               {
-                title: 'Xem cây gia phả',
+                title: 'Xem & Tra cứu cây gia phả',
                 steps: [
-                  'Vào Cây phả hệ từ thanh điều hướng',
-                  'Cuộn chuột để thu phóng, kéo để di chuyển',
-                  'Click vào thành viên để xem chi tiết',
-                  'Chọn "Xem cây từ đây" để lọc theo nhánh',
+                  'Vào Cây phả hệ từ thanh điều hướng chính',
+                  'Cuộn chuột để thu phóng, kéo rê để di chuyển sơ đồ',
+                  'Bấm vào thành viên để xem thông tin cá nhân',
+                  'Chọn "Xem cây từ đây" để lọc xem riêng từng Chi/Nhánh',
                 ],
               },
               {
-                title: 'Quản lý sự kiện & ngày giỗ',
+                title: 'Quản lý sự kiện & Ngày giỗ',
                 steps: [
-                  'Ngày giỗ tự động tính từ ngày mất âm lịch',
-                  'Thêm sự kiện: Giỗ, Lễ/Tết, hoặc Khác',
-                  'Chọn ngày âm lịch và người liên quan',
-                  'Bật "Lặp lại hàng năm" cho ngày giỗ',
+                  'Ngày giỗ tự động quy đổi từ ngày mất Âm lịch',
+                  'Tạo sự kiện mới: Giỗ tộc, Tế thu, hoặc Lễ Tết',
+                  'Chọn ngày Âm lịch và thành viên liên quan',
+                  'Bật "Lặp lại hàng năm" để tự động nhắc lịch',
                 ],
               },
               {
-                title: 'Sao lưu dữ liệu (Desktop)',
+                title: 'Sao lưu dữ liệu an toàn',
                 steps: [
-                  'Dữ liệu lưu tại ~/AncestorTree/',
-                  'Copy thư mục ra USB hoặc Google Drive',
-                  'Khôi phục: copy ngược về ~/AncestorTree/',
-                  'Nên sao lưu ít nhất 1 lần/tháng',
+                  'Dữ liệu tự động đồng bộ thời gian thực lên Cloud',
+                  'Xuất file GEDCOM 7.0 / Excel CSV định kỳ',
+                  'Bản Desktop lưu dữ liệu offline tại máy cá nhân',
+                  'Đảm bảo di sản dòng họ được bảo toàn vĩnh viễn',
                 ],
               },
             ].map((workflow) => (
-              <Card key={workflow.title}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">{workflow.title}</CardTitle>
+              <Card key={workflow.title} className="bg-slate-950/80 border-slate-800 text-slate-100 shadow-xl">
+                <CardHeader className="pb-3 border-b border-slate-800/80">
+                  <CardTitle className="text-sm font-bold text-amber-300">{workflow.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <ol className="space-y-2">
+                <CardContent className="pt-4">
+                  <ol className="space-y-2.5">
                     {workflow.steps.map((step, i) => (
-                      <li key={i} className="flex gap-3 text-sm text-gray-600">
-                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-medium">
+                      <li key={i} className="flex gap-3 text-xs text-slate-300">
+                        <span className="flex-shrink-0 w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] flex items-center justify-center font-bold">
                           {i + 1}
                         </span>
                         {step}
@@ -372,57 +386,33 @@ export default function WelcomePage() {
               </Card>
             ))}
           </div>
-
-          {/* Usage tips */}
-          <div className="max-w-3xl mx-auto">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">Mẹo sử dụng</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {[
-                'Bắt đầu từ thủy tổ — nhập thông tin từ đời cao nhất trở xuống',
-                'Chọn Cha/Mẹ ngay khi tạo thành viên để cây tự động cập nhật',
-                'Ghi ngày mất âm lịch — giúp tính ngày giỗ chính xác',
-                'Sao lưu thường xuyên — dữ liệu gia phả là tài sản vô giá',
-                'Dùng tìm kiếm khi gia phả lớn (>50 người) — nhanh hơn cuộn trang',
-              ].map((tip, i) => (
-                <div key={i} className="flex gap-3 bg-white rounded-lg px-4 py-3 border shadow-sm">
-                  <span className="flex-shrink-0 text-emerald-600 font-semibold text-sm">#{i + 1}</span>
-                  <p className="text-sm text-gray-600">{tip}</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
-
-
-
-
-      {/* ───── 8. Liên hệ ───── */}
-      <section id="contact" className="py-20 bg-emerald-50">
+      {/* ───── 5. Liên hệ ───── */}
+      <section id="contact" className="py-20 bg-slate-950 border-t border-slate-800">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Liên hệ</h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
-              Phần mềm được phát triển phục vụ chi tộc Phạm Văn, An Trạch, Hòa Tiến, Đà Nẵng.
-              Con cháu họ Phạm vui lòng liên hệ để được hỗ trợ.
+          <div className="text-center mb-14 space-y-3">
+            <h2 className="text-3xl font-extrabold text-white">Liên Hệ Ban Quản Trị</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto text-sm">
+              Hệ thống Gia Phả Điện Tử được vận hành phục vụ dòng họ Tộc Phạm Văn, An Trạch, Hòa Tiến, Hòa Vang, Đà Nẵng.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {/* Author card */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Tác giả</CardTitle>
+            <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
+              <CardHeader className="pb-3 border-b border-slate-800">
+                <CardTitle className="text-sm font-bold uppercase tracking-wider text-amber-400">Đơn Vị Vận Hành</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-base font-semibold text-gray-900">Phạm Công Tuân</p>
-                <div className="space-y-2">
-                  <a href="mailto:pctuanit@gmail.com" className="flex items-center gap-3 text-sm text-gray-600 hover:text-emerald-700">
-                    <Mail className="h-4 w-4 text-emerald-600" />
+              <CardContent className="space-y-4 pt-4">
+                <p className="text-base font-bold text-white">Phạm Công Tuân (Quản Trị Viên)</p>
+                <div className="space-y-2.5">
+                  <a href="mailto:pctuanit@gmail.com" className="flex items-center gap-3 text-xs text-slate-300 hover:text-amber-300 transition-colors">
+                    <Mail className="h-4 w-4 text-amber-400" />
                     pctuanit@gmail.com
                   </a>
-                  <a href="tel:0916199945" className="flex items-center gap-3 text-sm text-gray-600 hover:text-emerald-700">
-                    <Phone className="h-4 w-4 text-emerald-600" />
+                  <a href="tel:0916199945" className="flex items-center gap-3 text-xs text-slate-300 hover:text-amber-300 transition-colors">
+                    <Phone className="h-4 w-4 text-amber-400" />
                     0916 199 945
                   </a>
                 </div>
@@ -430,33 +420,33 @@ export default function WelcomePage() {
             </Card>
 
             {/* Verification guide card */}
-            <Card className="border-emerald-200">
-              <CardHeader className="pb-3">
-                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center mb-2">
-                  <UserCheck className="h-5 w-5 text-emerald-600" />
+            <Card className="bg-slate-900 border-slate-800 text-slate-100 shadow-xl">
+              <CardHeader className="pb-3 border-b border-slate-800">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center mb-2">
+                  <UserCheck className="h-4 w-4 text-emerald-300" />
                 </div>
-                <CardTitle className="text-lg">Hướng dẫn xác nhận tài khoản</CardTitle>
+                <CardTitle className="text-sm font-bold uppercase tracking-wider text-amber-400">Hướng Dẫn Xác Nhận Tài Khoản</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <ol className="space-y-2">
                   {[
-                    'Đăng ký tài khoản tại trang Đăng ký',
-                    'Liên hệ Admin qua email hoặc điện thoại ở trên',
-                    'Cung cấp họ tên, quan hệ trong dòng họ',
-                    'Admin xác nhận — bạn có thể truy cập đầy đủ',
+                    'Đăng ký tài khoản trực tuyến',
+                    'Liên hệ Admin qua SĐT/Zalo ở bên',
+                    'Cung cấp tên và quan hệ gia đình',
+                    'Admin duyệt quyền xem & chỉnh sửa',
                   ].map((step, i) => (
-                    <li key={i} className="flex gap-3 text-sm text-gray-600">
-                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-xs flex items-center justify-center font-medium">
+                    <li key={i} className="flex gap-3 text-xs text-slate-300">
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] flex items-center justify-center font-bold">
                         {i + 1}
                       </span>
                       {step}
                     </li>
                   ))}
                 </ol>
-                <div className="mt-4">
-                  <Button variant="outline" size="sm" asChild>
+                <div className="mt-5">
+                  <Button variant="outline" size="sm" className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10 text-xs rounded-xl" asChild>
                     <Link href="/register">
-                      Đăng ký tài khoản <ChevronRight className="ml-1 h-4 w-4" />
+                      Tạo tài khoản ngay <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
