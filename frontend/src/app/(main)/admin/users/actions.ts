@@ -2,8 +2,8 @@
  * @project AncestorTree
  * @file src/app/(main)/admin/users/actions.ts
  * @description Server actions for admin user management.
- *              Supports service-role key Auth deletion as well as admin profile deletion fallback.
- * @version 1.1.0
+ *              Requires SUPABASE_SERVICE_ROLE_KEY for admin deletion.
+ * @version 1.2.0
  * @updated 2026-03-26
  */
 
@@ -14,13 +14,7 @@ import { createServerClient } from '@supabase/ssr';
 import { createServiceRoleClient } from '@/lib/supabase';
 
 /**
- * Delete a user account from Supabase Auth and/or profiles table.
- *
- * Resilience Strategy:
- * 1. Pre-cleans foreign key references (fund_transactions, scholarships, clan_articles, etc.)
- *    to avoid PostgreSQL FK constraint violations.
- * 2. If SUPABASE_SERVICE_ROLE_KEY is present: Deletes user from Supabase Auth (cascades to profile).
- * 3. Fallback (if SERVICE_ROLE_KEY missing or Auth delete fails): Deletes profile row directly from `profiles` table.
+ * Permanently delete a user account from Supabase Auth and profiles.
  */
 export async function deleteUserAccount(
   userId: string,
@@ -54,6 +48,7 @@ export async function deleteUserAccount(
       },
     });
 
+    // 1. Verify caller is authenticated
     const {
       data: { user: caller },
     } = await supabase.auth.getUser();
@@ -61,6 +56,7 @@ export async function deleteUserAccount(
       return { success: false, error: 'Chưa đăng nhập hoặc phiên làm việc đã hết hạn' };
     }
 
+    // 2. Verify caller has admin role
     const { data: callerProfile } = await supabase
       .from('profiles')
       .select('role')
@@ -74,65 +70,68 @@ export async function deleteUserAccount(
       };
     }
 
+    // 3. Check for SUPABASE_SERVICE_ROLE_KEY
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const dbClient = serviceRoleKey ? createServiceRoleClient() : supabase;
+    if (!serviceRoleKey) {
+      return {
+        success: false,
+        error:
+          'Chưa cấu hình SUPABASE_SERVICE_ROLE_KEY trên Vercel. Bạn cần thêm biến SUPABASE_SERVICE_ROLE_KEY vào Vercel Settings -> Environment Variables và Redeploy lại ứng dụng để thực hiện xóa tài khoản.',
+      };
+    }
 
-    // Find target profile ID for foreign key cleanup
-    const { data: targetProfile } = await dbClient
+    const adminClient = createServiceRoleClient();
+
+    // 4. Find target profile ID for foreign key cleanup
+    const { data: targetProfile } = await adminClient
       .from('profiles')
       .select('id')
       .eq('user_id', userId)
       .maybeSingle();
 
-    // Clean up referencing foreign keys to avoid PostgreSQL FK constraint violations
+    // 5. Clean up referencing foreign keys to avoid PostgreSQL FK constraint violations
     if (targetProfile) {
       await Promise.allSettled([
-        dbClient
+        adminClient
           .from('fund_transactions')
           .update({ created_by: null })
           .eq('created_by', targetProfile.id),
-        dbClient
+        adminClient
           .from('scholarships')
           .update({ approved_by: null })
           .eq('approved_by', targetProfile.id),
-        dbClient
+        adminClient
           .from('clan_articles')
           .update({ author_id: null })
           .eq('author_id', targetProfile.id),
-        dbClient
+        adminClient
           .from('member_registrations')
           .update({ reviewed_by: null })
           .eq('reviewed_by', userId),
-        dbClient
+        adminClient
           .from('clan_documents')
           .update({ uploaded_by: null })
           .eq('uploaded_by', userId),
-        dbClient
+        adminClient
           .from('clan_settings')
           .update({ updated_by: null })
           .eq('updated_by', userId),
       ]);
     }
 
-    // 1. If serviceRoleKey is available, attempt deletion from Supabase Auth (Auth Admin API)
-    if (serviceRoleKey) {
-      const adminClient = createServiceRoleClient();
-      const { error: authDeleteError } = await adminClient.auth.admin.deleteUser(userId);
-      if (!authDeleteError) {
-        return { success: true };
-      }
-    }
+    // 6. Delete from Supabase Auth (Auth Admin API)
+    const { error: authDeleteError } = await adminClient.auth.admin.deleteUser(userId);
 
-    // 2. Fallback: delete profile row directly from `profiles` table
-    const { error: profileDeleteError } = await dbClient
+    // 7. Delete profile row explicitly to guarantee removal from profiles table
+    const { error: profileDeleteError } = await adminClient
       .from('profiles')
       .delete()
       .eq('user_id', userId);
 
-    if (profileDeleteError) {
+    if (authDeleteError && profileDeleteError) {
       return {
         success: false,
-        error: `Xóa hồ sơ người dùng thất bại: ${profileDeleteError.message}`,
+        error: `Xóa tài khoản thất bại: ${authDeleteError.message || profileDeleteError.message}`,
       };
     }
 

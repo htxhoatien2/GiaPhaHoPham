@@ -388,7 +388,13 @@ function LoginForm() {
       toast.success('Đăng nhập thành công!');
       window.location.replace('/');
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Đăng nhập thất bại';
+      let message = 'Đăng nhập thất bại';
+      if (typeof error === 'string') {
+        message = error;
+      } else if (error && typeof error === 'object') {
+        const errObj = error as Record<string, unknown>;
+        message = (errObj.message as string) || (errObj.error_description as string) || String(error);
+      }
       const newFails = failCount + 1;
       setFailCount(newFails);
       const lockSec = getLockoutSec(newFails);
