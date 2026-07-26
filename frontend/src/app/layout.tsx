@@ -22,6 +22,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://giaphaphamvan.vercel.app'),
   title: {
     default: `Gia Phả Điện Tử - ${CLAN_FULL_NAME}`,
     template: `%s | Gia Phả ${CLAN_NAME}`,

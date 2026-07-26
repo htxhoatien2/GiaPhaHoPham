@@ -85,7 +85,7 @@ Nếu bạn không muốn sử dụng dòng lệnh:
 | `NEXT_PUBLIC_LOCAL_DEV` | `false` | Đặt là false để hệ thống chuyển sang chế độ Cloud hoạt động thực tế |
 | `CRON_SECRET` | *Nhập một chuỗi ký tự ngẫu nhiên dài* | Khóa bảo mật để kích hoạt tự động hóa sự kiện |
 
-6. Nhấn nút **Deploy**! Quá trình biên dịch sẽ diễn ra trong vòng 2-3 phút. Khi hoàn tất, Vercel sẽ cung cấp cho bạn một đường liên kết truy cập công khai (dạng `https://ten-du-an.vercel.app`) để toàn bộ con cháu dòng họ có thể truy cập ngay lập tức.
+6. Nhấn nút **Deploy**! Quá trình biên dịch sẽ diễn ra trong vòng 2-3 phút. Khi hoàn tất, Vercel sẽ cung cấp cho bạn một đường liên kết truy cập công khai chính thức (dạng `https://giaphaphamvan.vercel.app`) để toàn bộ con cháu dòng họ có thể truy cập ngay lập tức.
 
 ---
 

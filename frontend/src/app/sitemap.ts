@@ -8,7 +8,7 @@
 
 import type { MetadataRoute } from 'next';
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://ancestortree.info';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://giaphaphamvan.vercel.app';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
