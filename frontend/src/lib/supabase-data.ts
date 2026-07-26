@@ -75,11 +75,27 @@ function sanitizePersonInput<T extends Record<string, any>>(input: T): T {
 export async function createPerson(input: CreatePersonInput): Promise<Person> {
   const sanitized = sanitizePersonInput(input);
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('people')
     .insert(sanitized)
     .select()
     .single();
+
+  // Graceful fallback for Supabase Cloud if 'phai' column migration is pending
+  if (error && (error.message?.includes('phai') || error.code === 'PGRST204' || error.message?.includes('schema cache'))) {
+    console.warn('Supabase Cloud missing phai column, retrying insert with fallback...');
+    const fallbackSanitized = { ...sanitized };
+    delete (fallbackSanitized as any).phai;
+
+    const res = await supabase
+      .from('people')
+      .insert(fallbackSanitized)
+      .select()
+      .single();
+
+    data = res.data;
+    error = res.error;
+  }
 
   if (error) throw error;
 
@@ -95,12 +111,29 @@ export async function createPerson(input: CreatePersonInput): Promise<Person> {
 export async function updatePerson(id: string, input: UpdatePersonInput): Promise<Person> {
   const sanitized = sanitizePersonInput(input);
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('people')
     .update({ ...sanitized, updated_at: new Date().toISOString() })
     .eq('id', id)
     .select()
     .single();
+
+  // Graceful fallback for Supabase Cloud if 'phai' column migration is pending
+  if (error && (error.message?.includes('phai') || error.code === 'PGRST204' || error.message?.includes('schema cache'))) {
+    console.warn('Supabase Cloud missing phai column, retrying update with fallback...');
+    const fallbackSanitized = { ...sanitized };
+    delete (fallbackSanitized as any).phai;
+
+    const res = await supabase
+      .from('people')
+      .update({ ...fallbackSanitized, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+
+    data = res.data;
+    error = res.error;
+  }
 
   if (error) throw error;
 
