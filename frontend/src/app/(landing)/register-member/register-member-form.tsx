@@ -112,11 +112,11 @@ export function RegisterMemberForm() {
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Honeypot — hidden from real users */}
-            <div className="absolute -left-[9999px]" aria-hidden="true">
-              <label htmlFor="website">Website</label>
+            <div className="absolute -left-[9999px] opacity-0 pointer-events-none h-0 w-0 overflow-hidden" aria-hidden="true">
+              <label htmlFor="hp_check_website">Website</label>
               <input
-                id="website"
-                name="website"
+                id="hp_check_website"
+                name="hp_check_website"
                 type="text"
                 tabIndex={-1}
                 autoComplete="off"

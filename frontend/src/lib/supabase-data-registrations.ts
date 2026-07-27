@@ -41,14 +41,12 @@ export async function submitRegistration(input: CreateRegistrationInput): Promis
 
   sanitized.full_name = (sanitized.full_name as string).trim();
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('member_registrations')
-    .insert(sanitized)
-    .select()
-    .single();
+    .insert(sanitized);
 
   if (error) throw error;
-  return data;
+  return { id: 'submitted', status: 'pending', ...sanitized } as unknown as MemberRegistration;
 }
 
 /** Get all registrations (admin/editor only). */
