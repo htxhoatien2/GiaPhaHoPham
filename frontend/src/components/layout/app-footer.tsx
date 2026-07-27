@@ -85,7 +85,7 @@ export function AppFooter({ className = '', variant = 'full' }: AppFooterProps) 
           {/* Column 2: Quick Links */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 border-l-2 border-amber-500 pl-2.5">
-              Danh Mục Gia Phả
+              Văn Hóa & Gia Phả
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
@@ -94,18 +94,28 @@ export function AppFooter({ className = '', variant = 'full' }: AppFooterProps) 
                 </Link>
               </li>
               <li>
-                <Link href="/people" className="hover:text-amber-300 transition-colors flex items-center gap-2">
-                  <Users className="h-3.5 w-3.5 text-emerald-500" /> Danh sách Thành viên
+                <Link href="/council" className="hover:text-amber-300 transition-colors flex items-center gap-2">
+                  <ShieldCheck className="h-3.5 w-3.5 text-amber-400" /> Hội Đồng Gia Tộc
                 </Link>
               </li>
               <li>
                 <Link href="/ancestral-hall" className="hover:text-amber-300 transition-colors flex items-center gap-2">
-                  <Landmark className="h-3.5 w-3.5 text-emerald-500" /> Nhà thờ Tộc Phạm Văn
+                  <Landmark className="hover:text-amber-300 h-3.5 w-3.5 text-emerald-500" /> Nhà Thờ Tộc Phạm Văn
+                </Link>
+              </li>
+              <li>
+                <Link href="/youtube" className="hover:text-red-300 transition-colors flex items-center gap-2 text-red-400 font-medium">
+                  <Youtube className="h-3.5 w-3.5 text-red-500" /> Kênh YouTube Tộc
+                </Link>
+              </li>
+              <li>
+                <Link href="/people" className="hover:text-amber-300 transition-colors flex items-center gap-2">
+                  <Users className="h-3.5 w-3.5 text-cyan-500" /> Danh sách Thành viên
                 </Link>
               </li>
               <li>
                 <Link href="/guide" className="hover:text-amber-300 transition-colors flex items-center gap-2">
-                  <BookOpen className="h-3.5 w-3.5 text-emerald-500" /> Ebook Hướng dẫn & Thế thứ
+                  <BookOpen className="h-3.5 w-3.5 text-amber-500" /> Ebook Hướng dẫn & Thế thứ
                 </Link>
               </li>
             </ul>

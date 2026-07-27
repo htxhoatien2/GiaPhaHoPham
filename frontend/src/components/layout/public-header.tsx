@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  Landmark, ShieldCheck, BookOpen, UserPlus, LogIn, UserCheck, Menu, X, Sparkles 
+  Landmark, ShieldCheck, BookOpen, UserPlus, LogIn, UserCheck, Menu, X, Sparkles, Youtube 
 } from 'lucide-react';
 import { ClanLogo } from '@/components/common/clan-logo';
 import { CLAN_NAME } from '@/lib/clan-config';
@@ -62,6 +62,18 @@ export function PublicHeader() {
           >
             <Landmark className="h-3.5 w-3.5 text-emerald-400" />
             Nhà thờ
+          </Link>
+
+          <Link 
+            href="/youtube" 
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              isActive('/youtube') 
+                ? 'bg-red-500/20 text-red-300 border border-red-500/40 shadow-xs' 
+                : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Youtube className="h-3.5 w-3.5 text-red-500" />
+            Kênh Youtube
           </Link>
 
           <Link 
@@ -137,6 +149,14 @@ export function PublicHeader() {
               className="px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 bg-slate-900/80 border border-slate-800 text-slate-200"
             >
               <Landmark className="h-4 w-4 text-emerald-400" /> Nhà thờ Tộc
+            </Link>
+
+            <Link 
+              href="/youtube" 
+              onClick={() => setMobileMenuOpen(false)}
+              className="px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 bg-slate-900/80 border border-slate-800 text-slate-200 text-red-300"
+            >
+              <Youtube className="h-4 w-4 text-red-500" /> Kênh Youtube Tộc
             </Link>
 
             <Link 

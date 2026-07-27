@@ -13,7 +13,7 @@ import {
   Lightbulb, MessageCircle, Code2, Heart,
   ChevronRight, Award, BookOpen, Utensils, Clock, Rocket,
   Mail, Phone, UserCheck, MessageSquare, Route, BarChart3,
-  Bell, Landmark, UserPlus, Search, FileDown, Youtube, Sparkles,
+  Bell, Landmark, UserPlus, Search, FileDown, Youtube, Sparkles, ShieldCheck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -205,17 +205,24 @@ export default function WelcomePage() {
               </Link>
             </Button>
 
-            <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-2xl shadow-xl border border-red-500/40 text-sm transition-all" asChild>
-              <a href={CLAN_YOUTUBE_URL} target="_blank" rel="noopener noreferrer">
-                <Youtube className="mr-2 h-5 w-5" />
-                Kênh YouTube Tộc
-              </a>
+            <Button size="lg" className="bg-amber-800/80 hover:bg-amber-700 text-amber-200 font-bold px-5 py-3 rounded-2xl shadow-xl border border-amber-500/40 text-sm transition-all" asChild>
+              <Link href="/council">
+                <ShieldCheck className="mr-2 h-5 w-5 text-amber-400" />
+                Hội Đồng Gia Tộc
+              </Link>
             </Button>
 
-            <Button size="lg" className="bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 font-bold px-6 py-3 rounded-2xl shadow-xl text-sm transition-all" asChild>
-              <Link href="/register-member">
-                <UserPlus className="mr-2 h-5 w-5 text-cyan-400" />
-                Ghi Danh Online
+            <Button size="lg" className="bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 font-bold px-5 py-3 rounded-2xl shadow-xl border border-emerald-500/40 text-sm transition-all" asChild>
+              <Link href="/ancestral-hall">
+                <Landmark className="mr-2 h-5 w-5 text-emerald-400" />
+                Nhà Thờ Tộc
+              </Link>
+            </Button>
+
+            <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-3 rounded-2xl shadow-xl border border-red-500/40 text-sm transition-all" asChild>
+              <Link href="/youtube">
+                <Youtube className="mr-2 h-5 w-5" />
+                Kênh YouTube Tộc
               </Link>
             </Button>
           </div>
@@ -223,6 +230,84 @@ export default function WelcomePage() {
           {/* Official Clan Banner Display */}
           <div className="mt-14 max-w-4xl mx-auto">
             <ClanBanner className="ring-2 ring-amber-400/40 shadow-2xl rounded-2xl overflow-hidden" />
+          </div>
+        </div>
+      </section>
+
+      {/* ───── 1.5 Heritage & Culture Showcase Section ───── */}
+      <section className="py-16 bg-slate-950 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
+              <Landmark className="h-4 w-4 text-amber-400" />
+              Di Sản & Văn Hóa Dòng Họ
+            </div>
+            <h2 className="text-3xl font-extrabold text-white">Khám Phá Các Trang Văn Hóa Dòng Họ</h2>
+            <p className="text-slate-400 max-w-xl mx-auto text-sm">
+              Tìm hiểu về Ban quản trị Hội đồng gia tộc, Từ đường Nhà thờ Tộc và Kênh YouTube lưu trữ phim tư liệu truyền thống.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1: Hoi dong */}
+            <Card className="bg-slate-900/90 border-slate-800 text-slate-100 shadow-xl hover:border-amber-500/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+              <CardHeader className="space-y-3 pb-3">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center">
+                  <ShieldCheck className="h-6 w-6 text-amber-400" />
+                </div>
+                <CardTitle className="text-xl font-bold text-white">Hội Đồng Gia Tộc</CardTitle>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Giới thiệu Ban quản trị, lịch sử hình thành, sứ mệnh và định hướng chuyển đổi số công tác lưu trữ phả hệ dòng họ.
+                </p>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <Button className="w-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 font-semibold text-xs rounded-xl" asChild>
+                  <Link href="/council">
+                    Xem Trang Hội Đồng &rarr;
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Card 2: Nha tho */}
+            <Card className="bg-slate-900/90 border-slate-800 text-slate-100 shadow-xl hover:border-emerald-500/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+              <CardHeader className="space-y-3 pb-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center">
+                  <Landmark className="h-6 w-6 text-emerald-400" />
+                </div>
+                <CardTitle className="text-xl font-bold text-white">Nhà Thờ Tộc Phạm Văn</CardTitle>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Thông tin Từ đường tại An Trạch, hình ảnh không gian thờ tự, bản đồ tọa độ và lịch tế lễ giỗ tổ hàng năm.
+                </p>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <Button className="w-full bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-semibold text-xs rounded-xl" asChild>
+                  <Link href="/ancestral-hall">
+                    Xem Trang Nhà Thờ Tộc &rarr;
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Card 3: Kenh Youtube */}
+            <Card className="bg-slate-900/90 border-slate-800 text-slate-100 shadow-xl hover:border-red-500/50 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+              <CardHeader className="space-y-3 pb-3">
+                <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+                  <Youtube className="h-6 w-6 text-red-500" />
+                </div>
+                <CardTitle className="text-xl font-bold text-white">Kênh YouTube Tộc</CardTitle>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Kênh lưu trữ video tế lễ giỗ tổ, vinh danh khuyến học con cháu và các thước phim tư liệu lịch sử dòng họ.
+                </p>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <Button className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 font-semibold text-xs rounded-xl" asChild>
+                  <Link href="/youtube">
+                    Xem Trang Kênh YouTube &rarr;
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

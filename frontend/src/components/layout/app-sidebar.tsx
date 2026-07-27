@@ -65,6 +65,7 @@ import {
   Bell,
   Landmark,
   ShieldAlert,
+  Youtube,
 } from 'lucide-react';
 import { useAuth } from '@/components/auth/auth-provider';
 import { useElderly } from '@/contexts/elderly-context';
@@ -98,6 +99,9 @@ const mainNavGroup = {
 const cultureNavGroup = {
   label: 'Văn hóa & Truyền thống',
   items: [
+    { title: 'Hội đồng gia tộc', url: '/council', icon: ShieldCheck },
+    { title: 'Nhà thờ Tộc', url: '/ancestral-hall', icon: Landmark },
+    { title: 'Kênh YouTube Tộc', url: '/youtube', icon: Youtube },
     { title: 'Hương ước dòng họ', url: '/charter', icon: ScrollText },
     { title: 'Cầu đương', url: '/cau-duong', icon: RotateCcw },
     { title: 'Góc giao lưu', url: '/feed', icon: MessageSquare },
