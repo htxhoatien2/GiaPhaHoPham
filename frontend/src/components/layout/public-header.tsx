@@ -85,7 +85,7 @@ export function PublicHeader() {
             }`}
           >
             <BookOpen className="h-3.5 w-3.5 text-amber-400" />
-            <span>📖</span> Ebook Hướng dẫn
+            <span>📖</span> Gia Phả Sách
           </Link>
 
           <Link 
@@ -164,7 +164,7 @@ export function PublicHeader() {
               onClick={() => setMobileMenuOpen(false)}
               className="px-3 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-300"
             >
-              <BookOpen className="h-4 w-4 text-amber-400" /> 📖 Ebook Hướng dẫn & Thế thứ
+              <BookOpen className="h-4 w-4 text-amber-400" /> 📖 Gia Phả Sách &amp; Thế thứ
             </Link>
 
             <Link 

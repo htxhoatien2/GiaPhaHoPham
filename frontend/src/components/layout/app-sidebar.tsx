@@ -118,7 +118,7 @@ const utilityNavGroup = {
     { title: 'Đề xuất ý kiến', url: '/contributions', icon: ClipboardList },
     { title: 'Tài liệu dòng họ', url: '/documents', icon: FileText },
     { title: 'Hướng dẫn sử dụng', url: '/help', icon: HelpCircle },
-    { title: 'Ebook Hướng dẫn', url: '/guide', icon: BookOpen },
+    { title: 'Gia Phả Sách', url: '/guide', icon: BookOpen },
   ],
 };
 

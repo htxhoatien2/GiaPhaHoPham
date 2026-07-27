@@ -184,45 +184,77 @@ export default function WelcomePage() {
             <ClanLogo size="xl" showText={false} clickable={false} className="ring-4 ring-amber-400/60 shadow-2xl animate-pulse" />
           </div>
           
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 text-xs font-bold uppercase tracking-wider shadow-sm">
+          <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 text-xs sm:text-sm font-bold tracking-wider shadow-sm">
             <Sparkles className="h-4 w-4 text-amber-400" />
-            Hệ thống Quản lý Gia Phả Điện Tử
+            Hệ Thống Phả Hệ Điện Tử Thông Minh &middot; Chuẩn Quốc Tế GEDCOM 5.5.1
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-5 text-white drop-shadow-md">
-            {CLAN_FULL_NAME}
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4 text-white drop-shadow-md">
+            Tộc Phạm Văn Làng An Trạch
           </h1>
 
-          <p className="text-base sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed font-medium">
+          {/* Traditional Couplet Banner */}
+          <div className="max-w-2xl mx-auto my-6 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-950/80 via-amber-900/60 to-amber-950/80 border border-amber-500/40 shadow-xl backdrop-blur-sm">
+            <p className="text-amber-200 font-serif italic text-sm sm:text-base md:text-lg tracking-wide drop-shadow">
+              “Mộc xuất thiên tầm do hữu bản — Thủy lưu vạn dặm khởi ư nguyên”
+            </p>
+            <p className="text-[11px] text-amber-400/80 font-medium mt-1">
+              (Cây cao ngàn thước nhờ có gốc &middot; Nước chảy vạn dặm khởi từ nguồn)
+            </p>
+          </div>
+
+          <p className="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto mb-8 leading-relaxed font-medium">
             Giải pháp chuyển đổi số toàn diện cho công tác lưu trữ phả hệ, kết nối dòng tộc và gìn giữ di sản cho các thế hệ mai sau.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-            <Button size="lg" className="bg-gradient-to-r from-emerald-700 to-emerald-900 hover:from-emerald-600 hover:to-emerald-800 text-white font-bold px-6 py-3 rounded-2xl shadow-xl border border-emerald-500/40 text-sm transition-all" asChild>
+          {/* Quick Action Navigation Grid */}
+          <div className="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 max-w-4xl mx-auto">
+            <Button size="lg" className="bg-gradient-to-r from-emerald-700 to-emerald-900 hover:from-emerald-600 hover:to-emerald-800 text-white font-bold px-5 py-2.5 rounded-2xl shadow-xl border border-emerald-500/40 text-xs sm:text-sm transition-all" asChild>
               <Link href="/tree">
-                <GitBranch className="mr-2 h-5 w-5 text-emerald-300" />
-                Cây Gia Phả Điện Tử
+                <GitBranch className="mr-2 h-4 w-4 text-emerald-300" />
+                Cây Gia Phả
               </Link>
             </Button>
 
-            <Button size="lg" className="bg-amber-800/80 hover:bg-amber-700 text-amber-200 font-bold px-5 py-3 rounded-2xl shadow-xl border border-amber-500/40 text-sm transition-all" asChild>
+            <Button size="lg" className="bg-cyan-900/80 hover:bg-cyan-800 text-cyan-200 font-bold px-5 py-2.5 rounded-2xl shadow-xl border border-cyan-500/40 text-xs sm:text-sm transition-all" asChild>
+              <Link href="/people">
+                <Users className="mr-2 h-4 w-4 text-cyan-300" />
+                Thành Viên
+              </Link>
+            </Button>
+
+            <Button size="lg" className="bg-purple-900/80 hover:bg-purple-800 text-purple-200 font-bold px-5 py-2.5 rounded-2xl shadow-xl border border-purple-500/40 text-xs sm:text-sm transition-all" asChild>
+              <Link href="/events">
+                <Calendar className="mr-2 h-4 w-4 text-purple-300" />
+                Lịch Cúng Lễ
+              </Link>
+            </Button>
+
+            <Button size="lg" className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-bold px-5 py-2.5 rounded-2xl shadow-xl border border-amber-400/60 text-xs sm:text-sm transition-all" asChild>
+              <Link href="/guide">
+                <BookOpen className="mr-2 h-4 w-4 text-amber-200" />
+                📖 Gia Phả Sách
+              </Link>
+            </Button>
+
+            <Button size="lg" className="bg-slate-900 hover:bg-slate-800 text-amber-300 font-bold px-4 py-2.5 rounded-2xl shadow-xl border border-amber-500/40 text-xs sm:text-sm transition-all" asChild>
               <Link href="/council">
-                <ShieldCheck className="mr-2 h-5 w-5 text-amber-400" />
-                Hội Đồng Gia Tộc
+                <ShieldCheck className="mr-2 h-4 w-4 text-amber-400" />
+                Hội Đồng
               </Link>
             </Button>
 
-            <Button size="lg" className="bg-emerald-900/80 hover:bg-emerald-800 text-emerald-200 font-bold px-5 py-3 rounded-2xl shadow-xl border border-emerald-500/40 text-sm transition-all" asChild>
+            <Button size="lg" className="bg-slate-900 hover:bg-slate-800 text-emerald-300 font-bold px-4 py-2.5 rounded-2xl shadow-xl border border-emerald-500/40 text-xs sm:text-sm transition-all" asChild>
               <Link href="/ancestral-hall">
-                <Landmark className="mr-2 h-5 w-5 text-emerald-400" />
-                Nhà Thờ Tộc
+                <Landmark className="mr-2 h-4 w-4 text-emerald-400" />
+                Nhà Thờ
               </Link>
             </Button>
 
-            <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-3 rounded-2xl shadow-xl border border-red-500/40 text-sm transition-all" asChild>
+            <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-2xl shadow-xl border border-red-500/40 text-xs sm:text-sm transition-all" asChild>
               <Link href="/youtube">
-                <Youtube className="mr-2 h-5 w-5" />
-                Kênh YouTube Tộc
+                <Youtube className="mr-2 h-4 w-4" />
+                Kênh YouTube
               </Link>
             </Button>
           </div>
