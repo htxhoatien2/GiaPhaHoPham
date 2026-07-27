@@ -153,6 +153,16 @@ export async function deletePerson(id: string): Promise<void> {
     if (person) personName = person.display_name;
   } catch {}
 
+  // Safe cleanup: unlink any member_registrations referencing this person_id before deletion
+  try {
+    await supabase
+      .from('member_registrations')
+      .update({ person_id: null })
+      .eq('person_id', id);
+  } catch (e) {
+    console.warn('Could not unlink member_registrations:', e);
+  }
+
   const { error } = await supabase
     .from('people')
     .delete()
