@@ -162,11 +162,72 @@ export async function syncApprovedRegistrationsToPeople(): Promise<number> {
           .update({ person_id: newPerson.id })
           .eq('id', reg.id);
         createdCount++;
+
+        // Auto-connect to parent family if parent_name exists
+        if (reg.parent_name && reg.parent_name.trim()) {
+          try {
+            const cleanParent = reg.parent_name.trim();
+            const { data: matched } = await supabase
+              .from('people')
+              .select('id, gender')
+              .ilike('display_name', `%${cleanParent}%`)
+              .limit(1);
+
+            if (matched && matched.length > 0) {
+              const parent = matched[0];
+              const fatherId = parent.gender === 1 ? parent.id : null;
+              const motherId = parent.gender === 2 ? parent.id : null;
+              await addPersonToParentFamily(fatherId, motherId, newPerson.id);
+            }
+          } catch (e) {
+            console.warn('Could not auto-connect parent on sync:', e);
+          }
+        }
       }
     } catch (err) {
       console.error('Failed to sync registration to person:', err);
     }
   }
+
+  // Also repair existing approved registrations that have a person_id but no parent family in children table
+  try {
+    const { data: approvedWithPerson } = await supabase
+      .from('member_registrations')
+      .select('id, person_id, parent_name')
+      .eq('status', 'approved')
+      .not('person_id', 'is', null)
+      .not('parent_name', 'is', null);
+
+    if (approvedWithPerson && approvedWithPerson.length > 0) {
+      for (const reg of approvedWithPerson) {
+        if (!reg.person_id || !reg.parent_name || !reg.parent_name.trim()) continue;
+
+        const { data: childEntries } = await supabase
+          .from('children')
+          .select('family_id')
+          .eq('person_id', reg.person_id);
+
+        if (!childEntries || childEntries.length === 0) {
+          const cleanParent = reg.parent_name.trim();
+          const { data: matched } = await supabase
+            .from('people')
+            .select('id, gender')
+            .ilike('display_name', `%${cleanParent}%`)
+            .limit(1);
+
+          if (matched && matched.length > 0) {
+            const parent = matched[0];
+            const fatherId = parent.gender === 1 ? parent.id : null;
+            const motherId = parent.gender === 2 ? parent.id : null;
+            await addPersonToParentFamily(fatherId, motherId, reg.person_id);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Could not repair approved person family connections:', err);
+  }
+
   return createdCount;
 }
 
