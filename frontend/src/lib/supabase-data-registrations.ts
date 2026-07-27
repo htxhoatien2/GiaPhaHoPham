@@ -254,6 +254,109 @@ export async function syncApprovedRegistrationsToPeople(): Promise<number> {
   return createdCount;
 }
 
+/**
+ * Restore function: Re-creates and restores any member records in `people` table
+ * that were created from registrations but deleted in `people` table.
+ */
+export async function restoreAllApprovedRegistrations(): Promise<{ restoredCount: number }> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Chưa đăng nhập');
+
+  // Query all member registrations
+  const { data: list, error } = await supabase
+    .from('member_registrations')
+    .select('*');
+
+  if (error || !list || list.length === 0) return { restoredCount: 0 };
+
+  let restoredCount = 0;
+  for (const reg of list) {
+    let personExists = false;
+    if (reg.person_id) {
+      const { data: existing } = await supabase
+        .from('people')
+        .select('id')
+        .eq('id', reg.person_id)
+        .maybeSingle();
+      if (existing) personExists = true;
+    }
+
+    if (!personExists && reg.full_name) {
+      // Re-create person row
+      try {
+        const slug = reg.full_name
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/đ/g, 'd')
+          .replace(/[^a-z0-9]/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-|-$/g, '');
+        const handle = `${slug || 'person'}-${Date.now().toString(36)}-${Math.floor(Math.random() * 1000)}`;
+
+        const nameParts = reg.full_name.trim().split(/\s+/);
+        const surname = nameParts.length > 1 ? nameParts[0] : undefined;
+        const firstName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : reg.full_name;
+        const middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(' ') : undefined;
+
+        const { data: newPerson, error: personErr } = await supabase
+          .from('people')
+          .insert({
+            handle,
+            display_name: reg.full_name.trim(),
+            surname,
+            middle_name: middleName,
+            first_name: firstName,
+            gender: reg.gender === 2 ? 2 : 1,
+            generation: reg.generation || 1,
+            chi: reg.chi || null,
+            phai: extractPhaiNumber(reg.phai, reg.notes),
+            birth_year: reg.birth_year || null,
+            birth_place: reg.birth_place || null,
+            phone: reg.phone || null,
+            email: reg.email || null,
+            address: reg.birth_place || null,
+            notes: reg.notes || null,
+            is_living: true,
+            is_patrilineal: true,
+            privacy_level: 0,
+          })
+          .select()
+          .single();
+
+        if (!personErr && newPerson) {
+          await supabase
+            .from('member_registrations')
+            .update({ person_id: newPerson.id, status: 'approved', reject_reason: null })
+            .eq('id', reg.id);
+
+          if (reg.parent_name && reg.parent_name.trim()) {
+            const cleanParent = extractCleanParentName(reg.parent_name);
+            if (cleanParent) {
+              const { data: matched } = await supabase
+                .from('people')
+                .select('id, gender')
+                .ilike('display_name', `%${cleanParent}%`)
+                .limit(1);
+              if (matched && matched.length > 0) {
+                const parent = matched[0];
+                const fatherId = parent.gender === 1 ? parent.id : null;
+                const motherId = parent.gender === 2 ? parent.id : null;
+                await addPersonToParentFamily(fatherId, motherId, newPerson.id);
+              }
+            }
+          }
+          restoredCount++;
+        }
+      } catch (err) {
+        console.warn('Could not restore registration to person:', err);
+      }
+    }
+  }
+
+  return { restoredCount };
+}
+
 /** Approve a registration and automatically insert into `people` table if missing. */
 export async function approveRegistration(
   id: string,

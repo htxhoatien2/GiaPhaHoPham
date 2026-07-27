@@ -16,6 +16,7 @@ import {
   approveRegistration,
   rejectRegistration,
   deleteRegistration,
+  restoreAllApprovedRegistrations,
 } from '@/lib/supabase-data-registrations';
 import type { CreateRegistrationInput } from '@/types';
 
@@ -77,6 +78,19 @@ export function useDeleteRegistration() {
     mutationFn: (id: string) => deleteRegistration(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: registrationKeys.all });
+    },
+  });
+}
+
+export function useRestoreRegistrations() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => restoreAllApprovedRegistrations(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: registrationKeys.all });
+      queryClient.invalidateQueries({ queryKey: ['people'] });
+      queryClient.invalidateQueries({ queryKey: ['families'] });
+      queryClient.invalidateQueries({ queryKey: ['tree'] });
     },
   });
 }

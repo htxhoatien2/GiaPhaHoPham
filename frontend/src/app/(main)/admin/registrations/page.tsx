@@ -10,7 +10,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/components/auth/auth-provider';
-import { useRegistrations, useApproveRegistration, useRejectRegistration, useDeleteRegistration } from '@/hooks/use-registrations';
+import { useRegistrations, useApproveRegistration, useRejectRegistration, useDeleteRegistration, useRestoreRegistrations } from '@/hooks/use-registrations';
 import { useSearchPeople } from '@/hooks/use-people';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -59,6 +59,20 @@ export default function AdminRegistrationsPage() {
   const approveMutation = useApproveRegistration();
   const rejectMutation = useRejectRegistration();
   const deleteMutation = useDeleteRegistration();
+  const restoreMutation = useRestoreRegistrations();
+
+  const handleRestore = async () => {
+    try {
+      const res = await restoreMutation.mutateAsync();
+      if (res.restoredCount > 0) {
+        toast.success(`Đã khôi phục thành công ${res.restoredCount} hồ sơ thành viên!`);
+      } else {
+        toast.info('Tất cả hồ sơ ghi danh hiện đã đầy đủ trong phả hệ.');
+      }
+    } catch {
+      toast.error('Lỗi khi khôi phục hồ sơ');
+    }
+  };
 
   // Modal states
   const [approveTarget, setApproveTarget] = useState<MemberRegistration | null>(null);
@@ -164,6 +178,18 @@ export default function AdminRegistrationsPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              {isAdmin && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleRestore}
+                  disabled={restoreMutation.isPending}
+                  className="bg-emerald-400 hover:bg-emerald-500 text-emerald-950 font-bold text-xs"
+                >
+                  {restoreMutation.isPending && <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />}
+                  Khôi phục thành viên
+                </Button>
+              )}
               <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
                 {(registrations || []).length} Đơn ghi danh
               </Badge>
