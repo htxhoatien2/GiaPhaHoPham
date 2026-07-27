@@ -93,6 +93,29 @@ export async function registerUserAction(input: {
           { onConflict: 'user_id' },
         );
 
+        // Dispatch notification to admins/editors
+        const { data: adminProfiles } = await adminClient
+          .from('profiles')
+          .select('user_id')
+          .in('role', ['admin', 'editor']);
+
+        if (adminProfiles && adminProfiles.length > 0) {
+          const notificationsToInsert = adminProfiles
+            .filter(p => p.user_id && p.user_id !== adminData.user.id)
+            .map(p => ({
+              user_id: p.user_id,
+              type: 'account_verified',
+              title: 'Tài khoản đăng ký mới',
+              body: `${cleanName} (${cleanEmail}) vừa đăng ký tài khoản mới trên hệ thống.`,
+              link: '/admin/users',
+              actor_id: adminData.user.id,
+              reference_id: adminData.user.id,
+            }));
+          if (notificationsToInsert.length > 0) {
+            await adminClient.from('notifications').insert(notificationsToInsert);
+          }
+        }
+
         return { success: true };
       }
 
