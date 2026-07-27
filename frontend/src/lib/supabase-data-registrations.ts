@@ -107,7 +107,7 @@ export async function getPendingRegistrationCount(): Promise<number> {
 function extractCleanParentName(rawParentName: string): string {
   if (!rawParentName) return '';
   let cleaned = rawParentName.trim();
-  cleaned = cleaned.replace(/^(con\s+ông|con\s+bà|con|cháu\s+cụ|cháu\s+ông|cháu\s+bà|cháu)\s+/ic, '');
+  cleaned = cleaned.replace(/^(con\s+ông|con\s+bà|con|cháu\s+cụ|cháu\s+ông|cháu\s+bà|cháu)\s+/i, '');
   cleaned = cleaned.split(/[,.\-\|]/)[0].trim();
   return cleaned;
 }
