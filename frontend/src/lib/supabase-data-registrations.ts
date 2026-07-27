@@ -8,11 +8,12 @@
 
 import { supabase } from './supabase';
 import type { MemberRegistration, CreateRegistrationInput } from '@/types';
+import { sendApprovalEmail, sendRejectionEmail } from './email-service';
 
 const ALLOWED_CREATE_FIELDS = [
   'full_name', 'gender', 'birth_year', 'birth_place',
   'phone', 'email', 'parent_name', 'generation', 'chi',
-  'relationship', 'notes', 'honeypot',
+  'relationship', 'notes', 'honeypot', 'user_id',
 ] as const;
 
 /**
@@ -41,6 +42,26 @@ export async function submitRegistration(input: CreateRegistrationInput): Promis
 
   sanitized.full_name = (sanitized.full_name as string).trim();
 
+  // Auto-link user_id if current user is logged in or email matches existing user profile
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      sanitized.user_id = user.id;
+    } else if (sanitized.email && typeof sanitized.email === 'string') {
+      const cleanEmail = (sanitized.email as string).trim().toLowerCase();
+      const { data: matchedProfile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+      if (matchedProfile?.user_id) {
+        sanitized.user_id = matchedProfile.user_id;
+      }
+    }
+  } catch (e) {
+    console.warn('Could not auto-link user_id during registration submit:', e);
+  }
+
   const { error } = await supabase
     .from('member_registrations')
     .insert(sanitized);
@@ -51,6 +72,11 @@ export async function submitRegistration(input: CreateRegistrationInput): Promis
 
 /** Get all registrations (admin/editor only). */
 export async function getRegistrations(status?: string): Promise<MemberRegistration[]> {
+  // Auto-sync any existing approved registrations that haven't been created in `people` table
+  syncApprovedRegistrationsToPeople().catch(err => {
+    console.warn('Auto sync approved registrations warning:', err);
+  });
+
   let query = supabase
     .from('member_registrations')
     .select('*')
@@ -77,9 +103,136 @@ export async function getPendingRegistrationCount(): Promise<number> {
 }
 
 /** Approve a registration. */
+/** Auto-sync any approved registration that hasn't been created in `people` table yet */
+export async function syncApprovedRegistrationsToPeople(): Promise<number> {
+  const { data: approvedList, error } = await supabase
+    .from('member_registrations')
+    .select('*')
+    .eq('status', 'approved')
+    .is('person_id', null);
+
+  if (error || !approvedList || approvedList.length === 0) return 0;
+
+  let createdCount = 0;
+  for (const reg of approvedList) {
+    try {
+      const slug = reg.full_name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/[^a-z0-9]/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+      const handle = `${slug || 'person'}-${Date.now().toString(36)}-${Math.floor(Math.random() * 1000)}`;
+
+      const nameParts = reg.full_name.trim().split(/\s+/);
+      const surname = nameParts.length > 1 ? nameParts[0] : undefined;
+      const firstName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : reg.full_name;
+      const middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(' ') : undefined;
+
+      const { data: newPerson, error: personErr } = await supabase
+        .from('people')
+        .insert({
+          handle,
+          display_name: reg.full_name.trim(),
+          surname,
+          middle_name: middleName,
+          first_name: firstName,
+          gender: reg.gender === 2 ? 2 : 1,
+          generation: reg.generation || 1,
+          chi: reg.chi || null,
+          birth_year: reg.birth_year || null,
+          birth_place: reg.birth_place || null,
+          phone: reg.phone || null,
+          email: reg.email || null,
+          address: reg.birth_place || null,
+          notes: reg.notes || null,
+          is_living: true,
+          is_patrilineal: true,
+          privacy_level: 0,
+        })
+        .select()
+        .single();
+
+      if (!personErr && newPerson) {
+        await supabase
+          .from('member_registrations')
+          .update({ person_id: newPerson.id })
+          .eq('id', reg.id);
+        createdCount++;
+      }
+    } catch (err) {
+      console.error('Failed to sync registration to person:', err);
+    }
+  }
+  return createdCount;
+}
+
+/** Approve a registration and automatically insert into `people` table if missing. */
 export async function approveRegistration(id: string, personId?: string): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
+
+  // Fetch the registration record
+  const { data: reg, error: fetchErr } = await supabase
+    .from('member_registrations')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (fetchErr || !reg) throw fetchErr || new Error('Không tìm thấy đơn ghi danh');
+
+  let targetPersonId = personId || reg.person_id;
+
+  // Auto-create a new person record if not yet linked
+  if (!targetPersonId) {
+    const slug = reg.full_name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    const handle = `${slug || 'person'}-${Date.now().toString(36)}`;
+
+    const nameParts = reg.full_name.trim().split(/\s+/);
+    const surname = nameParts.length > 1 ? nameParts[0] : undefined;
+    const firstName = nameParts.length > 0 ? nameParts[nameParts.length - 1] : reg.full_name;
+    const middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(' ') : undefined;
+
+    const { data: newPerson, error: personErr } = await supabase
+      .from('people')
+      .insert({
+        handle,
+        display_name: reg.full_name.trim(),
+        surname,
+        middle_name: middleName,
+        first_name: firstName,
+        gender: reg.gender === 2 ? 2 : 1,
+        generation: reg.generation || 1,
+        chi: reg.chi || null,
+        birth_year: reg.birth_year || null,
+        birth_place: reg.birth_place || null,
+        phone: reg.phone || null,
+        email: reg.email || null,
+        address: reg.birth_place || null,
+        notes: reg.notes || null,
+        is_living: true,
+        is_patrilineal: true,
+        privacy_level: 0,
+      })
+      .select()
+      .single();
+
+    if (personErr) {
+      console.error('Lỗi khi tự động tạo hồ sơ thành viên:', personErr);
+      throw personErr;
+    }
+
+    targetPersonId = newPerson.id;
+  }
 
   const { error } = await supabase
     .from('member_registrations')
@@ -87,17 +240,58 @@ export async function approveRegistration(id: string, personId?: string): Promis
       status: 'approved',
       reviewed_by: user.id,
       reviewed_at: new Date().toISOString(),
-      ...(personId ? { person_id: personId } : {}),
+      person_id: targetPersonId,
     })
     .eq('id', id);
 
   if (error) throw error;
+
+  // Auto-send response notification & email to user if email is provided
+  try {
+    if (reg.email) {
+      sendApprovalEmail(reg.email, reg.full_name, targetPersonId).catch(err => {
+        console.warn('[Email] Failed to send approval email:', err);
+      });
+    }
+
+    let userIdToNotify = reg.user_id;
+    if (!userIdToNotify && reg.email) {
+      const { data: matchedProfile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('email', reg.email.trim().toLowerCase())
+        .maybeSingle();
+      if (matchedProfile?.user_id) {
+        userIdToNotify = matchedProfile.user_id;
+      }
+    }
+
+    if (userIdToNotify) {
+      await supabase.from('notifications').insert({
+        user_id: userIdToNotify,
+        type: 'registration_approved',
+        title: '🎉 Đơn ghi danh đã được phê duyệt!',
+        body: `Chúc mừng! Đơn ghi danh gia nhập dòng họ của bạn (${reg.full_name}) đã được Ban quản trị duyệt và đưa vào Cây Gia Phả.`,
+        link: targetPersonId ? `/people/${targetPersonId}` : '/tree',
+        actor_id: user.id,
+        reference_id: id,
+      });
+    }
+  } catch (e) {
+    console.warn('Could not dispatch approval response notification:', e);
+  }
 }
 
 /** Reject a registration with reason. */
 export async function rejectRegistration(id: string, reason: string): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
+
+  const { data: reg } = await supabase
+    .from('member_registrations')
+    .select('*')
+    .eq('id', id)
+    .single();
 
   const { error } = await supabase
     .from('member_registrations')
@@ -110,6 +304,41 @@ export async function rejectRegistration(id: string, reason: string): Promise<vo
     .eq('id', id);
 
   if (error) throw error;
+
+  // Send rejection response notification & email
+  try {
+    if (reg?.email) {
+      sendRejectionEmail(reg.email, reg.full_name, reason.trim()).catch(err => {
+        console.warn('[Email] Failed to send rejection email:', err);
+      });
+    }
+
+    let userIdToNotify = reg?.user_id;
+    if (!userIdToNotify && reg?.email) {
+      const { data: matchedProfile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('email', reg.email.trim().toLowerCase())
+        .maybeSingle();
+      if (matchedProfile?.user_id) {
+        userIdToNotify = matchedProfile.user_id;
+      }
+    }
+
+    if (userIdToNotify && reg) {
+      await supabase.from('notifications').insert({
+        user_id: userIdToNotify,
+        type: 'system',
+        title: 'Cập nhật đơn ghi danh gia phả',
+        body: `Đơn ghi danh của bạn (${reg.full_name}) chưa được duyệt. Lý do: ${reason.trim()}`,
+        link: '/register-member',
+        actor_id: user.id,
+        reference_id: id,
+      });
+    }
+  } catch (e) {
+    console.warn('Could not dispatch rejection response notification:', e);
+  }
 }
 
 /** Delete a registration (admin only). */

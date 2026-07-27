@@ -56,23 +56,35 @@ BEGIN
         RETURN NEW;
     ELSIF (TG_OP = 'UPDATE' AND OLD.status != NEW.status) THEN
         -- Gửi thông báo tới người đăng ký khi đơn ghi danh chuyển trạng thái
-        IF NEW.user_id IS NOT NULL THEN
-            INSERT INTO notifications (user_id, type, title, body, link, actor_id, reference_id)
-            VALUES (
-                NEW.user_id,
-                'registration_approved',
-                'Cập nhật đơn ghi danh',
-                'Đơn ghi danh của bạn đã được chuyển thành trạng thái: ' || 
-                CASE 
-                    WHEN NEW.status = 'approved' THEN 'Đã duyệt'
-                    WHEN NEW.status = 'rejected' THEN 'Từ chối'
-                    ELSE NEW.status
-                END,
-                '/admin/registrations',
-                auth.uid(),
-                NEW.id::text
-            );
-        END IF;
+        DECLARE
+            target_user_id UUID;
+        BEGIN
+            target_user_id := NEW.user_id;
+
+            IF target_user_id IS NULL AND NEW.email IS NOT NULL THEN
+                SELECT p.user_id INTO target_user_id
+                FROM profiles p
+                WHERE LOWER(p.email) = LOWER(TRIM(NEW.email))
+                LIMIT 1;
+            END IF;
+
+            IF target_user_id IS NOT NULL THEN
+                INSERT INTO notifications (user_id, type, title, body, link, actor_id, reference_id)
+                VALUES (
+                    target_user_id,
+                    CASE WHEN NEW.status = 'approved' THEN 'registration_approved' ELSE 'system' END,
+                    CASE WHEN NEW.status = 'approved' THEN '🎉 Đơn ghi danh đã được duyệt!' ELSE 'Cập nhật đơn ghi danh' END,
+                    CASE 
+                        WHEN NEW.status = 'approved' THEN 'Chúc mừng! Đơn ghi danh gia nhập dòng họ của bạn (' || NEW.full_name || ') đã được Ban quản trị duyệt và đưa vào Cây Gia Phả.'
+                        WHEN NEW.status = 'rejected' THEN 'Đơn ghi danh của bạn (' || NEW.full_name || ') chưa được duyệt. Lý do: ' || COALESCE(NEW.reject_reason, 'Chưa đạt yêu cầu đối chiếu')
+                        ELSE 'Đơn ghi danh của bạn đã được chuyển thành trạng thái: ' || NEW.status
+                    END,
+                    CASE WHEN NEW.status = 'approved' AND NEW.person_id IS NOT NULL THEN '/people/' || NEW.person_id ELSE '/tree' END,
+                    auth.uid(),
+                    NEW.id::text
+                );
+            END IF;
+        END;
 
         RETURN NEW;
     END IF;
