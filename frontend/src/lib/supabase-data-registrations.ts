@@ -13,7 +13,7 @@ import { addPersonToParentFamily } from './supabase-data';
 
 const ALLOWED_CREATE_FIELDS = [
   'full_name', 'gender', 'birth_year', 'birth_place',
-  'phone', 'email', 'parent_name', 'generation', 'chi',
+  'phone', 'email', 'parent_name', 'generation', 'chi', 'phai',
   'relationship', 'notes', 'honeypot', 'user_id',
 ] as const;
 
@@ -112,13 +112,23 @@ function extractCleanParentName(rawParentName: string): string {
   return cleaned;
 }
 
+function extractPhaiNumber(phai?: number, notes?: string): number | null {
+  if (phai != null && phai !== undefined) return phai;
+  if (notes) {
+    const match = notes.match(/Phái:\s*(\d+)/i);
+    if (match) return parseInt(match[1], 10);
+  }
+  return null;
+}
+
 /** Auto-sync any approved registration that hasn't been created in `people` table yet */
 export async function syncApprovedRegistrationsToPeople(): Promise<number> {
   const { data: approvedList, error } = await supabase
     .from('member_registrations')
     .select('*')
     .eq('status', 'approved')
-    .is('person_id', null);
+    .is('person_id', null)
+    .is('reviewed_at', null);
 
   if (error || !approvedList || approvedList.length === 0) return 0;
 
@@ -151,7 +161,7 @@ export async function syncApprovedRegistrationsToPeople(): Promise<number> {
           gender: reg.gender === 2 ? 2 : 1,
           generation: reg.generation || 1,
           chi: reg.chi || null,
-          phai: reg.phai || null,
+          phai: extractPhaiNumber(reg.phai, reg.notes),
           birth_year: reg.birth_year || null,
           birth_place: reg.birth_place || null,
           phone: reg.phone || null,
@@ -293,7 +303,7 @@ export async function approveRegistration(
         gender: reg.gender === 2 ? 2 : 1,
         generation: reg.generation || 1,
         chi: reg.chi || null,
-        phai: reg.phai || null,
+        phai: extractPhaiNumber(reg.phai, reg.notes),
         birth_year: reg.birth_year || null,
         birth_place: reg.birth_place || null,
         phone: reg.phone || null,

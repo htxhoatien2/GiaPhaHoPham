@@ -166,14 +166,18 @@ export async function deletePerson(id: string): Promise<void> {
     if (person) personName = person.display_name;
   } catch {}
 
-  // Safe cleanup: unlink any member_registrations referencing this person_id before deletion
+  // Safe cleanup: update any member_registrations referencing this person_id so they won't be auto-recreated
   try {
     await supabase
       .from('member_registrations')
-      .update({ person_id: null })
+      .update({
+        person_id: null,
+        status: 'rejected',
+        reject_reason: 'Thành viên đã bị xóa khỏi gia phả bởi Quản trị viên',
+      })
       .eq('person_id', id);
   } catch (e) {
-    console.warn('Could not unlink member_registrations:', e);
+    console.warn('Could not update member_registrations on deletion:', e);
   }
 
   const { data, error } = await supabase
