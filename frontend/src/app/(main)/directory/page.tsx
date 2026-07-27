@@ -195,19 +195,6 @@ export default function DirectoryPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 bg-white/10 backdrop-blur p-1.5 rounded-2xl border border-white/20 shrink-0">
-            {isAdmin && (
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={handleCleanDuplicates}
-                disabled={cleanDuplicatesMutation.isPending}
-                className="rounded-xl text-xs font-bold gap-1.5 bg-amber-400 hover:bg-amber-500 text-amber-950 shadow"
-              >
-                {cleanDuplicatesMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
-                Dọn trùng lặp
-              </Button>
-            )}
-
             <Button
               variant={viewMode === 'cards' ? 'default' : 'ghost'}
               size="sm"

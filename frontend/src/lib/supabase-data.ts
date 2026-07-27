@@ -252,6 +252,52 @@ export async function cleanDuplicatePeople(): Promise<{ cleanedCount: number }> 
   return { cleanedCount };
 }
 
+/**
+ * Admin utility: Purge all records matching a specific name from people, children,
+ * and member_registrations to allow re-registering and approving cleanly from scratch.
+ */
+export async function purgePersonByName(name: string): Promise<{ purgedCount: number }> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Chưa đăng nhập');
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single();
+
+  if (!profile || profile.role !== 'admin') {
+    throw new Error('Chỉ Quản trị viên mới có quyền làm sạch dữ liệu thành viên');
+  }
+
+  const cleanName = name.trim();
+  if (!cleanName) return { purgedCount: 0 };
+
+  // 1. Find matching people
+  const { data: matchedPeople } = await supabase
+    .from('people')
+    .select('id')
+    .ilike('display_name', `%${cleanName}%`);
+
+  const ids = (matchedPeople || []).map(p => p.id);
+
+  let purgedCount = 0;
+  if (ids.length > 0) {
+    // Delete from children
+    await supabase.from('children').delete().in('person_id', ids);
+    // Delete from member_registrations
+    await supabase.from('member_registrations').delete().in('person_id', ids);
+    // Delete from people
+    const { data: deleted } = await supabase.from('people').delete().in('id', ids).select('id');
+    purgedCount = deleted?.length || ids.length;
+  }
+
+  // Also delete from member_registrations by full_name
+  await supabase.from('member_registrations').delete().ilike('full_name', `%${cleanName}%`);
+
+  return { purgedCount };
+}
+
 export async function searchPeople(query: string): Promise<Person[]> {
   // Escape LIKE special characters to prevent pattern injection
   const escaped = query.replace(/[%_\\]/g, '\\$&');

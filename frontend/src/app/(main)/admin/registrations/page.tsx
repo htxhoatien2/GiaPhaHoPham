@@ -178,18 +178,6 @@ export default function AdminRegistrationsPage() {
             </div>
 
             <div className="flex items-center gap-2">
-              {isAdmin && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleRestore}
-                  disabled={restoreMutation.isPending}
-                  className="bg-emerald-400 hover:bg-emerald-500 text-emerald-950 font-bold text-xs"
-                >
-                  {restoreMutation.isPending && <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />}
-                  Khôi phục thành viên
-                </Button>
-              )}
               <Badge variant="outline" className="bg-white/10 text-white border-white/20 text-xs px-3 py-1">
                 {(registrations || []).length} Đơn ghi danh
               </Badge>
