@@ -19,5 +19,6 @@ if exist "C:\Users\pctua\.gemini\antigravity-ide\brain\ab8529bd-557b-467b-b432-2
 
 if exist copy-logo.mjs node copy-logo.mjs > nul 2>&1
 if exist update-banner.mjs node update-banner.mjs > nul 2>&1
+if exist frontend\scripts\clean-conflicting-routes.mjs node frontend\scripts\clean-conflicting-routes.mjs > nul 2>&1
 
-echo Da cap nhat Logo va Banner thanh cong.
+echo Da cap nhat Logo, Banner va don dẹp tuyen duong trung lap thanh cong.
