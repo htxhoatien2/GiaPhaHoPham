@@ -49,10 +49,13 @@ export function useSubmitRegistration() {
 export function useApproveRegistration() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, personId }: { id: string; personId?: string }) =>
-      approveRegistration(id, personId),
+    mutationFn: ({ id, personId, fatherId, motherId }: { id: string; personId?: string; fatherId?: string; motherId?: string }) =>
+      approveRegistration(id, personId, fatherId, motherId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: registrationKeys.all });
+      queryClient.invalidateQueries({ queryKey: ['people'] });
+      queryClient.invalidateQueries({ queryKey: ['families'] });
+      queryClient.invalidateQueries({ queryKey: ['tree'] });
     },
   });
 }

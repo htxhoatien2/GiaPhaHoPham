@@ -9,6 +9,7 @@
 import { supabase } from './supabase';
 import type { MemberRegistration, CreateRegistrationInput } from '@/types';
 import { sendRegistrationEmailAction } from '@/app/(main)/admin/registrations/actions';
+import { addPersonToParentFamily } from './supabase-data';
 
 const ALLOWED_CREATE_FIELDS = [
   'full_name', 'gender', 'birth_year', 'birth_place',
@@ -170,7 +171,12 @@ export async function syncApprovedRegistrationsToPeople(): Promise<number> {
 }
 
 /** Approve a registration and automatically insert into `people` table if missing. */
-export async function approveRegistration(id: string, personId?: string): Promise<void> {
+export async function approveRegistration(
+  id: string,
+  personId?: string,
+  fatherId?: string,
+  motherId?: string
+): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
@@ -232,6 +238,39 @@ export async function approveRegistration(id: string, personId?: string): Promis
     }
 
     targetPersonId = newPerson.id;
+  }
+
+  // Link to parent family if fatherId or motherId provided OR try smart matching by parent_name
+  if (targetPersonId) {
+    let finalFatherId = fatherId || null;
+    let finalMotherId = motherId || null;
+
+    if (!finalFatherId && !finalMotherId && reg.parent_name && reg.parent_name.trim()) {
+      try {
+        const cleanParentStr = reg.parent_name.trim();
+        const { data: matched } = await supabase
+          .from('people')
+          .select('id, gender, display_name')
+          .ilike('display_name', `%${cleanParentStr}%`)
+          .limit(1);
+
+        if (matched && matched.length > 0) {
+          const parent = matched[0];
+          if (parent.gender === 1) finalFatherId = parent.id;
+          else if (parent.gender === 2) finalMotherId = parent.id;
+        }
+      } catch (err) {
+        console.warn('Smart parent matching failed:', err);
+      }
+    }
+
+    if (finalFatherId || finalMotherId) {
+      try {
+        await addPersonToParentFamily(finalFatherId, finalMotherId, targetPersonId);
+      } catch (err) {
+        console.warn('Could not add person to parent family:', err);
+      }
+    }
   }
 
   const { error } = await supabase
