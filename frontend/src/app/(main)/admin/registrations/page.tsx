@@ -11,6 +11,7 @@
 import { useState } from 'react';
 import { useAuth } from '@/components/auth/auth-provider';
 import { useRegistrations, useApproveRegistration, useRejectRegistration, useDeleteRegistration } from '@/hooks/use-registrations';
+import { useSearchPeople } from '@/hooks/use-people';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -28,11 +29,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { ClipboardList, Check, X, Trash2, Loader2, Search, ArrowLeft } from 'lucide-react';
+import { ClipboardList, Check, X, Trash2, Loader2, Search, ArrowLeft, Users, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { getRelativeTime } from '@/lib/format-utils';
 import Link from 'next/link';
-import type { MemberRegistration } from '@/types';
+import type { MemberRegistration, Person } from '@/types';
 
 const STATUS_MAP: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
   pending: { label: 'Chờ duyệt', variant: 'default' },
@@ -48,6 +49,12 @@ export default function AdminRegistrationsPage() {
   const approveMutation = useApproveRegistration();
   const rejectMutation = useRejectRegistration();
   const deleteMutation = useDeleteRegistration();
+
+  // Modal states
+  const [approveTarget, setApproveTarget] = useState<MemberRegistration | null>(null);
+  const [parentSearch, setParentSearch] = useState('');
+  const [selectedParent, setSelectedParent] = useState<Person | null>(null);
+  const { data: parentSearchResults } = useSearchPeople(parentSearch);
 
   const [rejectTarget, setRejectTarget] = useState<MemberRegistration | null>(null);
   const [rejectReason, setRejectReason] = useState('');
@@ -68,12 +75,29 @@ export default function AdminRegistrationsPage() {
     !search || r.full_name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleApprove = async (reg: MemberRegistration) => {
+  const openApproveModal = (reg: MemberRegistration) => {
+    setApproveTarget(reg);
+    setParentSearch(reg.parent_name || '');
+    setSelectedParent(null);
+  };
+
+  const handleConfirmApprove = async () => {
+    if (!approveTarget) return;
     try {
-      await approveMutation.mutateAsync({ id: reg.id });
-      toast.success(`Đã duyệt ${reg.full_name}`);
+      const fatherId = selectedParent?.gender === 1 ? selectedParent.id : undefined;
+      const motherId = selectedParent?.gender === 2 ? selectedParent.id : undefined;
+
+      await approveMutation.mutateAsync({
+        id: approveTarget.id,
+        fatherId,
+        motherId,
+      });
+
+      toast.success(`Đã duyệt & kết nối thành công ${approveTarget.full_name}`);
+      setApproveTarget(null);
+      setSelectedParent(null);
     } catch {
-      toast.error('Lỗi khi duyệt');
+      toast.error('Lỗi khi duyệt đơn');
     }
   };
 
@@ -230,12 +254,12 @@ export default function AdminRegistrationsPage() {
                         <Button
                           size="sm"
                           variant="default"
-                          className="h-7 text-xs"
-                          onClick={() => handleApprove(reg)}
+                          className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+                          onClick={() => openApproveModal(reg)}
                           disabled={approveMutation.isPending}
                         >
                           <Check className="h-3 w-3 mr-1" />
-                          Duyệt
+                          Phê duyệt & Kết nối
                         </Button>
                         <Button
                           size="sm"
@@ -265,6 +289,93 @@ export default function AdminRegistrationsPage() {
           ))}
         </div>
       )}
+
+      {/* Approval & Parent Selection Dialog */}
+      <AlertDialog open={!!approveTarget} onOpenChange={open => { if (!open) setApproveTarget(null); }}>
+        <AlertDialogContent className="max-w-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-emerald-700">
+              <UserCheck className="h-5 w-5 text-emerald-600" />
+              Phê Duyệt & Kết Nối Vào Cây Gia Phả
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-xs text-muted-foreground">
+              Phê duyệt đơn ghi danh của <strong>{approveTarget?.full_name}</strong> và tự động khởi tạo thành viên trong gia phả.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="space-y-4 py-2 text-xs">
+            <div className="bg-slate-100 dark:bg-slate-900 p-3 rounded-xl space-y-1">
+              <div><strong>Họ tên:</strong> {approveTarget?.full_name} ({approveTarget?.gender === 1 ? 'Nam' : 'Nữ'})</div>
+              <div><strong>Đời thứ:</strong> {approveTarget?.generation || '1'} &bull; <strong>Chi:</strong> {approveTarget?.chi || '1'}</div>
+              <div><strong>Quê quán:</strong> {approveTarget?.birth_place || 'Chưa rõ'}</div>
+              <div><strong>Tên Cha/Mẹ tự khai:</strong> <span className="text-amber-600 font-semibold">{approveTarget?.parent_name || 'Chưa điền'}</span></div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="font-bold flex items-center gap-1.5 text-slate-700 dark:text-slate-200">
+                <Users className="h-3.5 w-3.5 text-blue-600" />
+                Chọn Cha / Mẹ từ Cây Gia Phả (Tùy chọn):
+              </label>
+              <p className="text-[11px] text-muted-foreground">
+                Gõ tìm tên Cha/Mẹ trong hệ thống. Nếu không chọn, hệ thống sẽ tự tìm theo tên tự khai.
+              </p>
+              <Input
+                placeholder="Tìm tên Cha hoặc Mẹ..."
+                value={parentSearch}
+                onChange={e => {
+                  setParentSearch(e.target.value);
+                  setSelectedParent(null);
+                }}
+                className="h-8 text-xs"
+              />
+
+              {selectedParent ? (
+                <div className="flex items-center justify-between p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs">
+                  <div>
+                    <strong>Đã chọn:</strong> {selectedParent.display_name} ({selectedParent.gender === 1 ? 'Cha' : 'Mẹ'}) &bull; Đời {selectedParent.generation}
+                  </div>
+                  <Button variant="ghost" size="sm" className="h-6 px-2 text-[10px]" onClick={() => setSelectedParent(null)}>
+                    Bỏ chọn
+                  </Button>
+                </div>
+              ) : (
+                parentSearchResults && parentSearchResults.length > 0 && (
+                  <div className="max-h-36 overflow-y-auto border rounded-lg divide-y bg-background text-xs">
+                    {parentSearchResults.slice(0, 5).map(p => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setSelectedParent(p)}
+                        className="w-full text-left p-2 hover:bg-accent flex items-center justify-between"
+                      >
+                        <div>
+                          <span className="font-semibold">{p.display_name}</span>
+                          <span className="text-[11px] text-muted-foreground ml-1.5">
+                            ({p.gender === 1 ? 'Nam' : 'Nữ'}, Đời {p.generation})
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-blue-600">Chọn</span>
+                      </button>
+                    ))}
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Hủy</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleConfirmApprove}
+              disabled={approveMutation.isPending}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+            >
+              {approveMutation.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              Phê Duyệt & Nhập Phả
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Reject dialog */}
       <AlertDialog open={!!rejectTarget} onOpenChange={open => { if (!open) setRejectTarget(null); }}>
