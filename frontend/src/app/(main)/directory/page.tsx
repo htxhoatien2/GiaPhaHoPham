@@ -10,9 +10,8 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { usePeople, useCleanDuplicatePeople } from '@/hooks/use-people';
+import { usePeople } from '@/hooks/use-people';
 import { useAuth } from '@/components/auth/auth-provider';
-import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import {
   Select,
