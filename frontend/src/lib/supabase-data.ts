@@ -198,6 +198,60 @@ export async function deletePerson(id: string): Promise<void> {
   }
 }
 
+/**
+ * Automatically find and clean up duplicate people rows in the database.
+ * Retains 1 primary record per unique person (matching display_name, generation, chi, phone)
+ * and safely deletes redundant duplicates.
+ */
+export async function cleanDuplicatePeople(): Promise<{ cleanedCount: number }> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Chưa đăng nhập');
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single();
+
+  if (!profile || profile.role !== 'admin') {
+    throw new Error('Chỉ Quản trị viên mới có quyền dọn dẹp bản ghi trùng lặp');
+  }
+
+  const { data: allPeople, error } = await supabase
+    .from('people')
+    .select('id, display_name, generation, chi, phone, created_at')
+    .order('created_at', { ascending: true });
+
+  if (error || !allPeople || allPeople.length === 0) return { cleanedCount: 0 };
+
+  const groups = new Map<string, typeof allPeople>();
+  for (const p of allPeople) {
+    const key = `${p.display_name.trim().toLowerCase()}|${p.generation || 1}|${p.chi || ''}|${p.phone?.trim() || ''}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(p);
+  }
+
+  let cleanedCount = 0;
+  for (const [, rows] of groups) {
+    if (rows.length > 1) {
+      // Keep the first row, delete redundant duplicates (rows.slice(1))
+      const redundantRows = rows.slice(1);
+      for (const item of redundantRows) {
+        try {
+          await supabase.from('member_registrations').update({ person_id: null, status: 'rejected' }).eq('person_id', item.id);
+          await supabase.from('children').delete().eq('person_id', item.id);
+          await supabase.from('people').delete().eq('id', item.id);
+          cleanedCount++;
+        } catch (err) {
+          console.warn(`Could not clean duplicate person ${item.id}:`, err);
+        }
+      }
+    }
+  }
+
+  return { cleanedCount };
+}
+
 export async function searchPeople(query: string): Promise<Person[]> {
   // Escape LIKE special characters to prevent pattern injection
   const escaped = query.replace(/[%_\\]/g, '\\$&');

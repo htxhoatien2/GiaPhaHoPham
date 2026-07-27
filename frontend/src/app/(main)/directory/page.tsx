@@ -10,8 +10,9 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { usePeople } from '@/hooks/use-people';
+import { usePeople, useCleanDuplicatePeople } from '@/hooks/use-people';
 import { useAuth } from '@/components/auth/auth-provider';
+import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -47,6 +48,8 @@ import {
   Filter,
   LayoutGrid,
   List,
+  Sparkles,
+  Loader2,
 } from 'lucide-react';
 import type { Person } from '@/types';
 
@@ -150,6 +153,22 @@ export default function DirectoryPage() {
     setStatusFilter('living');
   };
 
+  const cleanDuplicatesMutation = useCleanDuplicatePeople();
+  const isAdmin = profile?.role === 'admin';
+
+  const handleCleanDuplicates = async () => {
+    try {
+      const res = await cleanDuplicatesMutation.mutateAsync();
+      if (res.cleanedCount > 0) {
+        toast.success(`Đã dọn dẹp thành công ${res.cleanedCount} bản ghi trùng lặp!`);
+      } else {
+        toast.info('Không tìm thấy bản ghi trùng lặp nào.');
+      }
+    } catch {
+      toast.error('Lỗi khi dọn dẹp bản ghi trùng');
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl space-y-6 pb-24">
       {/* Hero Banner Header */}
@@ -175,7 +194,20 @@ export default function DirectoryPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 bg-white/10 backdrop-blur p-1.5 rounded-2xl border border-white/20 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 bg-white/10 backdrop-blur p-1.5 rounded-2xl border border-white/20 shrink-0">
+            {isAdmin && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleCleanDuplicates}
+                disabled={cleanDuplicatesMutation.isPending}
+                className="rounded-xl text-xs font-bold gap-1.5 bg-amber-400 hover:bg-amber-500 text-amber-950 shadow"
+              >
+                {cleanDuplicatesMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
+                Dọn trùng lặp
+              </Button>
+            )}
+
             <Button
               variant={viewMode === 'cards' ? 'default' : 'ghost'}
               size="sm"

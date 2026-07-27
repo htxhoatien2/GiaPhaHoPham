@@ -15,6 +15,7 @@ import {
   createPerson,
   updatePerson,
   deletePerson,
+  cleanDuplicatePeople,
   searchPeople,
   getPeopleByGeneration,
   getStats,
@@ -111,6 +112,19 @@ export function useDeletePerson() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: peopleKeys.all });
       queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    },
+  });
+}
+
+export function useCleanDuplicatePeople() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => cleanDuplicatePeople(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: peopleKeys.all });
+      queryClient.invalidateQueries({ queryKey: ['tree'] });
+      queryClient.invalidateQueries({ queryKey: ['families'] });
     },
   });
 }
