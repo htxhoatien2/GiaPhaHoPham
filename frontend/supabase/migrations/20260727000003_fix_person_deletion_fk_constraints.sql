@@ -1,7 +1,8 @@
 -- ============================================================
--- Migration: Fix Foreign Key Constraints for Person Deletion
+-- Migration: Fix Foreign Key Constraints & RLS for Person Deletion
 -- Ensures that deleting a person automatically sets referencing
--- columns (like member_registrations.person_id) to NULL.
+-- columns (like member_registrations.person_id) to NULL, and
+-- allows both Admins and Editors to delete people records.
 -- ============================================================
 
 -- 1. member_registrations (person_id -> people.id)
@@ -22,3 +23,17 @@ BEGIN
       FOREIGN KEY (ancestor_id) REFERENCES people(id) ON DELETE CASCADE;
   END IF;
 END $$;
+
+-- 3. RLS Policy: Allow both Admins and Editors to delete people
+DROP POLICY IF EXISTS "Admins can delete people" ON people;
+DROP POLICY IF EXISTS "Admins and editors can delete people" ON people;
+
+CREATE POLICY "Admins and editors can delete people" ON people
+    FOR DELETE TO authenticated
+    USING (
+        EXISTS (
+            SELECT 1 FROM profiles 
+            WHERE profiles.user_id = auth.uid() 
+            AND profiles.role IN ('admin', 'editor')
+        )
+    );

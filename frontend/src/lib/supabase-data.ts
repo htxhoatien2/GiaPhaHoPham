@@ -163,12 +163,16 @@ export async function deletePerson(id: string): Promise<void> {
     console.warn('Could not unlink member_registrations:', e);
   }
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('people')
     .delete()
-    .eq('id', id);
+    .eq('id', id)
+    .select('id');
   
   if (error) throw error;
+  if (!data || data.length === 0) {
+    throw new Error('Không thể xóa thành viên (bạn cần quyền Biên tập viên / Quản trị viên)');
+  }
 
   try {
     await notifyMemberUpdate('delete', personName, id);
