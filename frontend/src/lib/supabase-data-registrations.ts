@@ -8,7 +8,7 @@
 
 import { supabase } from './supabase';
 import type { MemberRegistration, CreateRegistrationInput } from '@/types';
-import { sendApprovalEmail, sendRejectionEmail } from './email-service';
+import { sendRegistrationEmailAction } from '@/app/(main)/admin/registrations/actions';
 
 const ALLOWED_CREATE_FIELDS = [
   'full_name', 'gender', 'birth_year', 'birth_place',
@@ -246,11 +246,16 @@ export async function approveRegistration(id: string, personId?: string): Promis
 
   if (error) throw error;
 
-  // Auto-send response notification & email to user if email is provided
+  // Auto-send response notification & email via Server Action
   try {
     if (reg.email) {
-      sendApprovalEmail(reg.email, reg.full_name, targetPersonId).catch(err => {
-        console.warn('[Email] Failed to send approval email:', err);
+      sendRegistrationEmailAction({
+        type: 'approved',
+        toEmail: reg.email,
+        fullName: reg.full_name,
+        personId: targetPersonId,
+      }).catch(err => {
+        console.warn('[Email Action] Failed to send approval email:', err);
       });
     }
 
@@ -305,11 +310,16 @@ export async function rejectRegistration(id: string, reason: string): Promise<vo
 
   if (error) throw error;
 
-  // Send rejection response notification & email
+  // Send rejection response notification & email via Server Action
   try {
     if (reg?.email) {
-      sendRejectionEmail(reg.email, reg.full_name, reason.trim()).catch(err => {
-        console.warn('[Email] Failed to send rejection email:', err);
+      sendRegistrationEmailAction({
+        type: 'rejected',
+        toEmail: reg.email,
+        fullName: reg.full_name,
+        reason: reason.trim(),
+      }).catch(err => {
+        console.warn('[Email Action] Failed to send rejection email:', err);
       });
     }
 
