@@ -60,7 +60,7 @@ export default function PersonDetailPage({ params }: PageProps) {
   const { profile } = useAuth();
   const { data: canEdit = false } = useCanEditPerson(id);
   const isViewer = profile?.role === 'viewer';
-  const isSelf = profile?.linked_person === id;
+  const isAdmin = profile?.role === 'admin';
 
   const handleDelete = async () => {
     try {
@@ -165,31 +165,33 @@ export default function PersonDetailPage({ params }: PageProps) {
                       Chỉnh sửa
                     </Link>
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="destructive" size="sm">
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Xóa
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Xác nhận xóa?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Bạn có chắc muốn xóa {person.display_name}? Hành động này không thể hoàn tác.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Hủy</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={handleDelete}
-                          disabled={deleteMutation.isPending}
-                        >
-                          {deleteMutation.isPending ? 'Đang xóa...' : 'Xóa'}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  {isAdmin && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive" size="sm">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Xóa
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Xác nhận xóa?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Bạn có chắc muốn xóa {person.display_name}? Hành động này không thể hoàn tác.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Hủy</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleDelete}
+                            disabled={deleteMutation.isPending}
+                          >
+                            {deleteMutation.isPending ? 'Đang xóa...' : 'Xóa'}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               )}
             </div>

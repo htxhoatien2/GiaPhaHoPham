@@ -147,6 +147,19 @@ export async function updatePerson(id: string, input: UpdatePersonInput): Promis
 }
 
 export async function deletePerson(id: string): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) throw new Error('Chưa đăng nhập');
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('user_id', user.id)
+    .single();
+
+  if (!profile || profile.role !== 'admin') {
+    throw new Error('Chỉ Quản trị viên (Admin) mới có quyền xóa thành viên');
+  }
+
   let personName = 'thành viên';
   try {
     const person = await getPerson(id);
@@ -171,7 +184,7 @@ export async function deletePerson(id: string): Promise<void> {
   
   if (error) throw error;
   if (!data || data.length === 0) {
-    throw new Error('Không thể xóa thành viên (bạn cần quyền Biên tập viên / Quản trị viên)');
+    throw new Error('Không thể xóa thành viên (chỉ dành cho Quản trị viên)');
   }
 
   try {

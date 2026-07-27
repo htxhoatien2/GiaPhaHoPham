@@ -1,8 +1,8 @@
 -- ============================================================
--- Migration: Fix Foreign Key Constraints & RLS for Person Deletion
+-- Migration: Fix Foreign Key Constraints & Restrict Person Deletion to Admins Only
 -- Ensures that deleting a person automatically sets referencing
 -- columns (like member_registrations.person_id) to NULL, and
--- allows both Admins and Editors to delete people records.
+-- restricts DELETE operations exclusively to Admin accounts.
 -- ============================================================
 
 -- 1. member_registrations (person_id -> people.id)
@@ -24,16 +24,16 @@ BEGIN
   END IF;
 END $$;
 
--- 3. RLS Policy: Allow both Admins and Editors to delete people
+-- 3. RLS Policy: Restrict DELETE on people exclusively to Admins ('admin')
 DROP POLICY IF EXISTS "Admins can delete people" ON people;
 DROP POLICY IF EXISTS "Admins and editors can delete people" ON people;
 
-CREATE POLICY "Admins and editors can delete people" ON people
+CREATE POLICY "Admins can delete people" ON people
     FOR DELETE TO authenticated
     USING (
         EXISTS (
             SELECT 1 FROM profiles 
             WHERE profiles.user_id = auth.uid() 
-            AND profiles.role IN ('admin', 'editor')
+            AND profiles.role = 'admin'
         )
     );

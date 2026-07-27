@@ -104,6 +104,14 @@ export async function getPendingRegistrationCount(): Promise<number> {
 }
 
 /** Approve a registration. */
+function extractCleanParentName(rawParentName: string): string {
+  if (!rawParentName) return '';
+  let cleaned = rawParentName.trim();
+  cleaned = cleaned.replace(/^(con\s+ông|con\s+bà|con|cháu\s+cụ|cháu\s+ông|cháu\s+bà|cháu)\s+/ic, '');
+  cleaned = cleaned.split(/[,.\-\|]/)[0].trim();
+  return cleaned;
+}
+
 /** Auto-sync any approved registration that hasn't been created in `people` table yet */
 export async function syncApprovedRegistrationsToPeople(): Promise<number> {
   const { data: approvedList, error } = await supabase
@@ -166,18 +174,20 @@ export async function syncApprovedRegistrationsToPeople(): Promise<number> {
         // Auto-connect to parent family if parent_name exists
         if (reg.parent_name && reg.parent_name.trim()) {
           try {
-            const cleanParent = reg.parent_name.trim();
-            const { data: matched } = await supabase
-              .from('people')
-              .select('id, gender')
-              .ilike('display_name', `%${cleanParent}%`)
-              .limit(1);
+            const cleanParent = extractCleanParentName(reg.parent_name);
+            if (cleanParent) {
+              const { data: matched } = await supabase
+                .from('people')
+                .select('id, gender')
+                .ilike('display_name', `%${cleanParent}%`)
+                .limit(1);
 
-            if (matched && matched.length > 0) {
-              const parent = matched[0];
-              const fatherId = parent.gender === 1 ? parent.id : null;
-              const motherId = parent.gender === 2 ? parent.id : null;
-              await addPersonToParentFamily(fatherId, motherId, newPerson.id);
+              if (matched && matched.length > 0) {
+                const parent = matched[0];
+                const fatherId = parent.gender === 1 ? parent.id : null;
+                const motherId = parent.gender === 2 ? parent.id : null;
+                await addPersonToParentFamily(fatherId, motherId, newPerson.id);
+              }
             }
           } catch (e) {
             console.warn('Could not auto-connect parent on sync:', e);
@@ -208,18 +218,20 @@ export async function syncApprovedRegistrationsToPeople(): Promise<number> {
           .eq('person_id', reg.person_id);
 
         if (!childEntries || childEntries.length === 0) {
-          const cleanParent = reg.parent_name.trim();
-          const { data: matched } = await supabase
-            .from('people')
-            .select('id, gender')
-            .ilike('display_name', `%${cleanParent}%`)
-            .limit(1);
+          const cleanParent = extractCleanParentName(reg.parent_name);
+          if (cleanParent) {
+            const { data: matched } = await supabase
+              .from('people')
+              .select('id, gender')
+              .ilike('display_name', `%${cleanParent}%`)
+              .limit(1);
 
-          if (matched && matched.length > 0) {
-            const parent = matched[0];
-            const fatherId = parent.gender === 1 ? parent.id : null;
-            const motherId = parent.gender === 2 ? parent.id : null;
-            await addPersonToParentFamily(fatherId, motherId, reg.person_id);
+            if (matched && matched.length > 0) {
+              const parent = matched[0];
+              const fatherId = parent.gender === 1 ? parent.id : null;
+              const motherId = parent.gender === 2 ? parent.id : null;
+              await addPersonToParentFamily(fatherId, motherId, reg.person_id);
+            }
           }
         }
       }
@@ -308,17 +320,19 @@ export async function approveRegistration(
 
     if (!finalFatherId && !finalMotherId && reg.parent_name && reg.parent_name.trim()) {
       try {
-        const cleanParentStr = reg.parent_name.trim();
-        const { data: matched } = await supabase
-          .from('people')
-          .select('id, gender, display_name')
-          .ilike('display_name', `%${cleanParentStr}%`)
-          .limit(1);
+        const cleanParentStr = extractCleanParentName(reg.parent_name);
+        if (cleanParentStr) {
+          const { data: matched } = await supabase
+            .from('people')
+            .select('id, gender, display_name')
+            .ilike('display_name', `%${cleanParentStr}%`)
+            .limit(1);
 
-        if (matched && matched.length > 0) {
-          const parent = matched[0];
-          if (parent.gender === 1) finalFatherId = parent.id;
-          else if (parent.gender === 2) finalMotherId = parent.id;
+          if (matched && matched.length > 0) {
+            const parent = matched[0];
+            if (parent.gender === 1) finalFatherId = parent.id;
+            else if (parent.gender === 2) finalMotherId = parent.id;
+          }
         }
       } catch (err) {
         console.warn('Smart parent matching failed:', err);
