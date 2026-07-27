@@ -84,12 +84,18 @@ export default function DirectoryPage() {
   const [search, setSearch] = useState('');
   const [generationFilter, setGenerationFilter] = useState<string>('all');
   const [genderFilter, setGenderFilter] = useState<FilterGender>('all');
+  const [phaiFilter, setPhaiFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<FilterStatus>('living');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
 
   const generations = useMemo(() => {
     if (!people) return [];
     return [...new Set(people.map(p => p.generation))].sort((a, b) => a - b);
+  }, [people]);
+
+  const phaiValues = useMemo(() => {
+    if (!people) return [];
+    return [...new Set(people.filter(p => p.phai != null).map(p => p.phai!))].sort((a, b) => a - b);
   }, [people]);
 
   const filteredPeople = useMemo(() => {
@@ -113,10 +119,11 @@ export default function DirectoryPage() {
 
       if (generationFilter !== 'all' && p.generation !== Number(generationFilter)) return false;
       if (genderFilter !== 'all' && p.gender !== Number(genderFilter)) return false;
+      if (phaiFilter !== 'all' && p.phai !== Number(phaiFilter)) return false;
 
       return true;
     });
-  }, [people, search, generationFilter, genderFilter, statusFilter, isViewer, isAuthenticated, profile?.linked_person]);
+  }, [people, search, generationFilter, genderFilter, phaiFilter, statusFilter, isViewer, isAuthenticated, profile?.linked_person]);
 
   const groupedByGeneration = useMemo(() => {
     const groups: Record<number, typeof filteredPeople> = {};
@@ -133,12 +140,13 @@ export default function DirectoryPage() {
     return { groups, sortedGens };
   }, [filteredPeople]);
 
-  const hasFilters = search || generationFilter !== 'all' || genderFilter !== 'all' || statusFilter !== 'living';
+  const hasFilters = search || generationFilter !== 'all' || genderFilter !== 'all' || phaiFilter !== 'all' || statusFilter !== 'living';
 
   const clearFilters = () => {
     setSearch('');
     setGenerationFilter('all');
     setGenderFilter('all');
+    setPhaiFilter('all');
     setStatusFilter('living');
   };
 
@@ -249,7 +257,7 @@ export default function DirectoryPage() {
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
               <label className="text-[11px] font-bold text-slate-500 uppercase mb-1 block">Thế hệ (Đời)</label>
               <Select value={generationFilter} onValueChange={setGenerationFilter}>
@@ -261,6 +269,23 @@ export default function DirectoryPage() {
                   {generations.map(gen => (
                     <SelectItem key={gen} value={gen.toString()} className="text-xs">
                       Đời thứ {gen}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-bold text-slate-500 uppercase mb-1 block">Phái tộc</label>
+              <Select value={phaiFilter} onValueChange={setPhaiFilter}>
+                <SelectTrigger className="text-xs rounded-xl border-slate-200 bg-white">
+                  <SelectValue placeholder="Tất cả Phái" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-xs">Tất cả Phái</SelectItem>
+                  {phaiValues.map(p => (
+                    <SelectItem key={p} value={p.toString()} className="text-xs">
+                      Phái {p}
                     </SelectItem>
                   ))}
                 </SelectContent>

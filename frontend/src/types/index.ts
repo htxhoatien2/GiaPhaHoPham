@@ -458,6 +458,7 @@ export interface MemberRegistration {
   parent_name?: string;
   generation?: number;
   chi?: number;
+  phai?: number;
   relationship?: string;
   notes?: string;
   status: RegistrationStatus;

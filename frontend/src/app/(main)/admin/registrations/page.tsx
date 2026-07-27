@@ -227,6 +227,9 @@ export default function AdminRegistrationsPage() {
                   {reg.chi && (
                     <div><span className="text-muted-foreground">Chi: </span>{reg.chi}</div>
                   )}
+                  {reg.phai && (
+                    <div><span className="text-muted-foreground">Phái: </span>{reg.phai}</div>
+                  )}
                   {reg.relationship && (
                     <div><span className="text-muted-foreground">Quan hệ: </span>{reg.relationship}</div>
                   )}
@@ -306,7 +309,7 @@ export default function AdminRegistrationsPage() {
           <div className="space-y-4 py-2 text-xs">
             <div className="bg-slate-100 dark:bg-slate-900 p-3 rounded-xl space-y-1">
               <div><strong>Họ tên:</strong> {approveTarget?.full_name} ({approveTarget?.gender === 1 ? 'Nam' : 'Nữ'})</div>
-              <div><strong>Đời thứ:</strong> {approveTarget?.generation || '1'} &bull; <strong>Chi:</strong> {approveTarget?.chi || '1'}</div>
+              <div><strong>Đời thứ:</strong> {approveTarget?.generation || '1'} &bull; <strong>Phái:</strong> {approveTarget?.phai || '—'} &bull; <strong>Chi:</strong> {approveTarget?.chi || '1'}</div>
               <div><strong>Quê quán:</strong> {approveTarget?.birth_place || 'Chưa rõ'}</div>
               <div><strong>Tên Cha/Mẹ tự khai:</strong> <span className="text-amber-600 font-semibold">{approveTarget?.parent_name || 'Chưa điền'}</span></div>
             </div>

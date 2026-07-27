@@ -55,8 +55,9 @@ export function RegisterMemberForm() {
         parent_name: parentName.trim() || undefined,
         generation: generation ? parseInt(generation) : undefined,
         chi: chi ? parseInt(chi) : undefined,
+        phai: phai ? parseInt(phai) : undefined,
         relationship: relationship.trim() || undefined,
-        notes: notes.trim() ? `${notes.trim()}${phai ? ` | Phái: ${phai}` : ''}` : phai ? `Phái: ${phai}` : undefined,
+        notes: notes.trim() || undefined,
         honeypot,
       });
       setSubmitted(true);
