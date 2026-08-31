@@ -260,7 +260,7 @@ describe('SEC-WARN-04 — ZIP import file size limit', () => {
 import nodePath from 'path';
 
 describe('Regression — Path traversal guard still works', () => {
-  const MEDIA_ROOT = '/home/user/AncestorTree/media';
+  const MEDIA_ROOT = nodePath.resolve('/home/user/AncestorTree/media');
 
   /** Mirror resolveSafePath from route.ts using real path.resolve */
   function resolveSafePath(segments: string[]): string | null {
@@ -273,12 +273,10 @@ describe('Regression — Path traversal guard still works', () => {
 
   it('allows normal path inside MEDIA_ROOT', () => {
     expect(resolveSafePath(['documents', 'file.pdf'])).not.toBeNull();
-    expect(resolveSafePath(['documents', 'file.pdf'])).toBe('/home/user/AncestorTree/media/documents/file.pdf');
+    expect(resolveSafePath(['documents', 'file.pdf'])).toBe(nodePath.resolve(MEDIA_ROOT, 'documents', 'file.pdf'));
   });
 
   it('blocks path traversal with ../ (resolves to outside MEDIA_ROOT)', () => {
-    // path.resolve('/home/user/AncestorTree/media', '../../../etc/passwd')
-    // → '/home/user/etc/passwd' — does NOT start with MEDIA_ROOT
     const result = resolveSafePath(['../../../etc/passwd']);
     expect(result).toBeNull();
   });

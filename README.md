@@ -361,6 +361,13 @@ Login: `admin@giapha.local` / `admin123` — Tổng thời gian: **10 phút**. C
 
 Total setup time: ~30 minutes. Total cost: $0/month.
 
+## 🏛️ Kiến Trúc Cốt Lõi (Clean Architecture)
+
+Hệ thống được thiết kế theo mô hình Clean Architecture độc lập:
+- **Core Domain (`frontend/src/core/`)**: 100% logic thuật toán thuần túy (Âm Dương Lịch thiên văn UTC+7, Xưng hô 3 miền, Lập lịch Cầu Đương DFS, Parser GEDCOM 7.0/5.5.1, Phát sinh VietQR Napas247, Xuất sách phả Word/PDF) không phụ thuộc framework UI hay cơ sở dữ liệu.
+- **Tài liệu Xuất xứ & Kiểm toán Bản quyền**: Xem [PROVENANCE.md](./PROVENANCE.md)
+- **Hướng dẫn Triển khai Thương mại hóa**: Xem [COMMERCIAL_GUIDE.md](./COMMERCIAL_GUIDE.md)
+
 ## Built With
 
 This project was built using [TinySDLC](https://github.com/Minh-Tam-Solution/tinysdlc) agent orchestrator following [MTS-SDLC-Lite](https://github.com/Minh-Tam-Solution/MTS-SDLC-Lite) methodology.
