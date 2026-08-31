@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════════════
-# AncestorTree — One-line installer (Windows PowerShell)
+# Gia Phả Số (GiaPhaHoPham) — One-line Local Sandbox Installer (Windows PowerShell)
 # Usage: irm https://raw.githubusercontent.com/htxhoatien2/GiaPhaHoPham/main/install.ps1 | iex
 # ═══════════════════════════════════════════════════════════════════════════
 $ErrorActionPreference = "Stop"
@@ -99,13 +99,13 @@ pnpm local:setup
 
 Write-Host ""
 Write-Host "  =============================================" -ForegroundColor Green
-Write-Host "    AncestorTree da san sang!" -ForegroundColor Green
+Write-Host "    Gia Pha So da san sang!" -ForegroundColor Green
 Write-Host "  =============================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Chay app:       " -NoNewline; Write-Host "cd $DIR\frontend; pnpm dev" -ForegroundColor Cyan
 Write-Host "  Mo trinh duyet: " -NoNewline; Write-Host "http://localhost:4000" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "  Dang nhap demo:"
+Write-Host "  Dang nhap thu nghiem (Local Sandbox Only):"
 Write-Host "    Admin:   admin@giapha.local  /  admin123" -ForegroundColor White
 Write-Host "    Editor:  editor@giapha.local /  editor123" -ForegroundColor White
 Write-Host "    Viewer:  viewer@giapha.local /  viewer123" -ForegroundColor White

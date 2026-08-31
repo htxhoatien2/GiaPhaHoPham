@@ -1,6 +1,6 @@
 #!/bin/sh
 # ═══════════════════════════════════════════════════════════════════════════
-# AncestorTree — One-line installer
+# Gia Phả Số (GiaPhaHoPham) — One-line Local Sandbox Installer
 # Usage: curl -fsSL https://raw.githubusercontent.com/htxhoatien2/GiaPhaHoPham/main/install.sh | sh
 # ═══════════════════════════════════════════════════════════════════════════
 set -e
@@ -114,13 +114,13 @@ pnpm local:setup
 # ─── 4. Done ─────────────────────────────────────────────────────────────
 
 printf "\n${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
-printf "${GREEN}  🎉 AncestorTree đã sẵn sàng!${RESET}\n"
+printf "${GREEN}  🎉 Gia Phả Số đã sẵn sàng!${RESET}\n"
 printf "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}\n"
 printf "\n"
 printf "  Chạy app:       ${CYAN}cd %s/frontend && pnpm dev${RESET}\n" "$DIR"
 printf "  Mở trình duyệt: ${CYAN}http://localhost:4000${RESET}\n"
 printf "\n"
-printf "  Đăng nhập demo:\n"
+printf "  Đăng nhập thử nghiệm (Local Sandbox Only):\n"
 printf "    Admin:   ${BOLD}admin@giapha.local${RESET}  /  ${BOLD}admin123${RESET}\n"
 printf "    Editor:  ${BOLD}editor@giapha.local${RESET} /  ${BOLD}editor123${RESET}\n"
 printf "    Viewer:  ${BOLD}viewer@giapha.local${RESET} /  ${BOLD}viewer123${RESET}\n"

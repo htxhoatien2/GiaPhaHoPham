@@ -210,7 +210,7 @@ Open [http://localhost:4000](http://localhost:4000)
 ## Project Structure
 
 ```
-AncestorTree/
+GiaPhaHoPham/
 ├── docs/                           # SDLC Documentation (LITE tier)
 │   ├── 00-foundation/              # Vision, requirements, community
 │   │   └── 06-Community/           # Community launch posts
@@ -349,6 +349,9 @@ Hệ thống được thiết kế theo mô hình Clean Architecture độc lậ
 - **Core Domain (`frontend/src/core/`)**: 100% logic thuật toán thuần túy (Âm Dương Lịch thiên văn UTC+7, Xưng hô 3 miền, Lập lịch Cầu Đương DFS, Parser GEDCOM 7.0/5.5.1, Phát sinh VietQR Napas247, Xuất sách phả Word/PDF) không phụ thuộc framework UI hay cơ sở dữ liệu.
 - **Tài liệu Xuất xứ & Kiểm toán Bản quyền**: Xem [PROVENANCE.md](./PROVENANCE.md)
 - **Hướng dẫn Triển khai Thương mại hóa**: Xem [COMMERCIAL_GUIDE.md](./COMMERCIAL_GUIDE.md)
+- **Chính Sách Bảo Vệ Dữ Liệu Cá Nhân (NĐ 13/2023/NĐ-CP)**: Xem [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
+- **Điều Khoản Dịch Vụ Gia Tộc**: Xem [TERMS_OF_SERVICE.md](./TERMS_OF_SERVICE.md)
+- **Quy Chế Quản Trị Dữ Liệu & Bản Quyền Tư Liệu**: Xem [DATA_GOVERNANCE.md](./DATA_GOVERNANCE.md)
 - **Thông cáo Bản quyền Phân lớp**: Xem [NOTICE](./NOTICE)
 - **Danh mục Giấy phép Phụ thuộc (SBOM)**: Xem [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md)
 

@@ -355,7 +355,7 @@ function buildCoverSection(cs: ClanSettings | null, date: string): (Paragraph | 
       alignment: AlignmentType.CENTER,
       children: [
         new TextRun({
-          text: 'AncestorTree — Gia Phả Điện Tử',
+          text: 'Gia Phả Số — Gia Phả Điện Tử Việt Nam',
           color: CLR.MUTED,
           size: 18,
           font: 'Times New Roman',
@@ -841,7 +841,7 @@ function makeFooter(date: string): Footer {
         },
         children: [
           new TextRun({
-            text: `AncestorTree · Gia Phả Điện Tử · Xuất ngày ${date}   |   Trang `,
+            text: `Gia Phả Số · Gia Phả Điện Tử · Xuất ngày ${date}   |   Trang `,
             size: 16,
             color: CLR.MUTED,
             font: 'Times New Roman',
@@ -1031,9 +1031,9 @@ export async function exportFullGiaPhaWord(
   }
 
   const doc = new Document({
-    creator: 'AncestorTree',
+    creator: 'Gia Phả Số',
     title: `Gia Phả — ${clanName}`,
-    description: 'Gia Phả Điện Tử xuất từ AncestorTree',
+    description: 'Gia Phả Điện Tử xuất từ Gia Phả Số',
     styles: {
       default: {
         document: {
