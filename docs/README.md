@@ -1,16 +1,16 @@
 ---
-project: AncestorTree
+project: GiaPhaHoPham
 path: docs/README.md
 type: index
-version: 1.0.0
-updated: 2026-02-24
+version: 3.0.0
+updated: 2026-09-01
 owner: "@pm"
 status: approved
 ---
 
-# AncestorTree Documentation
+# Gia Phả Số (GiaPhaHoPham) Documentation
 
-> Gia Phả Điện Tử - Họ Đặng làng Kỷ Các
+> Hệ Thống Quản Lý Gia Phả Điện Tử - Dòng họ Phạm Văn làng An Trạch, Hòa Tiến, Đà Nẵng
 
 ## SDLC Framework v6.1.0 - LITE Tier
 

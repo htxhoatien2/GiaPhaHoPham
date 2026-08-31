@@ -24,8 +24,8 @@ services:
       args:
         NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
         NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-        NEXT_PUBLIC_CLAN_NAME: ${NEXT_PUBLIC_CLAN_NAME:-Họ Đặng}
-        NEXT_PUBLIC_CLAN_FULL_NAME: ${NEXT_PUBLIC_CLAN_FULL_NAME:-Họ Đặng làng Kỷ Các}
+        NEXT_PUBLIC_CLAN_NAME: ${NEXT_PUBLIC_CLAN_NAME:-Họ Phạm}
+        NEXT_PUBLIC_CLAN_FULL_NAME: ${NEXT_PUBLIC_CLAN_FULL_NAME:-Gia Phả Dòng Họ Phạm Văn - An Trạch, Hòa Tiến, Đà Nẵng}
     image: ancestortree-web:latest
     container_name: ancestortree-web
     restart: unless-stopped
@@ -45,8 +45,8 @@ services:
       BACKUP_DIR: /data/backups
 
       # ── Optional clan customization ──────────────────────────────────────────
-      NEXT_PUBLIC_CLAN_NAME: ${NEXT_PUBLIC_CLAN_NAME:-Họ Đặng}
-      NEXT_PUBLIC_CLAN_FULL_NAME: ${NEXT_PUBLIC_CLAN_FULL_NAME:-Họ Đặng làng Kỷ Các}
+      NEXT_PUBLIC_CLAN_NAME: ${NEXT_PUBLIC_CLAN_NAME:-Họ Phạm}
+      NEXT_PUBLIC_CLAN_FULL_NAME: ${NEXT_PUBLIC_CLAN_FULL_NAME:-Gia Phả Dòng Họ Phạm Văn - An Trạch, Hòa Tiến, Đà Nẵng}
 
       # ── Debug / Logging ───────────────────────────────────────────────────────
       # Set to 'true' to enable — disable in production

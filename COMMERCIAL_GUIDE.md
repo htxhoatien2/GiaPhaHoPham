@@ -1,6 +1,6 @@
-# Hướng Dẫn Thương Mại Hóa & Triển Khai Toàn Diện (Commercialization Guide)
+# Hướng Dẫn Thương Mại Hóa & Triển Khai Thực Tế (Commercialization Guide)
 
-Tài liệu này cung cấp hướng dẫn chi tiết dành cho cá nhân, doanh nghiệp, ban trị sự dòng tộc hoặc đơn vị phát triển khi thương mại hóa phần mềm **Gia Phả Số (AncestorTree)**.
+Tài liệu này cung cấp hướng dẫn chiến lược và kỹ thuật dành cho cá nhân, doanh nghiệp, ban quản lý gia tộc khi triển khai thương mại hóa phần mềm **Gia Phả Số (GiaPhaHoPham)**.
 
 ---
 
@@ -15,31 +15,33 @@ Tài liệu này cung cấp hướng dẫn chi tiết dành cho cá nhân, doanh
          │                                    │                                    │
          ▼                                    ▼                                    ▼
 ┌──────────────────┐               ┌──────────────────┐               ┌──────────────────┐
-│  B2C/B2B2C SAAS  │               │   ON-PREMISE     │               │ DỊCH VỤ GIA TĂNG │
-│  (Cloud Tenant)  │               │  (Desktop/Hội đồng)               │ (Số hóa & In ấn) │
+│ DEDICATED CLOUD  │               │   ON-PREMISE     │               │ DỊCH VỤ GIA TĂNG │
+│ (Managed Host)   │               │(Bản cài Từ đường)│               │ (Số hóa & In ấn) │
 ├──────────────────┤               ├──────────────────┤               ├──────────────────┤
-│ Thu phí hàng năm │               │ Bán license trọn │               │ Nhận số hóa phả cũ│
-│ theo số thành    │               │ đời, cài đặt cục │               │ Xuất sách mạ vàng│
-│ viên & dung lượng│               │ bộ bảo mật cao   │               │ Dựng 3D lăng mộ  │
+│ Mỗi dòng họ 1 DB │               │ Cài đặt máy cục  │               │ Nhận số hóa phả cũ│
+│ riêng biệt 100%  │               │ bộ offline, bảo  │               │ Xuất sách mạ vàng│
+│ Thu phí vận hành │               │ mật tuyệt đối    │               │ Dịch Hán Nôm     │
 └──────────────────┘               └──────────────────┘               └──────────────────┘
 ```
 
-### 1.1. Mô Hình 1: SaaS Cloud (Multi-Tenancy)
-- **Đối tượng**: Các dòng họ vừa và nhỏ, gia đình hạt nhân muốn có website gia phả online kết nối con cháu trên toàn cầu.
+### 1.1. Mô Hình 1: Dedicated Managed Cloud (Khuyên Dùng Hiện Tại)
+- **Kiến trúc**: Mỗi dòng họ được cấp một Dedicated Instance riêng biệt (1 database Supabase/PostgreSQL độc lập).
+- **Lợi ích**:
+  - Dữ liệu gia tộc được cô lập vật lý 100%, bảo mật tuyệt đối.
+  - Không có rủi ro rò rỉ dữ liệu chéo giữa các dòng họ.
+  - Dễ dàng tùy biến tên miền riêng (ví dụ: `giaphahopham.vn`, `giaphahonguyen.com`).
 - **Gói cước gợi ý**:
-  - **Gói Cơ Bản (Miễn phí / Khởi đầu)**: Tối đa 50 thành viên, 3 đời, 100MB lưu trữ ảnh.
-  - **Gói Gia Tộc (500.000 VNĐ - 1.200.000 VNĐ / năm)**: Không giới hạn thành viên, 10+ đời, lịch giỗ tự động gửi tin nhắn/Zalo, Quỹ khuyến học VietQR, 10GB lưu trữ tài liệu sắc phong.
-  - **Gói Đại Tộc (2.500.000 VNĐ / năm)**: Đầy đủ tính năng, tên miền riêng (e.g. `giaphahopham.vn`), hỗ trợ sao lưu tự động hàng tuần.
+  - **Gói Tiêu Chuẩn (1.200.000 VNĐ - 2.500.000 VNĐ / năm)**: Bao gồm phí hạ tầng Cloud, bảo trì hệ thống, tự động sao lưu dữ liệu hàng tuần, tích hợp Quỹ Khuyến học VietQR.
 
-### 1.2. Mô Hình 2: On-Premise / Bản Desktop Offline Vĩnh Viễn
-- **Đối tượng**: Các đại tộc, dòng họ lớn yêu cầu tuyệt đối về bảo mật thông tin nội bộ, không muốn đưa dữ liệu gia đình lên đám mây công cộng.
-- **Hình thức**: Bán key kích hoạt phần mềm Desktop (Electron/Tauri SQLite), dữ liệu mã hóa lưu trực tiếp trên ổ cứng máy tính nhà thờ tộc.
+### 1.2. Mô Hình 2: On-Premise / Bản Cài Đặt Tại Nhà Thờ Tộc
+- **Đối tượng**: Các đại tộc lớn yêu cầu bảo mật nội bộ cao nhất, không đưa dữ liệu lên đám mây công cộng.
+- **Hình thức**: Chuyển giao gói cài đặt cục bộ (Docker / Standalone Desktop Engine với SQLite), dữ liệu mã hóa lưu tại máy chủ nhà thờ tộc.
 
-### 1.3. Mô Hình 3: Dịch Vụ Số Hóa & In Ấn Sách Phả Cao Cấp
-- **Dịch vụ trọn gói**:
-  1. Cử chuyên viên về tận từ đường dòng họ chụp ảnh tài liệu cổ, dịch chữ Hán Nôm sang Quốc ngữ.
-  2. Nhập liệu và lập trình cây phả hệ chuẩn.
-  3. Xuất file Word/PDF bìa cứng mạ vàng trao tặng tộc trưởng và các chi phái.
+### 1.3. Mô Hình 3: Dịch Vụ Số Hóa & In Ấn Sách Phả Cao Cấp (Doanh Thu Cao Nhất)
+- **Quy trình dịch vụ trọn gói**:
+  1. Cử chuyên viên về từ đường dòng họ chụp ảnh tài liệu, dịch thuật gia phả Hán Nôm sang Quốc ngữ.
+  2. Số hóa toàn bộ phả hệ vào hệ thống Gia Phả Số.
+  3. Xuất file Microsoft Word (.docx) chuẩn mực qua engine `BookExportEngine`, chuyển giao nhà in đóng sách da mạ vàng lưu truyền hậu thế.
 
 ---
 
@@ -56,27 +58,11 @@ Tài liệu này cung cấp hướng dẫn chi tiết dành cho cá nhân, doanh
 - Sẵn sàng chuyển giao cho các nhà in chuyên nghiệp in sách lưu truyền hậu thế.
 
 ### 2.3. Chế Độ Bô Lão / Người Cao Tuổi (Elderly Accessibility)
-- Giao diện thân thiện tối đa với người cao tuổi: Font chữ lớn, biểu tượng rõ ràng, loại bỏ menu phức tạp, hỗ trợ tra cứu ngày giỗ và phân công cúng tế Cầu Đương tức thì.
+- Giao diện thân thiện tối đa với người cao tuổi: Font chữ lớn, biểu tượng rõ ràng, hỗ trợ tra cứu ngày giỗ và phân công cúng tế Cầu Đương tức thì.
 
 ---
 
-## 3. Quy Trình Đổi Thương Hiệu Nhanh (White-Labeling Checklist)
+## 3. Trạng Thái Bản Desktop & Lộ Trình Code Signing
 
-Để triển khai hệ thống cho một dòng họ mới:
-
-1. **Bước 1: Cấu hình biến môi trường (`.env`)**:
-   ```env
-   NEXT_PUBLIC_CLAN_NAME="Họ Nguyễn Văn"
-   NEXT_PUBLIC_CLAN_FULL_NAME="Gia Phả Dòng Họ Nguyễn Văn - Làng Cổ Am, Hải Phòng"
-   NEXT_PUBLIC_CLAN_FOUNDING_YEAR="1428"
-   NEXT_PUBLIC_CLAN_LOCATION="Hải Phòng, Việt Nam"
-   NEXT_PUBLIC_BANK_BIN="970422" # Mã Ngân hàng Quân Đội MBBank
-   NEXT_PUBLIC_BANK_ACCOUNT="0123456789"
-   NEXT_PUBLIC_BANK_ACCOUNT_NAME="NGUYEN VAN A - TRUONG TOC"
-   ```
-
-2. **Bước 2: Thay đổi Logo & Ảnh bìa Nhà thờ**:
-   - Đặt file logo vào `public/logo.png` và banner vào `public/banner.jpg`.
-
-3. **Bước 3: Khởi tạo dữ liệu**:
-   - Chọn **Khởi tạo dữ liệu mới** trong `/admin/settings` hoặc nhập tệp tin chuẩn **GEDCOM 7.0**.
+- **Trạng thái hiện tại**: Developer Preview / Self-compiled Edition.
+- **Lộ trình thương mại**: Sẽ mở bán gói cài đặt 1-click cho người dùng phổ thông sau khi hoàn tất đăng ký chứng chỉ số EV/OV Code Signing cho Windows và Apple Developer ID cho macOS.

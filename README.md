@@ -1,8 +1,8 @@
-# AncestorTree
+# Gia Phả Số (GiaPhaHoPham)
 
-> **Gia Phả Điện Tử - Họ Phạm Văn làng An Trạch, Hòa Tiến, Đà Nẵng**
+> **Hệ Thống Quản Lý Gia Phả Điện Tử Việt Nam — Dòng họ Phạm Văn (An Trạch, Hòa Tiến, Đà Nẵng)**
 
-Phần mềm quản lý gia phả điện tử giúp gìn giữ và truyền thừa thông tin dòng họ qua các thế hệ.
+Phần mềm quản lý gia phả điện tử độc lập, chuẩn Clean Architecture, giúp gìn giữ và truyền thừa thông tin dòng họ qua các thế hệ.
 
 *"Gìn giữ tinh hoa - Tiếp bước cha ông"*
 
@@ -151,53 +151,55 @@ irm https://raw.githubusercontent.com/htxhoatien2/GiaPhaHoPham/main/install.ps1 
 
 Xong → `cd GiaPhaHoPham/frontend && pnpm dev` → mở [http://localhost:4000](http://localhost:4000)
 
-Demo login: `admin@giapha.local` / `admin123`
+> [!CAUTION]
+> **Cảnh báo bảo mật quan trọng**:
+> - Tài khoản `admin@giapha.local` / `admin123` là **tài khoản hạt giống (Seed Data)** CHỈ DÙNG CHO MÔI TRƯỜNG THỬ NGHIỆM CỤC BỘ (Local Sandbox).
+> - Khi triển khai môi trường **Production**, bạn bắt buộc phải tạo tài khoản Quản trị viên mới với mật khẩu mạnh qua Supabase Auth Dashboard. Tuyệt đối không dùng mật khẩu mặc định `admin123` trên internet.
 
-### Option A: Desktop App (dành cho người dùng phổ thông)
+### Option A: Desktop App (Offline SQLite)
 
-> **Code Signing Pending** — Bản desktop đang chờ Apple Developer Certificate.
-> Khi có code sign, bản cài đặt sẽ được phát hành tại [GitHub Releases](https://github.com/htxhoatien2/GiaPhaHoPham/releases).
-> Hiện tại, vui lòng sử dụng One-line Install hoặc Option B/C.
+> **Trạng thái**: Developer Preview / Self-compiled Edition.
+> Phiên bản cài đặt thương mại 1-click sẽ được phát hành chính thức sau khi hoàn tất đăng ký chứng chỉ số EV/OV Code Signing cho Windows SmartScreen và Apple Developer ID cho macOS.
+> Hướng dẫn tự biên dịch từ mã nguồn: Xem [docs/04-build/INSTALLATION-GUIDE.md](./docs/04-build/INSTALLATION-GUIDE.md).
 
-See [docs/04-build/INSTALLATION-GUIDE.md](./docs/04-build/INSTALLATION-GUIDE.md) for detailed instructions.
+### Option B: Local Development Sandbox (Chạy thử nghiệm)
 
-### Option B: Local Development (manual)
-
-> Requires Docker Desktop + Node.js 18+ + pnpm + Supabase CLI
+> Yêu cầu Docker Desktop + Node.js 18+ + pnpm + Supabase CLI
 
 ```bash
 git clone https://github.com/htxhoatien2/GiaPhaHoPham.git
 cd GiaPhaHoPham/frontend
 pnpm install
-pnpm local:setup   # starts Docker, runs migrations, writes .env.local
+pnpm local:setup   # Khởi động Docker, chạy migration và tạo dữ liệu hạt giống
 pnpm dev
 ```
 
-Open [http://localhost:4000](http://localhost:4000)
+Mở [http://localhost:4000](http://localhost:4000)  
+*Tài khoản Sandbox Demo: `admin@giapha.local` / `admin123` (Chỉ dùng cho Local Test).*
 
-Demo login: `admin@giapha.local` / `admin123`
-
-See [docs/04-build/LOCAL-DEVELOPMENT.md](./docs/04-build/LOCAL-DEVELOPMENT.md) for full guide.
-
-### Option C: Docker (1 lệnh, không cần Node.js)
+### Option C: Docker (Triển khai Dedicated Instance)
 
 ```bash
 git clone https://github.com/htxhoatien2/GiaPhaHoPham.git
 cd GiaPhaHoPham
 cp frontend/.env.local.example frontend/.env.local
-# Fill in Supabase credentials
+# Cấu hình biến môi trường và Supabase URL/Keys của dòng họ
 docker compose up -d
 ```
 
-Open [http://localhost:4000](http://localhost:4000)
+Mở [http://localhost:4000](http://localhost:4000)
 
-### Option D: Supabase Cloud
+### Option D: Supabase Cloud (Triển khai Production Dedicated Instance)
 
 ```bash
 git clone https://github.com/htxhoatien2/GiaPhaHoPham.git
 cd GiaPhaHoPham/frontend
 pnpm install
 cp .env.local.example .env.local
+# Điền thông tin Supabase Project Production của dòng họ
+pnpm build
+pnpm start
+```
 # Fill in NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
 # Then run migrations in Supabase SQL Editor (supabase/migrations/ in order)
 pnpm dev
@@ -329,37 +331,17 @@ v2.4.1 BulkAdmin [##########] Done - Bulk actions + Supabase CLI v2.76+ fix
 v2.5.0 Community [##########] Done - Góc giao lưu + Thống kê + GEDCOM 7.0 + Thông báo + Nhà thờ họ + SEO
 ```
 
-## For Your Own Clan
+## 🌐 Triển Khai Cho Dòng Họ Của Bạn (Dedicated Clan Instance)
 
-AncestorTree is designed for **any Vietnamese family**:
+Hệ thống được thiết kế linh hoạt cho **mọi dòng họ Việt Nam** theo mô hình Dedicated Instance (mỗi dòng họ 1 database độc lập, bảo mật tối đa):
 
-### Cách nhanh nhất (1 lệnh)
+### Triển khai Nhanh Bản Web (Production Cloud)
 
-**macOS / Linux:**
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/htxhoatien2/GiaPhaHoPham/main/install.sh | sh
-```
-
-**Windows (PowerShell):**
-
-```powershell
-irm https://raw.githubusercontent.com/htxhoatien2/GiaPhaHoPham/main/install.ps1 | iex
-```
-
-Login: `admin@giapha.local` / `admin123` — Tổng thời gian: **10 phút**. Chi phí: **$0**.
-
-> Desktop App (offline, không cần Docker) sẽ có khi code signing certificate sẵn sàng.
-
-### Cách nâng cao (Web App — Deploy cho cả dòng họ)
-
-1. Fork this repo
-2. Create a free Supabase project
-3. Run the database setup SQL
-4. Deploy to Vercel (free)
-5. Start entering family data
-
-Total setup time: ~30 minutes. Total cost: $0/month.
+1. Tạo một dự án Supabase mới cho dòng họ của bạn tại [supabase.com](https://supabase.com).
+2. Chạy kịch bản khởi tạo database trong SQL Editor (`supabase/migrations/`).
+3. Tạo tài khoản Quản trị viên (Admin) đầu tiên với mật khẩu mạnh trong phần Authentication.
+4. Deploy frontend lên Vercel hoặc Cloud Server với biến môi trường của dòng họ (`NEXT_PUBLIC_CLAN_NAME`, `NEXT_PUBLIC_CLAN_FULL_NAME`).
+5. Bắt đầu nhập liệu phả hệ và kết nối con cháu trên toàn cầu.
 
 ## 🏛️ Kiến Trúc Cốt Lõi (Clean Architecture)
 
@@ -367,6 +349,8 @@ Hệ thống được thiết kế theo mô hình Clean Architecture độc lậ
 - **Core Domain (`frontend/src/core/`)**: 100% logic thuật toán thuần túy (Âm Dương Lịch thiên văn UTC+7, Xưng hô 3 miền, Lập lịch Cầu Đương DFS, Parser GEDCOM 7.0/5.5.1, Phát sinh VietQR Napas247, Xuất sách phả Word/PDF) không phụ thuộc framework UI hay cơ sở dữ liệu.
 - **Tài liệu Xuất xứ & Kiểm toán Bản quyền**: Xem [PROVENANCE.md](./PROVENANCE.md)
 - **Hướng dẫn Triển khai Thương mại hóa**: Xem [COMMERCIAL_GUIDE.md](./COMMERCIAL_GUIDE.md)
+- **Thông cáo Bản quyền Phân lớp**: Xem [NOTICE](./NOTICE)
+- **Danh mục Giấy phép Phụ thuộc (SBOM)**: Xem [THIRD_PARTY_LICENSES.md](./THIRD_PARTY_LICENSES.md)
 
 ## Built With
 
@@ -386,4 +370,4 @@ This project was built using [TinySDLC](https://github.com/Minh-Tam-Solution/tin
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) for details.
+MIT License — Xem [LICENSE](./LICENSE) và [NOTICE](./NOTICE) để biết chi tiết bản quyền phân lớp và upstream attribution.

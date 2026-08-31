@@ -1,6 +1,6 @@
-# 🌳 Gia Phả Điện Tử - Frontend
+# 🌳 Gia Phả Số - Frontend Web App
 
-**Họ Đặng làng Kỷ Các**
+**Dòng họ Phạm Văn - Làng An Trạch, Hòa Tiến, Đà Nẵng**
 
 ## 🚀 Quick Start
 

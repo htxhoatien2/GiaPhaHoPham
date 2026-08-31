@@ -8,36 +8,36 @@
 
 -- Đời 1: Thủy tổ
 INSERT OR IGNORE INTO people (id, handle, display_name, first_name, surname, gender, generation, is_living, birth_year, death_year, death_lunar, biography, privacy_level, is_patrilineal) VALUES
-('bbbbbbbb-0001-4000-b000-000000000001', 'dang-van-thuy-to', 'Đặng Văn Thủy Tổ', 'Thủy Tổ', 'Đặng', 1, 1, 0, 1850, 1920, '12/3', 'Thủy tổ dòng họ Đặng làng Kỷ Các.', 0, 1),
+('bbbbbbbb-0001-4000-b000-000000000001', 'pham-van-thuy-to', 'Phạm Văn Thủy Tổ', 'Thủy Tổ', 'Phạm', 1, 1, 0, 1850, 1920, '12/3', 'Thủy tổ dòng họ Phạm Văn làng An Trạch.', 0, 1),
 ('bbbbbbbb-0002-4000-b000-000000000002', 'nguyen-thi-tu', 'Nguyễn Thị Từ', 'Từ', 'Nguyễn', 2, 1, 0, 1855, 1935, '8/7', 'Vợ cụ Thủy Tổ.', 0, 0);
 
 -- Đời 2: 3 con + 2 dâu
 INSERT OR IGNORE INTO people (id, handle, display_name, first_name, surname, gender, generation, is_living, birth_year, death_year, death_lunar, biography, privacy_level, is_patrilineal) VALUES
-('bbbbbbbb-0011-4000-b000-000000000011', 'dang-van-nhat', 'Đặng Văn Nhất', 'Nhất', 'Đặng', 1, 2, 0, 1880, 1950, '15/1', 'Con trưởng.', 0, 1),
+('bbbbbbbb-0011-4000-b000-000000000011', 'pham-van-nhat', 'Phạm Văn Nhất', 'Nhất', 'Phạm', 1, 2, 0, 1880, 1950, '15/1', 'Con trưởng.', 0, 1),
 ('bbbbbbbb-0012-4000-b000-000000000012', 'tran-thi-lan', 'Trần Thị Lan', 'Lan', 'Trần', 2, 2, 0, 1885, 1960, '20/9', 'Vợ ông Nhất.', 0, 0),
-('bbbbbbbb-0013-4000-b000-000000000013', 'dang-van-nhi', 'Đặng Văn Nhị', 'Nhị', 'Đặng', 1, 2, 0, 1883, 1955, '5/11', 'Con thứ.', 0, 1),
+('bbbbbbbb-0013-4000-b000-000000000013', 'pham-van-nhi', 'Phạm Văn Nhị', 'Nhị', 'Phạm', 1, 2, 0, 1883, 1955, '5/11', 'Con thứ.', 0, 1),
 ('bbbbbbbb-0014-4000-b000-000000000014', 'le-thi-mai', 'Lê Thị Mai', 'Mai', 'Lê', 2, 2, 0, 1888, 1965, '22/4', 'Vợ ông Nhị.', 0, 0),
-('bbbbbbbb-0015-4000-b000-000000000015', 'dang-thi-ba', 'Đặng Thị Ba', 'Ba', 'Đặng', 2, 2, 0, 1886, 1970, '3/6', 'Con gái út.', 0, 1);
+('bbbbbbbb-0015-4000-b000-000000000015', 'pham-thi-ba', 'Phạm Thị Ba', 'Ba', 'Phạm', 2, 2, 0, 1886, 1970, '3/6', 'Con gái út.', 0, 1);
 
 -- Đời 3: 4 cháu
 INSERT OR IGNORE INTO people (id, handle, display_name, first_name, surname, gender, generation, is_living, birth_year, death_year, death_lunar, biography, privacy_level, is_patrilineal) VALUES
-('bbbbbbbb-0021-4000-b000-000000000021', 'dang-van-tai', 'Đặng Văn Tài', 'Tài', 'Đặng', 1, 3, 0, 1910, 1980, '18/2', 'Cháu trưởng.', 0, 1),
-('bbbbbbbb-0022-4000-b000-000000000022', 'pham-thi-hoa', 'Phạm Thị Hoa', 'Hoa', 'Phạm', 2, 3, 0, 1915, 1990, '7/10', 'Vợ ông Tài.', 0, 0),
-('bbbbbbbb-0023-4000-b000-000000000023', 'dang-thi-lien', 'Đặng Thị Liên', 'Liên', 'Đặng', 2, 3, 0, 1912, 1985, '25/8', 'Con gái ông Nhất.', 0, 1),
-('bbbbbbbb-0024-4000-b000-000000000024', 'dang-van-duc', 'Đặng Văn Đức', 'Đức', 'Đặng', 1, 3, 0, 1915, 1988, '10/5', 'Con ông Nhị.', 0, 1);
+('bbbbbbbb-0021-4000-b000-000000000021', 'pham-van-tai', 'Phạm Văn Tài', 'Tài', 'Phạm', 1, 3, 0, 1910, 1980, '18/2', 'Cháu trưởng.', 0, 1),
+('bbbbbbbb-0022-4000-b000-000000000022', 'nguyen-thi-hoa', 'Nguyễn Thị Hoa', 'Hoa', 'Nguyễn', 2, 3, 0, 1915, 1990, '7/10', 'Vợ ông Tài.', 0, 0),
+('bbbbbbbb-0023-4000-b000-000000000023', 'pham-thi-lien', 'Phạm Thị Liên', 'Liên', 'Phạm', 2, 3, 0, 1912, 1985, '25/8', 'Con gái ông Nhất.', 0, 1),
+('bbbbbbbb-0024-4000-b000-000000000024', 'pham-van-duc', 'Phạm Văn Đức', 'Đức', 'Phạm', 1, 3, 0, 1915, 1988, '10/5', 'Con ông Nhị.', 0, 1);
 
 -- Đời 4: 4 chắt (còn sống)
 INSERT OR IGNORE INTO people (id, handle, display_name, first_name, surname, gender, generation, is_living, birth_year, biography, privacy_level, is_patrilineal) VALUES
-('bbbbbbbb-0031-4000-b000-000000000031', 'dang-van-minh', 'Đặng Văn Minh', 'Minh', 'Đặng', 1, 4, 1, 1945, 'Trưởng nam đời 4.', 0, 1),
+('bbbbbbbb-0031-4000-b000-000000000031', 'pham-van-minh', 'Phạm Văn Minh', 'Minh', 'Phạm', 1, 4, 1, 1945, 'Trưởng nam đời 4.', 0, 1),
 ('bbbbbbbb-0032-4000-b000-000000000032', 'nguyen-thi-hang', 'Nguyễn Thị Hằng', 'Hằng', 'Nguyễn', 2, 4, 1, 1948, 'Vợ ông Minh.', 0, 0),
-('bbbbbbbb-0033-4000-b000-000000000033', 'dang-van-hung', 'Đặng Văn Hùng', 'Hùng', 'Đặng', 1, 4, 1, 1950, 'Con thứ ông Tài.', 0, 1),
-('bbbbbbbb-0034-4000-b000-000000000034', 'dang-thi-phuong', 'Đặng Thị Phượng', 'Phượng', 'Đặng', 2, 4, 1, 1947, 'Con gái ông Đức.', 0, 1);
+('bbbbbbbb-0033-4000-b000-000000000033', 'pham-van-hung', 'Phạm Văn Hùng', 'Hùng', 'Phạm', 1, 4, 1, 1950, 'Con thứ ông Tài.', 0, 1),
+('bbbbbbbb-0034-4000-b000-000000000034', 'pham-thi-phuong', 'Phạm Thị Phượng', 'Phượng', 'Phạm', 2, 4, 1, 1947, 'Con gái ông Đức.', 0, 1);
 
 -- Đời 5: 3 chút (còn sống)
 INSERT OR IGNORE INTO people (id, handle, display_name, first_name, surname, gender, generation, is_living, birth_year, biography, privacy_level, is_patrilineal, occupation) VALUES
-('bbbbbbbb-0041-4000-b000-000000000041', 'dang-van-an', 'Đặng Văn An', 'An', 'Đặng', 1, 5, 1, 1975, 'Con ông Minh. Kỹ sư CNTT.', 0, 1, 'Kỹ sư phần mềm'),
-('bbbbbbbb-0042-4000-b000-000000000042', 'dang-thi-binh', 'Đặng Thị Bình', 'Bình', 'Đặng', 2, 5, 1, 1978, 'Con gái ông Minh.', 0, 1, 'Giáo viên'),
-('bbbbbbbb-0043-4000-b000-000000000043', 'dang-van-cuong', 'Đặng Văn Cường', 'Cường', 'Đặng', 1, 5, 1, 1980, 'Con ông Hùng.', 0, 1, 'Bác sĩ');
+('bbbbbbbb-0041-4000-b000-000000000041', 'pham-van-an', 'Phạm Văn An', 'An', 'Phạm', 1, 5, 1, 1975, 'Con ông Minh. Kỹ sư CNTT.', 0, 1, 'Kỹ sư phần mềm'),
+('bbbbbbbb-0042-4000-b000-000000000042', 'pham-thi-binh', 'Phạm Thị Bình', 'Bình', 'Phạm', 2, 5, 1, 1978, 'Con gái ông Minh.', 0, 1, 'Giáo viên'),
+('bbbbbbbb-0043-4000-b000-000000000043', 'pham-van-cuong', 'Phạm Văn Cường', 'Cường', 'Phạm', 1, 5, 1, 1980, 'Con ông Hùng.', 0, 1, 'Bác sĩ');
 
 -- ─── Families ─────────────────────────────────────────────────────────────
 

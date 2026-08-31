@@ -102,11 +102,19 @@ Mặc định khi đăng ký tài khoản mới, hệ thống sẽ yêu cầu x�
 
 ---
 
-## Thông tin đăng nhập quản trị ban đầu
-Sau khi cơ sở dữ liệu đã khởi tạo thành công, tài khoản quản trị tối cao mặc định để bạn đăng nhập lần đầu tiên thiết lập là:
-* **Tài khoản:** `admin@giapha.local`
-* **Mật khẩu:** `admin123`
+## Hướng dẫn Khởi tạo Tài khoản Quản trị Viên (Admin Setup)
 
-*Lưu ý bảo mật:* Ngay sau khi đăng nhập lần đầu thành công trên trang web thực tế, bạn hãy vào mục **Quản lý tài khoản (Admin Panel)** hoặc **Hồ sơ cá nhân** để tiến hành thay đổi email quản trị và mật khẩu của mình để tránh người lạ xâm nhập.
+### Môi trường Triển khai Thực tế (Production):
+1. Truy cập trang **Authentication** -> **Users** trong bảng điều khiển Supabase Cloud của bạn.
+2. Nhấn **Add User** -> **Create User**.
+3. Điền địa chỉ Email quản trị chính thức của dòng họ và tạo mật khẩu mạnh (tối thiểu 12 ký tự gồm chữ hoa, chữ thường, số và ký tự đặc biệt).
+4. Sau khi tạo user, vào **Table Editor** -> bảng `profiles`, tìm dòng user vừa tạo và đổi cột `role` thành `admin`.
+5. Đăng nhập vào hệ thống bằng tài khoản chính thức này để bắt đầu cấu hình dòng họ.
 
-Chúc dòng họ **Họ Phạm Văn làng An Trạch** vận hành hệ thống Gia phả điện tử thành công tốt đẹp!
+> [!CAUTION]
+> **Tuyệt đối không sử dụng tài khoản demo `admin123` trên môi trường Production trực tuyến.**
+> Tài khoản `admin@giapha.local` / `admin123` là dữ liệu hạt giống (seed data) chỉ dành riêng cho việc kiểm thử trên môi trường cục bộ (Local Sandbox).
+
+---
+
+Chúc dòng họ **Phạm Văn làng An Trạch** vận hành hệ thống Gia phả điện tử thành công tốt đẹp!
