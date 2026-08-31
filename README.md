@@ -128,8 +128,8 @@ Phần mềm quản lý gia phả điện tử độc lập, chuẩn Clean Archi
 | Database | Supabase (PostgreSQL, Auth, Storage, RLS) |
 | State | React Query (TanStack Query) |
 | Desktop | Electron 34, sql.js (WASM SQLite) |
-| Deployment | Vercel + Supabase Cloud |
-| Cost | **$0/tháng** (100% free tier) |
+| Deployment | Vercel + Supabase Cloud / Self-hosted Docker |
+| Kiến Trúc | Dedicated Clan Instance (Cơ sở dữ liệu độc lập cho từng dòng họ) |
 
 ## Quick Start
 
@@ -349,6 +349,7 @@ Hệ thống được thiết kế theo mô hình Clean Architecture độc lậ
 - **Core Domain (`frontend/src/core/`)**: 100% logic thuật toán thuần túy (Âm Dương Lịch thiên văn UTC+7, Xưng hô 3 miền, Lập lịch Cầu Đương DFS, Parser GEDCOM 7.0/5.5.1, Phát sinh VietQR Napas247, Xuất sách phả Word/PDF) không phụ thuộc framework UI hay cơ sở dữ liệu.
 - **Tài liệu Xuất xứ & Kiểm toán Bản quyền**: Xem [PROVENANCE.md](./PROVENANCE.md)
 - **Hướng dẫn Triển khai Thương mại hóa**: Xem [COMMERCIAL_GUIDE.md](./COMMERCIAL_GUIDE.md)
+- **Checklist Sẵn Sàng Vận Hành & Triển Khai**: Xem [PRODUCTION_CHECKLIST.md](./PRODUCTION_CHECKLIST.md)
 - **Chính Sách Bảo Vệ Dữ Liệu Cá Nhân (NĐ 13/2023/NĐ-CP)**: Xem [PRIVACY_POLICY.md](./PRIVACY_POLICY.md)
 - **Điều Khoản Dịch Vụ Gia Tộc**: Xem [TERMS_OF_SERVICE.md](./TERMS_OF_SERVICE.md)
 - **Quy Chế Quản Trị Dữ Liệu & Bản Quyền Tư Liệu**: Xem [DATA_GOVERNANCE.md](./DATA_GOVERNANCE.md)

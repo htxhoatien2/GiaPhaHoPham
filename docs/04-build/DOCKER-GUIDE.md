@@ -97,8 +97,8 @@ docker compose up -d
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅ | Supabase anon key (public) |
 | `SUPABASE_SERVICE_ROLE_KEY` | ✅ | Service role key (server-only, dùng cho backup/restore) |
 | `APP_PORT` | ❌ | Host port (default: 4000) |
-| `NEXT_PUBLIC_CLAN_NAME` | ❌ | Tên dòng họ (default: Họ Đặng) |
-| `NEXT_PUBLIC_CLAN_FULL_NAME` | ❌ | Tên đầy đủ dòng họ |
+| `NEXT_PUBLIC_CLAN_NAME` | ❌ | Tên dòng họ (default: Họ Phạm) |
+| `NEXT_PUBLIC_CLAN_FULL_NAME` | ❌ | Tên đầy đủ dòng họ (default: Gia Phả Dòng Họ Phạm Văn - An Trạch) |
 | `BACKUP_DIR` | auto | `/data/backups` — set tự động bởi docker-compose |
 
 ---
