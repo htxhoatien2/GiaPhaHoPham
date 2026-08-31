@@ -1,6 +1,6 @@
 @echo off
 echo ===================================================
-echo   Sao chep Logo & Banner vao frontend/public...
+echo   Sao chep Logo ^& Banner vao frontend/public...
 echo ===================================================
 echo.
 
